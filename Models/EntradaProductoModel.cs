@@ -14,7 +14,7 @@ namespace PitStop_Parts_Inventario.Models
         public int IdBodega { get; set; }
 
         [ForeignKey("Usuario")]
-        public int IdUsuario { get; set; }
+        public string IdUsuario { get; set; }
 
         [Required]
         public DateTime Fecha { get; set; }
