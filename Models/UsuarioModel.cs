@@ -7,14 +7,6 @@ namespace PitStop_Parts_Inventario.Models
     public class UsuarioModel : IdentityUser
     {
         [Required]
-        [StringLength(50)]
-        public string Nombre { get; set; }
-
-        [Required]
-        [StringLength(50)]
-        public string Apellido { get; set; }
-
-        [Required]
         public DateTime FechaDeIngreso { get; set; }
 
         [ForeignKey("Rol")]
