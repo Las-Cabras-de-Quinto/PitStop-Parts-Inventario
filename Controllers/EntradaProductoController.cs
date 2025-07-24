@@ -1,0 +1,32 @@
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using PitStop_Parts_Inventario.Models;
+
+namespace PitStop_Parts_Inventario.Controllers
+{
+    public class EntradaProductoController : Controller
+    {
+        private readonly ILogger<EntradaProductoController> _logger;
+
+        public EntradaProductoController(ILogger<EntradaProductoController> logger)
+        {
+            _logger = logger;
+        }
+
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+    }
+}
