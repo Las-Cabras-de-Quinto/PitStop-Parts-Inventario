@@ -1,14 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace PitStop_Parts_Inventario.Models
 {
-    public class UsuarioModel
+    public class UsuarioModel : IdentityUser
     {
-        [Key]
-        [Column("IdUsuario")]
-        public int IdUsuario { get; set; }
-
         [Required]
         [StringLength(50)]
         public string Nombre { get; set; }
@@ -19,14 +16,6 @@ namespace PitStop_Parts_Inventario.Models
 
         [Required]
         public DateTime FechaDeIngreso { get; set; }
-
-        [Required]
-        [StringLength(50)]
-        public string Correo { get; set; }
-
-        [Required]
-        [StringLength(50)]
-        public string Contraseña { get; set; }
 
         [ForeignKey("Rol")]
         public int IdRol { get; set; }

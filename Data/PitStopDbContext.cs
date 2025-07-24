@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PitStop_Parts_Inventario.Models;
 
 namespace PitStop_Parts_Inventario.Data
 {
-    public class PitStopDbContext : DbContext
+    public class PitStopDbContext : IdentityDbContext<UsuarioModel>
     {
         public PitStopDbContext(DbContextOptions<PitStopDbContext> options) : base(options)
         {
