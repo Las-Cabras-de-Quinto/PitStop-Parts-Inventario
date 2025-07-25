@@ -42,5 +42,35 @@ namespace PitStop_Parts_Inventario.Data
                 await context.SaveChangesAsync();
             }
         }
+
+        private static async Task SeedRolesAsync(PitStopDbContext context)
+        {
+            // Verificar si ya existen roles
+            if (!context.Roles.Any())
+            {
+                var roles = new List<RolModel>
+                {
+                    new RolModel
+                    {
+                        IdRol = 1,
+                        Nombre = "Administrador",
+                        Funcion = "Acceso completo al sistema, gestión de usuarios, inventario y configuración",
+                        Admin = true,
+                        IdEstado = 1 // Estado Activo
+                    },
+                    new RolModel
+                    {
+                        IdRol = 2,
+                        Nombre = "Empleado",
+                        Funcion = "Acceso limitado al sistema, gestión básica de inventario",
+                        Admin = false,
+                        IdEstado = 1 // Estado Activo
+                    }
+                };
+
+                context.Roles.AddRange(roles);
+                await context.SaveChangesAsync();
+            }
+        }
     }
 }
