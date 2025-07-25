@@ -12,6 +12,7 @@ namespace PitStop_Parts_Inventario.Data
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<UsuarioModel>>();
 
             await SeedEstadosAsync(context);
+            await SeedRolesAsync(context);
         }
 
         private static async Task SeedEstadosAsync(PitStopDbContext context)
