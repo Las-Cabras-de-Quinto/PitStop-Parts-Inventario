@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using PitStop_Parts_Inventario.Models;
+using PitStop_Parts_Inventario.Data;
 
 namespace PitStop_Parts_Inventario.Areas.Identity.Pages.Account
 {
@@ -30,13 +31,15 @@ namespace PitStop_Parts_Inventario.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<UsuarioModel> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly PitStopDbContext _context;
 
         public RegisterModel(
             UserManager<UsuarioModel> userManager,
             IUserStore<UsuarioModel> userStore,
             SignInManager<UsuarioModel> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            PitStopDbContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +47,7 @@ namespace PitStop_Parts_Inventario.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         /// <summary>
@@ -159,7 +163,26 @@ namespace PitStop_Parts_Inventario.Areas.Identity.Pages.Account
         {
             try
             {
-                return Activator.CreateInstance<UsuarioModel>();
+                var user = Activator.CreateInstance<UsuarioModel>();
+                
+                // Asignar valores por defecto requeridos
+                user.FechaDeIngreso = DateTime.Now;
+                
+                // Obtener el ID del estado activo
+                var estadoActivo = _context.Estados.FirstOrDefault(e => e.Nombre == "Activo");
+                if (estadoActivo != null)
+                {
+                    user.IdEstado = estadoActivo.IdEstado;
+                }
+                
+                // Asignar rol por defecto (Empleado)
+                var rolEmpleado = _context.Roles.FirstOrDefault(r => r.Nombre == "Empleado");
+                if (rolEmpleado != null)
+                {
+                    user.IdRol = rolEmpleado.IdRol;
+                }
+                
+                return user;
             }
             catch
             {

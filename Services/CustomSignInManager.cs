@@ -25,7 +25,7 @@ namespace PitStop_Parts_Inventario.Services
         public override async Task<SignInResult> CheckPasswordSignInAsync(UsuarioModel user, string password, bool lockoutOnFailure)
         {
             // Verificar primero si el usuario está activo
-            if (user.IdEstado != 1) // 1 = Activo
+            if (user.IdEstado == 2) // 2 = Inactivo
             {
                 Logger.LogWarning("Usuario {Email} intentó iniciar sesión pero está inactivo", user.Email);
                 return SignInResult.NotAllowed;
@@ -44,7 +44,7 @@ namespace PitStop_Parts_Inventario.Services
             }
 
             // Verificar si el usuario está activo antes de intentar el login
-            if (user.IdEstado != 1) // 1 = Activo
+            if (user.IdEstado == 2) // 2 = Inactivo
             {
                 Logger.LogWarning("Usuario {UserName} intentó iniciar sesión pero está inactivo", userName);
                 return SignInResult.NotAllowed;

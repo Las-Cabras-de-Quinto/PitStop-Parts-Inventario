@@ -16,7 +16,7 @@ builder.Services.AddDbContext<PitStopDbContext>(options =>
 
 // Configurar Identity con servicios personalizados
 builder.Services.AddDefaultIdentity<UsuarioModel>(options => {
-    options.SignIn.RequireConfirmedAccount = false; // Cambiado a false para simplificar
+    options.SignIn.RequireConfirmedAccount = true;
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 6;
     options.Password.RequireNonAlphanumeric = false;
