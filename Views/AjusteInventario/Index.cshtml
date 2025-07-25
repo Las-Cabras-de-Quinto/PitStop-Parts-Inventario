@@ -1,0 +1,375 @@
+@{
+    ViewData["Title"] = "Ajuste de Inventario";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/ajuste-inventario.css" asp-append-version="true" />
+}
+
+<section class="header">
+    <div class="row align-items-center mb-4">
+        <div class="col-md-8">
+            <h2 class="header-title">Ajuste de Inventario</h2>
+            <p class="text-muted header-subtitle">Corrección y ajuste de cantidades en stock</p>
+        </div>
+    </div>
+</section>
+
+<!-- Search and Actions Section -->
+<section class="search-actions-section mb-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Buscar ajuste...">
+                <span class="input-group-text">
+                    <i class="fas fa-search"></i>
+                </span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <select class="form-select">
+                <option value="" selected>Todos los tipos</option>
+                <option value="aumento">Aumento</option>
+                <option value="disminucion">Disminución</option>
+                <option value="correccion">Corrección</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <input type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addAdjustmentModal">
+                <i class="fas fa-plus me-2"></i>Nuevo Ajuste
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Adjustments Table Section -->
+<section class="adjustments-table-section">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Historial de Ajustes</h5>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-download me-1"></i>Exportar
+                    </button>
+                    <button type="button" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-filter me-1"></i>Filtros
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Nº Ajuste</th>
+                            <th>Fecha</th>
+                            <th>Producto</th>
+                            <th>Bodega</th>
+                            <th>Stock Anterior</th>
+                            <th>Ajuste</th>
+                            <th>Stock Actual</th>
+                            <th>Tipo</th>
+                            <th>Motivo</th>
+                            <th>Usuario</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>AJU-001</strong></td>
+                            <td>24/07/2025</td>
+                            <td>Filtro de Aire Premium</td>
+                            <td>Bodega Principal</td>
+                            <td><span class="badge bg-secondary">20</span></td>
+                            <td><span class="badge bg-success">+5</span></td>
+                            <td><span class="badge bg-primary">25</span></td>
+                            <td><span class="badge bg-success">Aumento</span></td>
+                            <td>Mercancía encontrada</td>
+                            <td>Juan Pérez</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" title="Imprimir">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>AJU-002</strong></td>
+                            <td>23/07/2025</td>
+                            <td>Pastillas de Freno</td>
+                            <td>Bodega Norte</td>
+                            <td><span class="badge bg-secondary">8</span></td>
+                            <td><span class="badge bg-danger">-3</span></td>
+                            <td><span class="badge bg-primary">5</span></td>
+                            <td><span class="badge bg-danger">Disminución</span></td>
+                            <td>Producto dañado</td>
+                            <td>María García</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" title="Imprimir">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>AJU-003</strong></td>
+                            <td>22/07/2025</td>
+                            <td>Aceite Motor 5W-30</td>
+                            <td>Bodega Principal</td>
+                            <td><span class="badge bg-secondary">15</span></td>
+                            <td><span class="badge bg-warning">±0</span></td>
+                            <td><span class="badge bg-primary">15</span></td>
+                            <td><span class="badge bg-warning">Corrección</span></td>
+                            <td>Ajuste de inventario físico</td>
+                            <td>Carlos López</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" title="Imprimir">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>AJU-004</strong></td>
+                            <td>21/07/2025</td>
+                            <td>Amortiguador Delantero</td>
+                            <td>Bodega Sur</td>
+                            <td><span class="badge bg-secondary">12</span></td>
+                            <td><span class="badge bg-success">+8</span></td>
+                            <td><span class="badge bg-primary">20</span></td>
+                            <td><span class="badge bg-success">Aumento</span></td>
+                            <td>Reconteo por discrepancia</td>
+                            <td>Ana Rodríguez</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" title="Imprimir">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add Adjustment Modal -->
+<div class="modal fade" id="addAdjustmentModal" tabindex="-1" aria-labelledby="addAdjustmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAdjustmentModalLabel">Nuevo Ajuste de Inventario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <!-- Adjustment Header -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <label for="adjustmentNumber" class="form-label">Número de Ajuste</label>
+                            <input type="text" class="form-control" id="adjustmentNumber" value="AJU-005" readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="adjustmentDate" class="form-label">Fecha</label>
+                            <input type="date" class="form-control" id="adjustmentDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="adjustmentType" class="form-label">Tipo de Ajuste</label>
+                            <select class="form-select" id="adjustmentType" required>
+                                <option value="">Seleccionar tipo...</option>
+                                <option value="aumento">Aumento</option>
+                                <option value="disminucion">Disminución</option>
+                                <option value="correccion">Corrección</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Selection -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="adjustmentProduct" class="form-label">Producto</label>
+                            <select class="form-select" id="adjustmentProduct" required>
+                                <option value="">Seleccionar producto...</option>
+                                <option value="1" data-current-stock="25">Filtro de Aire Premium (Stock: 25)</option>
+                                <option value="2" data-current-stock="5">Pastillas de Freno Delanteras (Stock: 5)</option>
+                                <option value="3" data-current-stock="0">Aceite Motor 5W-30 (Stock: 0)</option>
+                                <option value="4" data-current-stock="20">Amortiguador Delantero (Stock: 20)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="adjustmentWarehouse" class="form-label">Bodega</label>
+                            <select class="form-select" id="adjustmentWarehouse" required>
+                                <option value="">Seleccionar bodega...</option>
+                                <option value="1">Bodega Principal</option>
+                                <option value="2">Bodega Norte</option>
+                                <option value="3">Bodega Sur</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Stock Information -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">Información de Stock</h6>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <label for="currentStock" class="form-label">Stock Actual</label>
+                                            <input type="number" class="form-control" id="currentStock" readonly>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="adjustmentQuantity" class="form-label">Cantidad a Ajustar</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="adjustmentSign">+</span>
+                                                <input type="number" class="form-control" id="adjustmentQuantity" min="1" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="newStock" class="form-label">Nuevo Stock</label>
+                                            <input type="number" class="form-control" id="newStock" readonly>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="stockDifference" class="form-label">Diferencia</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="stockDifference" readonly>
+                                                <span class="input-group-text">unidades</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Reason and Notes -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="adjustmentReason" class="form-label">Motivo del Ajuste</label>
+                            <select class="form-select" id="adjustmentReason" required>
+                                <option value="">Seleccionar motivo...</option>
+                                <option value="inventario_fisico">Inventario físico</option>
+                                <option value="mercancia_encontrada">Mercancía encontrada</option>
+                                <option value="producto_danado">Producto dañado</option>
+                                <option value="producto_vencido">Producto vencido</option>
+                                <option value="robo_perdida">Robo/Pérdida</option>
+                                <option value="error_sistema">Error de sistema</option>
+                                <option value="otros">Otros</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="adjustmentCost" class="form-label">Costo Unitario (Opcional)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="adjustmentCost" step="0.01" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="adjustmentNotes" class="form-label">Observaciones</label>
+                        <textarea class="form-control" id="adjustmentNotes" rows="3" placeholder="Descripción detallada del motivo del ajuste..." required></textarea>
+                    </div>
+                    
+                    <!-- Approval Section -->
+                    <div class="mb-3">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Atención:</strong> Este ajuste modificará el stock del producto seleccionado. Verifique todos los datos antes de confirmar.
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-warning">Guardar como Borrador</button>
+                <button type="button" class="btn btn-primary">Aplicar Ajuste</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Adjustment calculation functionality
+        function updateAdjustmentCalculations() {
+            const currentStock = parseInt(document.getElementById('currentStock').value) || 0;
+            const adjustmentQuantity = parseInt(document.getElementById('adjustmentQuantity').value) || 0;
+            const adjustmentType = document.getElementById('adjustmentType').value;
+            
+            let newStock = currentStock;
+            let difference = 0;
+            let sign = '+';
+            
+            if (adjustmentType === 'aumento') {
+                newStock = currentStock + adjustmentQuantity;
+                difference = adjustmentQuantity;
+                sign = '+';
+            } else if (adjustmentType === 'disminucion') {
+                newStock = Math.max(0, currentStock - adjustmentQuantity);
+                difference = -adjustmentQuantity;
+                sign = '-';
+            } else if (adjustmentType === 'correccion') {
+                newStock = adjustmentQuantity;
+                difference = adjustmentQuantity - currentStock;
+                sign = difference >= 0 ? '+' : '';
+            }
+            
+            document.getElementById('newStock').value = newStock;
+            document.getElementById('stockDifference').value = difference;
+            document.getElementById('adjustmentSign').textContent = sign;
+        }
+        
+        // Product selection handler
+        document.getElementById('adjustmentProduct').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const currentStock = selectedOption.getAttribute('data-current-stock') || 0;
+            document.getElementById('currentStock').value = currentStock;
+            updateAdjustmentCalculations();
+        });
+        
+        // Adjustment type change handler
+        document.getElementById('adjustmentType').addEventListener('change', function() {
+            updateAdjustmentCalculations();
+            
+            // Update quantity input behavior based on type
+            const quantityInput = document.getElementById('adjustmentQuantity');
+            if (this.value === 'correccion') {
+                quantityInput.placeholder = 'Cantidad final deseada';
+            } else {
+                quantityInput.placeholder = 'Cantidad a ajustar';
+            }
+        });
+        
+        // Quantity change handler
+        document.getElementById('adjustmentQuantity').addEventListener('input', function() {
+            updateAdjustmentCalculations();
+        });
+        
+        // Initialize calculations
+        updateAdjustmentCalculations();
+    </script>
+}

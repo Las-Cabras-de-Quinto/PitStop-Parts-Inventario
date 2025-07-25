@@ -1,0 +1,180 @@
+@{
+    ViewData["Title"] = "Marcas";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/marcas.css" asp-append-version="true" />
+}
+
+<div class="container-fluid">
+        <!-- Header Section -->
+        <section class="header">
+            <div class="row align-items-center mb-4">
+                <div class="col-md-8">
+                    <h2 class="header-title">Marca</h2>
+                    <p class="text-muted header-subtitle">Página de gestión de marcas</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search and Actions Section -->
+        <section class="search-actions-section">
+            <div class="search-actions-container">
+                <div class="search-wrapper">
+                    <div class="search-container">
+                        <input type="text" class="form-control search-input" placeholder="Buscar marca...">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="actions-wrapper">
+                    <div class="filter-container">
+                        <select class="form-select filter-select">
+                            <option value="" selected>Filtrar orden</option>
+                            <option value="a-z">A-Z</option>
+                            <option value="z-a">Z-A</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn-crear">
+                        <i class="fas fa-plus"></i> Crear
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Table Section -->
+        <section class="table-section">
+            <div class="card table-card">
+                <div class="card-header table-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="table-title mb-0">Tabla de Marca</h5>
+                        <div class="pagination-info">
+                            <span class="pagination-text">Página:</span>
+                            <button class="btn btn-pagination" disabled>
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span class="page-number">1</span>
+                            <button class="btn btn-pagination">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 brands-table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th class="col-id">Id Marca</th>
+                                    <th class="col-marca">Marca</th>
+                                    <th class="col-descripcion">Descripción</th>
+                                    <th class="col-acciones">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table-row">
+                                    <td class="brand-id">M01</td>
+                                    <td class="brand-name">Placeholder</td>
+                                    <td class="brand-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
+                                    <td class="actions-cell">
+                                        <button class="btn btn-action btn-edit" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="table-row">
+                                    <td class="brand-id">M02</td>
+                                    <td class="brand-name">Placeholder</td>
+                                    <td class="brand-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
+                                    <td class="actions-cell">
+                                        <button class="btn btn-action btn-edit" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="table-row">
+                                    <td class="brand-id">M03</td>
+                                    <td class="brand-name">Placeholder</td>
+                                    <td class="brand-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
+                                    <td class="actions-cell">
+                                        <button class="btn btn-action btn-edit" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="table-row">
+                                    <td class="brand-id">M04</td>
+                                    <td class="brand-name">Placeholder</td>
+                                    <td class="brand-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
+                                    <td class="actions-cell">
+                                        <button class="btn btn-action btn-edit" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Cards Section -->
+        <section class="stats-section">
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="stat-info">
+                                    <h6 class="stat-label">Total Marcas</h6>
+                                    <h2 class="stat-number">21</h2>
+                                </div>
+                                <div class="stat-icon-container">
+                                    <i class="fas fa-tags stat-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card stat-card stat-card-current">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="stat-info">
+                                    <h6 class="stat-label">Página actual</h6>
+                                    <h2 class="stat-number">3</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="stat-info">
+                                    <h6 class="stat-label">Total Páginas</h6>
+                                    <h2 class="stat-number">1</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>

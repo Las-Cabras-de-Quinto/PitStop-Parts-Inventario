@@ -1,0 +1,104 @@
+/* Ajuste de Inventario - Estilos específicos */
+
+.search-actions-section {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1.5rem;
+}
+
+.adjustments-table-section .card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.adjustments-table-section .table th {
+    background-color: #f8f9fa;
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+}
+
+.adjustment-number {
+    font-weight: 600;
+    color: #0d6efd;
+}
+
+.badge.bg-success {
+    background-color: #198754 !important;
+}
+
+.badge.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #000;
+}
+
+/* Stock info card */
+.card.bg-light {
+    background-color: #f8f9fa !important;
+}
+
+.card.bg-light .card-title {
+    color: #495057;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+/* Input groups */
+.input-group-text {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+#adjustmentSign {
+    font-weight: 600;
+    min-width: 45px;
+    justify-content: center;
+}
+
+/* Read-only inputs */
+input[readonly] {
+    background-color: #f8f9fa;
+    opacity: 1;
+}
+
+/* Alert styling */
+.alert-warning {
+    border-color: #ffc107;
+    background-color: #fff3cd;
+}
+
+.alert-warning .fas {
+    color: #856404;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .search-actions-section .row > div {
+        margin-bottom: 1rem;
+    }
+    
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .btn-group .btn {
+        margin-bottom: 0.25rem;
+        border-radius: 0.375rem !important;
+    }
+    
+    .modal-dialog.modal-lg {
+        margin: 1rem;
+    }
+}

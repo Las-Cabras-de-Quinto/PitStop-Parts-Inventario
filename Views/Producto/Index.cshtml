@@ -1,0 +1,473 @@
+@{
+    ViewData["Title"] = "Productos";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/productos.css" asp-append-version="true" />
+}
+
+<div class="container-fluid">
+        <!-- Header Section -->
+        <section class="header">
+            <div class="row align-items-center mb-4">
+                <div class="col-md-8">
+                    <h2 class="header-title">Productos</h2>
+                    <p class="text-muted header-subtitle">Página de gestión de productos</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search and Actions Section -->
+        <section class="search-actions-section">
+            <div class="search-actions-container">
+                <div class="search-wrapper">
+                    <div class="search-container">
+                        <input type="text" class="form-control search-input" placeholder="Buscar producto...">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="filters-wrapper">
+                    <div class="filter-container">
+                        <select class="form-select filter-select">
+                            <option value="" selected>Todas las categorías</option>
+                            <option value="filtros">Filtros</option>
+                            <option value="frenos">Frenos</option>
+                            <option value="motor">Motor</option>
+                            <option value="suspension">Suspensión</option>
+                            <option value="lubricantes">Lubricantes</option>
+                            <option value="electricidad">Electricidad</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-container">
+                        <select class="form-select filter-select">
+                            <option value="" selected>Todas las marcas</option>
+                            <option value="bosch">Bosch</option>
+                            <option value="brembo">Brembo</option>
+                            <option value="ngk">NGK</option>
+                            <option value="mann">Mann Filter</option>
+                            <option value="castrol">Castrol</option>
+                            <option value="mobil">Mobil 1</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-container">
+                        <select class="form-select filter-select">
+                            <option value="" selected>Todos los proveedores</option>
+                            <option value="autopartes-sa">Autopartes S.A.</option>
+                            <option value="repuestos-del-norte">Repuestos del Norte</option>
+                            <option value="distribuidora-central">Distribuidora Central</option>
+                            <option value="importadora-garcia">Importadora García</option>
+                            <option value="comercial-rodriguez">Comercial Rodríguez</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-container">
+                        <select class="form-select filter-select">
+                            <option value="" selected>Ordenar por</option>
+                            <option value="a-z">A-Z</option>
+                            <option value="z-a">Z-A</option>
+                            <option value="precio-asc">Precio: Menor a Mayor</option>
+                            <option value="precio-desc">Precio: Mayor a Menor</option>
+                            <option value="stock-desc">Mayor Stock</option>
+                            <option value="stock-asc">Menor Stock</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="actions-wrapper">
+                    <button class="btn btn-crear">
+                        <i class="fas fa-plus"></i> Crear
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistics Cards Section -->
+        <section class="stats-section">
+            <div class="row g-3 mb-4">
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-content">
+                            <div class="stats-info">
+                                <h3 class="stats-number">156</h3>
+                                <p class="stats-label">Total Productos</p>
+                            </div>
+                            <div class="stats-icon primary">
+                                <i class="fas fa-box"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-content">
+                            <div class="stats-info">
+                                <h3 class="stats-number">134</h3>
+                                <p class="stats-label">En Stock</p>
+                            </div>
+                            <div class="stats-icon success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-content">
+                            <div class="stats-info">
+                                <h3 class="stats-number">18</h3>
+                                <p class="stats-label">Stock Bajo</p>
+                            </div>
+                            <div class="stats-icon warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-content">
+                            <div class="stats-info">
+                                <h3 class="stats-number">4</h3>
+                                <p class="stats-label">Sin Stock</p>
+                            </div>
+                            <div class="stats-icon danger">
+                                <i class="fas fa-times-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Grid Section -->
+        <section class="products-section">
+            <div class="row g-4">
+                <!-- Product Card 1 -->
+                <div class="col-xl-4 col-lg-6 col-md-6">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://via.placeholder.com/300x200/e74c3c/ffffff?text=Filtro+Aceite" alt="Filtro de Aceite" />
+                            <div class="product-status status-available">En Stock</div>
+                        </div>
+                        <div class="product-content">
+                            <div class="product-header">
+                                <h4 class="product-name">Filtro de Aceite Premium</h4>
+                                <span class="product-sku">SKU: FLT-001</span>
+                            </div>
+                            <p class="product-description">Filtro de aceite de alta calidad para motores diésel y gasolina. Compatible con múltiples marcas.</p>
+                            <div class="product-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Marca:</span>
+                                    <span class="detail-value">Bosch</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Proveedor:</span>
+                                    <span class="detail-value">Autopartes S.A.</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Categoría:</span>
+                                    <span class="detail-value">Filtros</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Stock:</span>
+                                    <span class="detail-value text-success">45 unidades</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Precio:</span>
+                                    <span class="detail-value price">$25.99</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-actions">
+                            <button class="btn-action btn-warning" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-action btn-danger" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 2 -->
+                <div class="col-xl-4 col-lg-6 col-md-6">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://via.placeholder.com/300x200/f39c12/ffffff?text=Pastillas+Freno" alt="Pastillas de Freno" />
+                            <div class="product-status status-low">Stock Bajo</div>
+                        </div>
+                        <div class="product-content">
+                            <div class="product-header">
+                                <h4 class="product-name">Pastillas de Freno Cerámicas</h4>
+                                <span class="product-sku">SKU: BRK-002</span>
+                            </div>
+                            <p class="product-description">Pastillas de freno cerámicas de alta duración con excelente resistencia al calor.</p>
+                            <div class="product-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Marca:</span>
+                                    <span class="detail-value">Brembo</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Proveedor:</span>
+                                    <span class="detail-value">Repuestos del Norte</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Categoría:</span>
+                                    <span class="detail-value">Frenos</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Stock:</span>
+                                    <span class="detail-value text-warning">8 unidades</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Precio:</span>
+                                    <span class="detail-value price">$89.99</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-actions">
+                            <button class="btn-action btn-warning" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-action btn-danger" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 3 -->
+                <div class="col-xl-4 col-lg-6 col-md-6">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://via.placeholder.com/300x200/27ae60/ffffff?text=Bujias+NGK" alt="Bujías NGK" />
+                            <div class="product-status status-available">En Stock</div>
+                        </div>
+                        <div class="product-content">
+                            <div class="product-header">
+                                <h4 class="product-name">Bujías NGK Iridium</h4>
+                                <span class="product-sku">SKU: SPK-003</span>
+                            </div>
+                            <p class="product-description">Bujías de iridio NGK para un encendido más eficiente y mayor durabilidad.</p>
+                            <div class="product-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Marca:</span>
+                                    <span class="detail-value">NGK</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Proveedor:</span>
+                                    <span class="detail-value">Distribuidora Central</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Categoría:</span>
+                                    <span class="detail-value">Motor</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Stock:</span>
+                                    <span class="detail-value text-success">32 unidades</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Precio:</span>
+                                    <span class="detail-value price">$15.50</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-actions">
+                            <button class="btn-action btn-warning" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-action btn-danger" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 4 -->
+                <div class="col-xl-4 col-lg-6 col-md-6">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://via.placeholder.com/300x200/34495e/ffffff?text=Amortiguador" alt="Amortiguador" />
+                            <div class="product-status status-available">En Stock</div>
+                        </div>
+                        <div class="product-content">
+                            <div class="product-header">
+                                <h4 class="product-name">Amortiguador Hidráulico</h4>
+                                <span class="product-sku">SKU: SHK-004</span>
+                            </div>
+                            <p class="product-description">Amortiguador hidráulico delantero reforzado para una conducción segura.</p>
+                            <div class="product-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Marca:</span>
+                                    <span class="detail-value">Monroe</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Proveedor:</span>
+                                    <span class="detail-value">Importadora García</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Categoría:</span>
+                                    <span class="detail-value">Suspensión</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Stock:</span>
+                                    <span class="detail-value text-success">12 unidades</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Precio:</span>
+                                    <span class="detail-value price">$145.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-actions">
+                            <button class="btn-action btn-warning" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-action btn-danger" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 5 -->
+                <div class="col-xl-4 col-lg-6 col-md-6">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://via.placeholder.com/300x200/e67e22/ffffff?text=Aceite+Motor" alt="Aceite Motor" />
+                            <div class="product-status status-out">Sin Stock</div>
+                        </div>
+                        <div class="product-content">
+                            <div class="product-header">
+                                <h4 class="product-name">Aceite Motor Sintético 5W-30</h4>
+                                <span class="product-sku">SKU: OIL-005</span>
+                            </div>
+                            <p class="product-description">Aceite motor sintético de alta calidad para máxima protección del motor.</p>
+                            <div class="product-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Marca:</span>
+                                    <span class="detail-value">Mobil 1</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Proveedor:</span>
+                                    <span class="detail-value">Comercial Rodríguez</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Categoría:</span>
+                                    <span class="detail-value">Lubricantes</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Stock:</span>
+                                    <span class="detail-value text-danger">0 unidades</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Precio:</span>
+                                    <span class="detail-value price">$65.99</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-actions">
+                            <button class="btn-action btn-warning" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-action btn-danger" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 6 -->
+                <div class="col-xl-4 col-lg-6 col-md-6">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://via.placeholder.com/300x200/8e44ad/ffffff?text=Bateria+12V" alt="Batería 12V" />
+                            <div class="product-status status-available">En Stock</div>
+                        </div>
+                        <div class="product-content">
+                            <div class="product-header">
+                                <h4 class="product-name">Batería Automotriz 12V 75Ah</h4>
+                                <span class="product-sku">SKU: BAT-006</span>
+                            </div>
+                            <p class="product-description">Batería libre de mantenimiento con tecnología AGM para arranques confiables.</p>
+                            <div class="product-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Marca:</span>
+                                    <span class="detail-value">Optima</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Proveedor:</span>
+                                    <span class="detail-value">Autopartes S.A.</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Categoría:</span>
+                                    <span class="detail-value">Eléctrico</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Stock:</span>
+                                    <span class="detail-value text-success">15 unidades</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Precio:</span>
+                                    <span class="detail-value price">$185.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-actions">
+                            <button class="btn-action btn-warning" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-action btn-danger" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pagination Section -->
+        <section class="pagination-section">
+            <div class="pagination-wrapper">
+                <div class="pagination-info">
+                    <span>Mostrando <strong>1-6</strong> de <strong>156</strong> productos</span>
+                </div>
+                <nav aria-label="Navegación de productos">
+                    <ul class="pagination">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item active">
+                            <a class="page-link" href="#">1</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">2</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">3</a>
+                        </li>
+                        <li class="page-item">
+                            <span class="page-link">...</span>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">26</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </section>
+    </div>
