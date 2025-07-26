@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using PitStop_Parts_Inventario.Models;
 using PitStop_Parts_Inventario.Services;
 using PitStop_Parts_Inventario.Services.Interfaces;
+using PitStop_Parts_Inventario.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,6 +72,9 @@ app.UseRouting();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+// Usar el middleware de validación de sesión y roles
+app.UseSessionValidation();
 
 app.UseSession();
 app.MapRazorPages();

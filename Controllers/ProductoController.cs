@@ -4,7 +4,7 @@ using PitStop_Parts_Inventario.Models;
 
 namespace PitStop_Parts_Inventario.Controllers
 {
-    public class ProductoController : Controller
+    public class ProductoController : BaseController
     {
         private readonly ILogger<ProductoController> _logger;
 

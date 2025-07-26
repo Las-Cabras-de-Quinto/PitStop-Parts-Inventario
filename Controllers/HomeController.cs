@@ -4,7 +4,7 @@ using PitStop_Parts_Inventario.Models;
 
 namespace PitStop_Parts_Inventario.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
 
@@ -15,6 +15,10 @@ namespace PitStop_Parts_Inventario.Controllers
 
         public IActionResult Index()
         {
+            // La información del usuario ya está disponible a través del BaseController
+            ViewBag.WelcomeMessage = $"Bienvenido, {CurrentUserName ?? "Usuario"}";
+            ViewBag.UserRole = CurrentUserRole;
+            
             return View();
         }
 
