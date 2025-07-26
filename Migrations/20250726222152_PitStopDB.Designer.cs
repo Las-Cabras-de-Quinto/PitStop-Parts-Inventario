@@ -12,8 +12,8 @@ using PitStop_Parts_Inventario.Data;
 namespace PitStop_Parts_Inventario.Migrations
 {
     [DbContext(typeof(PitStopDbContext))]
-    [Migration("20250724220244_PitStop")]
-    partial class PitStop
+    [Migration("20250726222152_PitStopDB")]
+    partial class PitStopDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -395,7 +395,6 @@ namespace PitStop_Parts_Inventario.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdMarca"));
 
                     b.Property<string>("Descripcion")
-                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
@@ -424,7 +423,6 @@ namespace PitStop_Parts_Inventario.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProducto"));
 
                     b.Property<string>("Descripcion")
-                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
@@ -446,6 +444,9 @@ namespace PitStop_Parts_Inventario.Migrations
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("SKU")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StockActual")
                         .HasColumnType("int");
 
                     b.Property<int>("StockMax")

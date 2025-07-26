@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PitStop_Parts_Inventario.Migrations
 {
     /// <inheritdoc />
-    public partial class PitStop : Migration
+    public partial class PitStopDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -111,7 +111,7 @@ namespace PitStop_Parts_Inventario.Migrations
                     IdMarca = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     IdEstado = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -177,13 +177,14 @@ namespace PitStop_Parts_Inventario.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     SKU = table.Column<int>(type: "int", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     IdMarca = table.Column<int>(type: "int", nullable: false),
                     IdEstado = table.Column<int>(type: "int", nullable: false),
                     PrecioVenta = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     PrecioCompra = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     StockMin = table.Column<int>(type: "int", nullable: false),
-                    StockMax = table.Column<int>(type: "int", nullable: false)
+                    StockMax = table.Column<int>(type: "int", nullable: false),
+                    StockActual = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
