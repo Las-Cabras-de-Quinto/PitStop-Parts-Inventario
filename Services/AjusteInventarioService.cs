@@ -3,6 +3,7 @@ using PitStop_Parts_Inventario.Data;
 using PitStop_Parts_Inventario.Models;
 using PitStop_Parts_Inventario.Models.ViewModels;
 using PitStop_Parts_Inventario.Services.Interfaces;
+using PitStop_Parts_Inventario.Services.Helpers;
 
 namespace PitStop_Parts_Inventario.Services
 {
@@ -15,17 +16,7 @@ namespace PitStop_Parts_Inventario.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<AjusteInventarioModel>> GetAllAsync()
-        {
-            return await _context.AjusteInventarios
-                .Include(ai => ai.Usuario)
-                .Include(ai => ai.Bodega)
-                .Include(ai => ai.AjusteInventarioProductos).ThenInclude(aip => aip.Producto)
-                .OrderByDescending(ai => ai.Fecha)
-                .ToListAsync();
-        }
-
-        public async Task<PagedResult<AjusteInventarioModel>> GetPagedAsync(int pageNumber, int pageSize, string? searchString = null)
+        public async Task<IEnumerable<AjusteInventarioModel>> GetAllAsync(AjusteInventarioFilterOptions? filters = null)
         {
             var query = _context.AjusteInventarios
                 .Include(ai => ai.Usuario)
@@ -33,15 +24,20 @@ namespace PitStop_Parts_Inventario.Services
                 .Include(ai => ai.AjusteInventarioProductos).ThenInclude(aip => aip.Producto)
                 .AsQueryable();
 
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                searchString = searchString.ToLower();
-                query = query.Where(ai => 
-                    ai.Bodega.Nombre.ToLower().Contains(searchString) ||
-                    (ai.Usuario.UserName != null && ai.Usuario.UserName.ToLower().Contains(searchString)) ||
-                    ai.Fecha.ToString("dd/MM/yyyy").Contains(searchString)
-                );
-            }
+            query = FilterHelper.ApplyAjusteInventarioFilters(query, filters);
+
+            return await query.OrderByDescending(ai => ai.Fecha).ToListAsync();
+        }
+
+        public async Task<PagedResult<AjusteInventarioModel>> GetPagedAsync(int pageNumber, int pageSize, AjusteInventarioFilterOptions? filters = null)
+        {
+            var query = _context.AjusteInventarios
+                .Include(ai => ai.Usuario)
+                .Include(ai => ai.Bodega)
+                .Include(ai => ai.AjusteInventarioProductos).ThenInclude(aip => aip.Producto)
+                .AsQueryable();
+
+            query = FilterHelper.ApplyAjusteInventarioFilters(query, filters);
 
             var totalRecords = await query.CountAsync();
             var data = await query
@@ -49,8 +45,6 @@ namespace PitStop_Parts_Inventario.Services
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
-
-            var totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
 
             return new PagedResult<AjusteInventarioModel>(data, totalRecords, pageNumber, pageSize);
         }
@@ -111,8 +105,11 @@ namespace PitStop_Parts_Inventario.Services
             return await _context.AjusteInventarios.AnyAsync(ai => ai.IdAjusteInventario == id);
         }
 
+        [Obsolete("Use GetAllAsync with AjusteInventarioFilterOptions instead")]
         public async Task<IEnumerable<AjusteInventarioModel>> GetByUsuarioAsync(string userId)
         {
+            // Note: This would need the user ID in the filter, but our current filter doesn't support it
+            // For now, keep the original implementation
             return await _context.AjusteInventarios
                 .Include(ai => ai.Usuario)
                 .Include(ai => ai.Bodega)
@@ -122,15 +119,14 @@ namespace PitStop_Parts_Inventario.Services
                 .ToListAsync();
         }
 
+        [Obsolete("Use GetAllAsync with AjusteInventarioFilterOptions instead")]
         public async Task<IEnumerable<AjusteInventarioModel>> GetByFechaAsync(DateTime fechaInicio, DateTime fechaFin)
         {
-            return await _context.AjusteInventarios
-                .Include(ai => ai.Usuario)
-                .Include(ai => ai.Bodega)
-                .Include(ai => ai.AjusteInventarioProductos).ThenInclude(aip => aip.Producto)
-                .Where(ai => ai.Fecha >= fechaInicio && ai.Fecha <= fechaFin)
-                .OrderByDescending(ai => ai.Fecha)
-                .ToListAsync();
+            return await GetAllAsync(new AjusteInventarioFilterOptions 
+            { 
+                FechaDesde = fechaInicio, 
+                FechaHasta = fechaFin 
+            });
         }
 
         /// <summary>

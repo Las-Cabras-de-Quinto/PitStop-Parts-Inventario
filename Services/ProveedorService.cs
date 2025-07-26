@@ -3,6 +3,7 @@ using PitStop_Parts_Inventario.Data;
 using PitStop_Parts_Inventario.Models;
 using PitStop_Parts_Inventario.Models.ViewModels;
 using PitStop_Parts_Inventario.Services.Interfaces;
+using PitStop_Parts_Inventario.Services.Helpers;
 
 namespace PitStop_Parts_Inventario.Services
 {
@@ -15,12 +16,34 @@ namespace PitStop_Parts_Inventario.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<ProveedorModel>> GetAllAsync()
+        public async Task<IEnumerable<ProveedorModel>> GetAllAsync(ProveedorFilterOptions? filters = null)
         {
-            return await _context.Proveedores
+            var query = _context.Proveedores
                 .Include(p => p.Estado)
                 .Include(p => p.ProveedorProductos).ThenInclude(pp => pp.Producto)
+                .AsQueryable();
+
+            query = FilterHelper.ApplyProveedorFilters(query, filters);
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<PagedResult<ProveedorModel>> GetPagedAsync(int pageNumber, int pageSize, ProveedorFilterOptions? filters = null)
+        {
+            var query = _context.Proveedores
+                .Include(p => p.Estado)
+                .Include(p => p.ProveedorProductos).ThenInclude(pp => pp.Producto)
+                .AsQueryable();
+
+            query = FilterHelper.ApplyProveedorFilters(query, filters);
+
+            var totalRecords = await query.CountAsync();
+            var data = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            return new PagedResult<ProveedorModel>(data, totalRecords, pageNumber, pageSize);
         }
 
         public async Task<ProveedorModel?> GetByIdAsync(int id)
@@ -76,16 +99,10 @@ namespace PitStop_Parts_Inventario.Services
             return await _context.Proveedores.AnyAsync(p => p.IdProveedor == id);
         }
 
+        [Obsolete("Use GetAllAsync with ProveedorFilterOptions instead")]
         public async Task<IEnumerable<ProveedorModel>> GetActivosAsync()
         {
-            var estadoActivo = await _context.Estados.FirstOrDefaultAsync(e => e.Nombre == "Activo");
-            if (estadoActivo == null)
-                return new List<ProveedorModel>();
-
-            return await _context.Proveedores
-                .Include(p => p.Estado)
-                .Where(p => p.IdEstado == estadoActivo.IdEstado)
-                .ToListAsync();
+            return await GetAllAsync(new ProveedorFilterOptions { SoloActivos = true });
         }
 
         public async Task<IEnumerable<ProductoModel>> GetProductosByProveedorAsync(int proveedorId)
@@ -128,30 +145,6 @@ namespace PitStop_Parts_Inventario.Services
             _context.ProveedorProductos.Remove(proveedorProducto);
             await _context.SaveChangesAsync();
             return true;
-        }
-
-        public async Task<PagedResult<ProveedorModel>> GetPagedAsync(int pageNumber, int pageSize, string? searchString = null)
-        {
-            var query = _context.Proveedores
-                .Include(p => p.Estado)
-                .AsQueryable();
-
-            // Aplicar filtro de búsqueda si se proporciona
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                query = query.Where(p => p.Nombre.Contains(searchString) || 
-                                        p.Contacto.Contains(searchString) ||
-                                        p.Direccion.Contains(searchString) ||
-                                        p.Estado.Nombre.Contains(searchString));
-            }
-
-            var totalCount = await query.CountAsync();
-            var items = await query
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            return new PagedResult<ProveedorModel>(items, totalCount, pageNumber, pageSize);
         }
     }
 }

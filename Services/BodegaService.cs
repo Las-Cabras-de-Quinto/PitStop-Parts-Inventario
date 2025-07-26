@@ -3,6 +3,7 @@ using PitStop_Parts_Inventario.Data;
 using PitStop_Parts_Inventario.Models;
 using PitStop_Parts_Inventario.Models.ViewModels;
 using PitStop_Parts_Inventario.Services.Interfaces;
+using PitStop_Parts_Inventario.Services.Helpers;
 
 namespace PitStop_Parts_Inventario.Services
 {
@@ -15,12 +16,34 @@ namespace PitStop_Parts_Inventario.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<BodegaModel>> GetAllAsync()
+        public async Task<IEnumerable<BodegaModel>> GetAllAsync(BodegaFilterOptions? filters = null)
         {
-            return await _context.Bodegas
+            var query = _context.Bodegas
                 .Include(b => b.Estado)
                 .Include(b => b.BodegaProductos).ThenInclude(bp => bp.Producto)
+                .AsQueryable();
+
+            query = FilterHelper.ApplyBodegaFilters(query, filters);
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<PagedResult<BodegaModel>> GetPagedAsync(int pageNumber, int pageSize, BodegaFilterOptions? filters = null)
+        {
+            var query = _context.Bodegas
+                .Include(b => b.Estado)
+                .Include(b => b.BodegaProductos).ThenInclude(bp => bp.Producto)
+                .AsQueryable();
+
+            query = FilterHelper.ApplyBodegaFilters(query, filters);
+
+            var totalRecords = await query.CountAsync();
+            var data = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            return new PagedResult<BodegaModel>(data, totalRecords, pageNumber, pageSize);
         }
 
         public async Task<BodegaModel?> GetByIdAsync(int id)
@@ -76,16 +99,10 @@ namespace PitStop_Parts_Inventario.Services
             return await _context.Bodegas.AnyAsync(b => b.IdBodega == id);
         }
 
+        [Obsolete("Use GetAllAsync with BodegaFilterOptions instead")]
         public async Task<IEnumerable<BodegaModel>> GetActivasAsync()
         {
-            var estadoActivo = await _context.Estados.FirstOrDefaultAsync(e => e.Nombre == "Activo");
-            if (estadoActivo == null)
-                return new List<BodegaModel>();
-
-            return await _context.Bodegas
-                .Include(b => b.Estado)
-                .Where(b => b.IdEstado == estadoActivo.IdEstado)
-                .ToListAsync();
+            return await GetAllAsync(new BodegaFilterOptions { SoloActivos = true });
         }
 
         public async Task<IEnumerable<ProductoModel>> GetProductosByBodegaAsync(int bodegaId)

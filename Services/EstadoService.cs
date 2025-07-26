@@ -3,6 +3,7 @@ using PitStop_Parts_Inventario.Data;
 using PitStop_Parts_Inventario.Models;
 using PitStop_Parts_Inventario.Models.ViewModels;
 using PitStop_Parts_Inventario.Services.Interfaces;
+using PitStop_Parts_Inventario.Services.Helpers;
 
 namespace PitStop_Parts_Inventario.Services
 {
@@ -15,9 +16,28 @@ namespace PitStop_Parts_Inventario.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<EstadoModel>> GetAllAsync()
+        public async Task<IEnumerable<EstadoModel>> GetAllAsync(EstadoFilterOptions? filters = null)
         {
-            return await _context.Estados.ToListAsync();
+            var query = _context.Estados.AsQueryable();
+
+            query = FilterHelper.ApplyEstadoFilters(query, filters);
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<PagedResult<EstadoModel>> GetPagedAsync(int pageNumber, int pageSize, EstadoFilterOptions? filters = null)
+        {
+            var query = _context.Estados.AsQueryable();
+
+            query = FilterHelper.ApplyEstadoFilters(query, filters);
+
+            var totalRecords = await query.CountAsync();
+            var data = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<EstadoModel>(data, totalRecords, pageNumber, pageSize);
         }
 
         public async Task<EstadoModel?> GetByIdAsync(int id)
@@ -73,32 +93,10 @@ namespace PitStop_Parts_Inventario.Services
             return await _context.Estados.AnyAsync(e => e.IdEstado == id);
         }
 
+        [Obsolete("Use GetAllAsync with EstadoFilterOptions instead")]
         public async Task<IEnumerable<EstadoModel>> GetActivosAsync()
         {
-            return await _context.Estados
-                .Where(e => e.Nombre != "Eliminado")
-                .ToListAsync();
-        }
-
-        public async Task<PagedResult<EstadoModel>> GetPagedAsync(int pageNumber, int pageSize, string? searchString = null)
-        {
-            var query = _context.Estados.AsQueryable();
-
-            // Aplicar filtro de búsqueda si se proporciona
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                query = query.Where(e => e.Nombre.Contains(searchString) || 
-                                        e.Descripcion.Contains(searchString) ||
-                                        e.Funcion.Contains(searchString));
-            }
-
-            var totalCount = await query.CountAsync();
-            var items = await query
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            return new PagedResult<EstadoModel>(items, totalCount, pageNumber, pageSize);
+            return await GetAllAsync(new EstadoFilterOptions { EsActivo = true });
         }
     }
 }

@@ -3,6 +3,7 @@ using PitStop_Parts_Inventario.Data;
 using PitStop_Parts_Inventario.Models;
 using PitStop_Parts_Inventario.Models.ViewModels;
 using PitStop_Parts_Inventario.Services.Interfaces;
+using PitStop_Parts_Inventario.Services.Helpers;
 
 namespace PitStop_Parts_Inventario.Services
 {
@@ -15,17 +16,7 @@ namespace PitStop_Parts_Inventario.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<EntradaProductoModel>> GetAllAsync()
-        {
-            return await _context.EntradaProductos
-                .Include(ep => ep.Producto).ThenInclude(p => p.Marca)
-                .Include(ep => ep.Usuario)
-                .Include(ep => ep.Bodega)
-                .OrderByDescending(ep => ep.Fecha)
-                .ToListAsync();
-        }
-
-        public async Task<PagedResult<EntradaProductoModel>> GetPagedAsync(int pageNumber, int pageSize, string? searchString = null)
+        public async Task<IEnumerable<EntradaProductoModel>> GetAllAsync(EntradaProductoFilterOptions? filters = null)
         {
             var query = _context.EntradaProductos
                 .Include(ep => ep.Producto).ThenInclude(p => p.Marca)
@@ -33,17 +24,20 @@ namespace PitStop_Parts_Inventario.Services
                 .Include(ep => ep.Bodega)
                 .AsQueryable();
 
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                searchString = searchString.ToLower();
-                query = query.Where(ep => 
-                    ep.Producto.Nombre.ToLower().Contains(searchString) ||
-                    ep.Bodega.Nombre.ToLower().Contains(searchString) ||
-                    (ep.Usuario.UserName != null && ep.Usuario.UserName.ToLower().Contains(searchString)) ||
-                    ep.Fecha.ToString("dd/MM/yyyy").Contains(searchString) ||
-                    ep.CantidadProducto.ToString().Contains(searchString)
-                );
-            }
+            query = FilterHelper.ApplyEntradaProductoFilters(query, filters);
+
+            return await query.OrderByDescending(ep => ep.Fecha).ToListAsync();
+        }
+
+        public async Task<PagedResult<EntradaProductoModel>> GetPagedAsync(int pageNumber, int pageSize, EntradaProductoFilterOptions? filters = null)
+        {
+            var query = _context.EntradaProductos
+                .Include(ep => ep.Producto).ThenInclude(p => p.Marca)
+                .Include(ep => ep.Usuario)
+                .Include(ep => ep.Bodega)
+                .AsQueryable();
+
+            query = FilterHelper.ApplyEntradaProductoFilters(query, filters);
 
             var totalRecords = await query.CountAsync();
             var data = await query
@@ -288,8 +282,11 @@ namespace PitStop_Parts_Inventario.Services
             return await _context.EntradaProductos.AnyAsync(ep => ep.IdEntrada == id);
         }
 
+        [Obsolete("Use GetAllAsync with EntradaProductoFilterOptions instead")]
         public async Task<IEnumerable<EntradaProductoModel>> GetByUsuarioAsync(string userId)
         {
+            // Note: This would need the user ID in the filter, but our current filter doesn't support it
+            // For now, keep the original implementation
             return await _context.EntradaProductos
                 .Include(ep => ep.Producto).ThenInclude(p => p.Marca)
                 .Include(ep => ep.Usuario)
@@ -299,26 +296,20 @@ namespace PitStop_Parts_Inventario.Services
                 .ToListAsync();
         }
 
+        [Obsolete("Use GetAllAsync with EntradaProductoFilterOptions instead")]
         public async Task<IEnumerable<EntradaProductoModel>> GetByFechaAsync(DateTime fechaInicio, DateTime fechaFin)
         {
-            return await _context.EntradaProductos
-                .Include(ep => ep.Producto).ThenInclude(p => p.Marca)
-                .Include(ep => ep.Usuario)
-                .Include(ep => ep.Bodega)
-                .Where(ep => ep.Fecha >= fechaInicio && ep.Fecha <= fechaFin)
-                .OrderByDescending(ep => ep.Fecha)
-                .ToListAsync();
+            return await GetAllAsync(new EntradaProductoFilterOptions 
+            { 
+                FechaDesde = fechaInicio, 
+                FechaHasta = fechaFin 
+            });
         }
 
+        [Obsolete("Use GetAllAsync with EntradaProductoFilterOptions instead")]
         public async Task<IEnumerable<EntradaProductoModel>> GetByProductoAsync(int productoId)
         {
-            return await _context.EntradaProductos
-                .Include(ep => ep.Producto).ThenInclude(p => p.Marca)
-                .Include(ep => ep.Usuario)
-                .Include(ep => ep.Bodega)
-                .Where(ep => ep.IdProducto == productoId)
-                .OrderByDescending(ep => ep.Fecha)
-                .ToListAsync();
+            return await GetAllAsync(new EntradaProductoFilterOptions { ProductoId = productoId });
         }
 
         /// <summary>
@@ -326,9 +317,10 @@ namespace PitStop_Parts_Inventario.Services
         /// </summary>
         /// <param name="productoId">ID del producto</param>
         /// <returns>Lista de entradas del producto</returns>
+        [Obsolete("Use GetAllAsync with EntradaProductoFilterOptions instead")]
         public async Task<IEnumerable<EntradaProductoModel>> GetByProductoIdAsync(int productoId)
         {
-            return await GetByProductoAsync(productoId);
+            return await GetAllAsync(new EntradaProductoFilterOptions { ProductoId = productoId });
         }
 
         /// <summary>
@@ -336,8 +328,11 @@ namespace PitStop_Parts_Inventario.Services
         /// </summary>
         /// <param name="proveedorId">ID del proveedor</param>
         /// <returns>Lista de entradas del proveedor</returns>
+        [Obsolete("Use GetAllAsync with EntradaProductoFilterOptions instead")]
         public async Task<IEnumerable<EntradaProductoModel>> GetByProveedorIdAsync(int proveedorId)
         {
+            // Note: This would need a proveedor filter in EntradaProducto, but it's not directly related
+            // For now, keep the original implementation
             var productosProveedor = await _context.ProveedorProductos
                 .Where(pp => pp.IdProveedor == proveedorId)
                 .Select(pp => pp.IdProducto)

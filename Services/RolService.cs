@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using PitStop_Parts_Inventario.Data;
 using PitStop_Parts_Inventario.Models;
+using PitStop_Parts_Inventario.Models.ViewModels;
 using PitStop_Parts_Inventario.Services.Interfaces;
+using PitStop_Parts_Inventario.Services.Helpers;
 
 namespace PitStop_Parts_Inventario.Services
 {
@@ -14,12 +16,34 @@ namespace PitStop_Parts_Inventario.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<RolModel>> GetAllAsync()
+        public async Task<IEnumerable<RolModel>> GetAllAsync(RolFilterOptions? filters = null)
         {
-            return await _context.Roles
+            var query = _context.Roles
                 .Include(r => r.Estado)
                 .Include(r => r.Usuarios)
+                .AsQueryable();
+
+            query = FilterHelper.ApplyRolFilters(query, filters);
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<PagedResult<RolModel>> GetPagedAsync(int pageNumber, int pageSize, RolFilterOptions? filters = null)
+        {
+            var query = _context.Roles
+                .Include(r => r.Estado)
+                .Include(r => r.Usuarios)
+                .AsQueryable();
+
+            query = FilterHelper.ApplyRolFilters(query, filters);
+
+            var totalRecords = await query.CountAsync();
+            var data = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            return new PagedResult<RolModel>(data, totalRecords, pageNumber, pageSize);
         }
 
         public async Task<RolModel?> GetByIdAsync(int id)
@@ -79,16 +103,10 @@ namespace PitStop_Parts_Inventario.Services
             return await _context.Roles.AnyAsync(r => r.IdRol == id);
         }
 
+        [Obsolete("Use GetAllAsync with RolFilterOptions instead")]
         public async Task<IEnumerable<RolModel>> GetActivosAsync()
         {
-            var estadoActivo = await _context.Estados.FirstOrDefaultAsync(e => e.Nombre == "Activo");
-            if (estadoActivo == null)
-                return new List<RolModel>();
-
-            return await _context.Roles
-                .Include(r => r.Estado)
-                .Where(r => r.IdEstado == estadoActivo.IdEstado)
-                .ToListAsync();
+            return await GetAllAsync(new RolFilterOptions { SoloActivos = true });
         }
 
         public async Task<IEnumerable<UsuarioModel>> GetUsuariosByRolAsync(int rolId)

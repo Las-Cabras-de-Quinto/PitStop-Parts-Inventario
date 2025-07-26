@@ -3,6 +3,7 @@ using PitStop_Parts_Inventario.Data;
 using PitStop_Parts_Inventario.Models;
 using PitStop_Parts_Inventario.Models.ViewModels;
 using PitStop_Parts_Inventario.Services.Interfaces;
+using PitStop_Parts_Inventario.Services.Helpers;
 
 namespace PitStop_Parts_Inventario.Services
 {
@@ -15,25 +16,26 @@ namespace PitStop_Parts_Inventario.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<MarcaModel>> GetAllAsync()
-        {
-            return await _context.Marcas
-                .Include(m => m.Estado)
-                .Include(m => m.Productos)
-                .ToListAsync();
-        }
-
-        public async Task<PagedResult<MarcaModel>> GetPagedAsync(int pageNumber, int pageSize, string? searchString = null)
+        public async Task<IEnumerable<MarcaModel>> GetAllAsync(MarcaFilterOptions? filters = null)
         {
             var query = _context.Marcas
                 .Include(m => m.Estado)
+                .Include(m => m.Productos)
                 .AsQueryable();
 
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                query = query.Where(m => m.Nombre.Contains(searchString) || 
-                                        (m.Descripcion != null && m.Descripcion.Contains(searchString)));
-            }
+            query = FilterHelper.ApplyMarcaFilters(query, filters);
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<PagedResult<MarcaModel>> GetPagedAsync(int pageNumber, int pageSize, MarcaFilterOptions? filters = null)
+        {
+            var query = _context.Marcas
+                .Include(m => m.Estado)
+                .Include(m => m.Productos)
+                .AsQueryable();
+
+            query = FilterHelper.ApplyMarcaFilters(query, filters);
 
             var totalRecords = await query.CountAsync();
             var data = await query
@@ -41,7 +43,7 @@ namespace PitStop_Parts_Inventario.Services
                 .Take(pageSize)
                 .ToListAsync();
 
-            return new PagedResult<MarcaModel>(data, pageNumber, pageSize, totalRecords);
+            return new PagedResult<MarcaModel>(data, totalRecords, pageNumber, pageSize);
         }
 
         public async Task<MarcaModel?> GetByIdAsync(int id)
@@ -96,16 +98,10 @@ namespace PitStop_Parts_Inventario.Services
             return await _context.Marcas.AnyAsync(m => m.IdMarca == id);
         }
 
+        [Obsolete("Use GetAllAsync with MarcaFilterOptions instead")]
         public async Task<IEnumerable<MarcaModel>> GetActivasAsync()
         {
-            var estadoActivo = await _context.Estados.FirstOrDefaultAsync(e => e.Nombre == "Activo");
-            if (estadoActivo == null)
-                return new List<MarcaModel>();
-
-            return await _context.Marcas
-                .Include(m => m.Estado)
-                .Where(m => m.IdEstado == estadoActivo.IdEstado)
-                .ToListAsync();
+            return await GetAllAsync(new MarcaFilterOptions { SoloActivos = true });
         }
 
         public async Task<IEnumerable<ProductoModel>> GetProductosByMarcaAsync(int marcaId)

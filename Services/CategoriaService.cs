@@ -3,6 +3,7 @@ using PitStop_Parts_Inventario.Data;
 using PitStop_Parts_Inventario.Models;
 using PitStop_Parts_Inventario.Models.ViewModels;
 using PitStop_Parts_Inventario.Services.Interfaces;
+using PitStop_Parts_Inventario.Services.Helpers;
 
 namespace PitStop_Parts_Inventario.Services
 {
@@ -15,12 +16,34 @@ namespace PitStop_Parts_Inventario.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<CategoriaModel>> GetAllAsync()
+        public async Task<IEnumerable<CategoriaModel>> GetAllAsync(CategoriaFilterOptions? filters = null)
         {
-            return await _context.Categorias
+            var query = _context.Categorias
                 .Include(c => c.Estado)
                 .Include(c => c.CategoriaProductos).ThenInclude(cp => cp.Producto)
+                .AsQueryable();
+
+            query = FilterHelper.ApplyCategoriaFilters(query, filters);
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<PagedResult<CategoriaModel>> GetPagedAsync(int pageNumber, int pageSize, CategoriaFilterOptions? filters = null)
+        {
+            var query = _context.Categorias
+                .Include(c => c.Estado)
+                .Include(c => c.CategoriaProductos).ThenInclude(cp => cp.Producto)
+                .AsQueryable();
+
+            query = FilterHelper.ApplyCategoriaFilters(query, filters);
+
+            var totalRecords = await query.CountAsync();
+            var data = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            return new PagedResult<CategoriaModel>(data, totalRecords, pageNumber, pageSize);
         }
 
         public async Task<CategoriaModel?> GetByIdAsync(int id)
@@ -75,16 +98,10 @@ namespace PitStop_Parts_Inventario.Services
             return await _context.Categorias.AnyAsync(c => c.IdCategoria == id);
         }
 
+        [Obsolete("Use GetAllAsync with CategoriaFilterOptions instead")]
         public async Task<IEnumerable<CategoriaModel>> GetActivasAsync()
         {
-            var estadoActivo = await _context.Estados.FirstOrDefaultAsync(e => e.Nombre == "Activo");
-            if (estadoActivo == null)
-                return new List<CategoriaModel>();
-
-            return await _context.Categorias
-                .Include(c => c.Estado)
-                .Where(c => c.IdEstado == estadoActivo.IdEstado)
-                .ToListAsync();
+            return await GetAllAsync(new CategoriaFilterOptions { SoloActivos = true });
         }
 
         public async Task<IEnumerable<ProductoModel>> GetProductosByCategoriaAsync(int categoriaId)

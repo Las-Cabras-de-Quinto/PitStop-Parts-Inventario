@@ -3,6 +3,7 @@ using PitStop_Parts_Inventario.Data;
 using PitStop_Parts_Inventario.Models;
 using PitStop_Parts_Inventario.Models.ViewModels;
 using PitStop_Parts_Inventario.Services.Interfaces;
+using PitStop_Parts_Inventario.Services.Helpers;
 
 namespace PitStop_Parts_Inventario.Services
 {
@@ -15,28 +16,38 @@ namespace PitStop_Parts_Inventario.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<ProductoModel>> GetAllAsync()
-        {
-            return await _context.Productos
-                .Include(p => p.Marca)
-                .Include(p => p.Estado)
-                .ToListAsync();
-        }
-
-        public async Task<PagedResult<ProductoModel>> GetPagedAsync(int pageNumber, int pageSize, string? searchTerm = null)
+        public async Task<IEnumerable<ProductoModel>> GetAllAsync(ProductoFilterOptions? filters = null)
         {
             var query = _context.Productos
                 .Include(p => p.Marca)
                 .Include(p => p.Estado)
+                .Include(p => p.CategoriaProductos!)
+                    .ThenInclude(cp => cp.Categoria)
+                .Include(p => p.ProveedorProductos!)
+                    .ThenInclude(pp => pp.Proveedor)
+                .Include(p => p.BodegaProductos!)
+                    .ThenInclude(bp => bp.Bodega)
                 .AsQueryable();
 
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                query = query.Where(p => p.Nombre.Contains(searchTerm) || 
-                                        (p.Descripcion != null && p.Descripcion.Contains(searchTerm)) || 
-                                        p.SKU.ToString().Contains(searchTerm) ||
-                                        (p.Marca != null && p.Marca.Nombre.Contains(searchTerm)));
-            }
+            query = FilterHelper.ApplyProductoFilters(query, filters);
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<PagedResult<ProductoModel>> GetPagedAsync(int pageNumber, int pageSize, ProductoFilterOptions? filters = null)
+        {
+            var query = _context.Productos
+                .Include(p => p.Marca)
+                .Include(p => p.Estado)
+                .Include(p => p.CategoriaProductos!)
+                    .ThenInclude(cp => cp.Categoria)
+                .Include(p => p.ProveedorProductos!)
+                    .ThenInclude(pp => pp.Proveedor)
+                .Include(p => p.BodegaProductos!)
+                    .ThenInclude(bp => bp.Bodega)
+                .AsQueryable();
+
+            query = FilterHelper.ApplyProductoFilters(query, filters);
 
             var totalRecords = await query.CountAsync();
             var data = await query
@@ -111,58 +122,34 @@ namespace PitStop_Parts_Inventario.Services
             return await _context.Productos.AnyAsync(p => p.IdProducto == id);
         }
 
+        [Obsolete("Use GetAllAsync with ProductoFilterOptions instead")]
         public async Task<IEnumerable<ProductoModel>> GetByMarcaAsync(int marcaId)
         {
-            return await _context.Productos
-                .Include(p => p.Marca)
-                .Include(p => p.Estado)
-                .Where(p => p.IdMarca == marcaId)
-                .ToListAsync();
+            return await GetAllAsync(new ProductoFilterOptions { MarcaId = marcaId });
         }
 
+        [Obsolete("Use GetAllAsync with ProductoFilterOptions instead")]
         public async Task<IEnumerable<ProductoModel>> GetByCategoriaAsync(int categoriaId)
         {
-            return await _context.Productos
-                .Include(p => p.Marca)
-                .Include(p => p.Estado)
-                .Include(p => p.CategoriaProductos!)
-                .Where(p => p.CategoriaProductos != null && p.CategoriaProductos.Any(cp => cp.IdCategoria == categoriaId))
-                .ToListAsync();
+            return await GetAllAsync(new ProductoFilterOptions { CategoriaId = categoriaId });
         }
 
+        [Obsolete("Use GetAllAsync with ProductoFilterOptions instead")]
         public async Task<IEnumerable<ProductoModel>> GetByProveedorAsync(int proveedorId)
         {
-            return await _context.Productos
-                .Include(p => p.Marca)
-                .Include(p => p.Estado)
-                .Include(p => p.ProveedorProductos!)
-                .Where(p => p.ProveedorProductos != null && p.ProveedorProductos.Any(pp => pp.IdProveedor == proveedorId))
-                .ToListAsync();
+            return await GetAllAsync(new ProductoFilterOptions { ProveedorId = proveedorId });
         }
 
+        [Obsolete("Use GetAllAsync with ProductoFilterOptions instead")]
         public async Task<IEnumerable<ProductoModel>> GetByBodegaAsync(int bodegaId)
         {
-            return await _context.Productos
-                .Include(p => p.Marca)
-                .Include(p => p.Estado)
-                .Include(p => p.BodegaProductos!)
-                .Where(p => p.BodegaProductos != null && p.BodegaProductos.Any(bp => bp.IdBodega == bodegaId))
-                .ToListAsync();
+            return await GetAllAsync(new ProductoFilterOptions { BodegaId = bodegaId });
         }
 
+        [Obsolete("Use GetAllAsync with ProductoFilterOptions instead")]
         public async Task<IEnumerable<ProductoModel>> SearchAsync(string searchTerm)
         {
-            if (string.IsNullOrEmpty(searchTerm))
-                return await GetAllAsync();
-
-            return await _context.Productos
-                .Include(p => p.Marca)
-                .Include(p => p.Estado)
-                .Where(p => p.Nombre.Contains(searchTerm) || 
-                           (p.Descripcion != null && p.Descripcion.Contains(searchTerm)) || 
-                           p.SKU.ToString().Contains(searchTerm) ||
-                           (p.Marca != null && p.Marca.Nombre.Contains(searchTerm)))
-                .ToListAsync();
+            return await GetAllAsync(new ProductoFilterOptions { SearchTerm = searchTerm });
         }
 
         /// <summary>
