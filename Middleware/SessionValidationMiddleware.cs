@@ -59,7 +59,7 @@ namespace PitStop_Parts_Inventario.Middleware
                 if (user == null)
                 {
                     _logger.LogWarning("Usuario autenticado pero no encontrado en la base de datos");
-                    await SignOutAndRedirect(context, "/Identity/Account/Login");
+                    SignOutAndRedirect(context, "/Identity/Account/Login");
                     return;
                 }
 
@@ -72,7 +72,7 @@ namespace PitStop_Parts_Inventario.Middleware
                 if (usuarioCompleto == null)
                 {
                     _logger.LogWarning($"Usuario {user.Id} no encontrado en la base de datos");
-                    await SignOutAndRedirect(context, "/Identity/Account/Login");
+                    SignOutAndRedirect(context, "/Identity/Account/Login");
                     return;
                 }
 
@@ -80,7 +80,7 @@ namespace PitStop_Parts_Inventario.Middleware
                 if (usuarioCompleto.Estado?.Nombre != "Activo")
                 {
                     _logger.LogWarning($"Usuario {user.Id} con estado inactivo: {usuarioCompleto.Estado?.Nombre}");
-                    await SignOutAndRedirect(context, "/Identity/Account/AccessDenied");
+                    SignOutAndRedirect(context, "/Identity/Account/AccessDenied");
                     return;
                 }
 
@@ -88,7 +88,7 @@ namespace PitStop_Parts_Inventario.Middleware
                 if (usuarioCompleto.Rol?.Estado?.Nombre != "Activo")
                 {
                     _logger.LogWarning($"Usuario {user.Id} con rol inactivo");
-                    await SignOutAndRedirect(context, "/Identity/Account/AccessDenied");
+                    SignOutAndRedirect(context, "/Identity/Account/AccessDenied");
                     return;
                 }
 
@@ -96,18 +96,11 @@ namespace PitStop_Parts_Inventario.Middleware
                 context.Items["CurrentUser"] = usuarioCompleto;
                 context.Items["UserRole"] = usuarioCompleto.Rol.Nombre;
                 context.Items["IsAdmin"] = usuarioCompleto.Rol.Admin;
-
-                // Validar acceso según el rol (opcional - se puede personalizar según necesidades)
-                if (!await HasAccessToPath(context, usuarioCompleto, path))
-                {
-                    context.Response.Redirect("/Identity/Account/AccessDenied");
-                    return;
-                }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error durante la validación de sesión");
-                await SignOutAndRedirect(context, "/Identity/Account/Login");
+                SignOutAndRedirect(context, "/Identity/Account/Login");
                 return;
             }
 
@@ -120,104 +113,13 @@ namespace PitStop_Parts_Inventario.Middleware
                 path.StartsWith(publicPath, StringComparison.OrdinalIgnoreCase));
         }
 
-        private async Task SignOutAndRedirect(HttpContext context, string redirectPath)
+        private void SignOutAndRedirect(HttpContext context, string redirectPath)
         {
             // Limpiar la sesión
             context.Session.Clear();
             
             // Redirigir
             context.Response.Redirect(redirectPath);
-        }
-
-        private async Task<bool> HasAccessToPath(HttpContext context, UsuarioModel usuario, string path)
-        {
-            // Implementar lógica de autorización según el rol
-            // Por ahora, permitir acceso a todos los usuarios autenticados y activos
-            // Se puede personalizar según las necesidades específicas
-            
-            // Los administradores tienen acceso a todo
-            if (usuario.Rol.Admin)
-            {
-                return true;
-            }
-
-            // Rutas específicas según el rol (ejemplo)
-            var roleName = usuario.Rol.Nombre.ToLower();
-            
-            switch (roleName)
-            {
-                case "vendedor":
-                    // Los vendedores pueden acceder a productos, categorías, marcas, proveedores
-                    return IsAllowedForVendedor(path);
-                
-                case "inventario":
-                    // Personal de inventario puede acceder a entradas, ajustes, bodegas
-                    return IsAllowedForInventario(path);
-                
-                case "supervisor":
-                    // Supervisores pueden acceder a la mayoría de funciones excepto configuraciones críticas
-                    return IsAllowedForSupervisor(path);
-                
-                default:
-                    // Por defecto, permitir acceso básico
-                    return IsAllowedForBasicUser(path);
-            }
-        }
-
-        private bool IsAllowedForVendedor(string path)
-        {
-            var allowedPaths = new[]
-            {
-                "/Home",
-                "/Producto",
-                "/Categoria",
-                "/Marca",
-                "/Proveedor"
-            };
-
-            return allowedPaths.Any(allowedPath => 
-                path.StartsWith(allowedPath, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private bool IsAllowedForInventario(string path)
-        {
-            var allowedPaths = new[]
-            {
-                "/Home",
-                "/Producto",
-                "/Categoria",
-                "/Marca",
-                "/Proveedor",
-                "/EntradaProducto",
-                "/AjusteInventario",
-                "/Bodega"
-            };
-
-            return allowedPaths.Any(allowedPath => 
-                path.StartsWith(allowedPath, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private bool IsAllowedForSupervisor(string path)
-        {
-            var restrictedPaths = new[]
-            {
-                "/Rol",
-                "/Estado"
-            };
-
-            return !restrictedPaths.Any(restrictedPath => 
-                path.StartsWith(restrictedPath, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private bool IsAllowedForBasicUser(string path)
-        {
-            var allowedPaths = new[]
-            {
-                "/Home"
-            };
-
-            return allowedPaths.Any(allowedPath => 
-                path.StartsWith(allowedPath, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
