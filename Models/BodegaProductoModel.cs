@@ -15,7 +15,7 @@ namespace PitStop_Parts_Inventario.Models
         public int IdProducto { get; set; }
 
         [StringLength(100)]
-        public string Descripcion { get; set; }
+        public string Descripcion { get; set; } = string.Empty;
 
         [ForeignKey("Estado")]
         public int IdEstado { get; set; }
@@ -23,8 +23,8 @@ namespace PitStop_Parts_Inventario.Models
         public int StockTotal { get; set; }
 
         // Navegación
-        public virtual BodegaModel Bodega { get; set; }
-        public virtual ProductoModel Producto { get; set; }
-        public virtual EstadoModel Estado { get; set; }
+        public virtual BodegaModel Bodega { get; set; } = null!;
+        public virtual ProductoModel Producto { get; set; } = null!;
+        public virtual EstadoModel Estado { get; set; } = null!;
     }
 }

@@ -11,18 +11,18 @@ namespace PitStop_Parts_Inventario.Models
 
         [Required]
         [StringLength(50)]
-        public string Nombre { get; set; }
+        public string Nombre { get; set; } = string.Empty;
 
         [StringLength(1000)]
-        public string Descripcion { get; set; }
+        public string Descripcion { get; set; } = string.Empty;
 
         [ForeignKey("Estado")]
         public int IdEstado { get; set; }
 
         // Navegación uno a muchos
-        public virtual EstadoModel Estado { get; set; }
+        public virtual EstadoModel Estado { get; set; } = null!;
 
         // Navegación muchos a muchos
-        public virtual ICollection<CategoriaProductoModel> CategoriaProductos { get; set; }
+        public virtual ICollection<CategoriaProductoModel> CategoriaProductos { get; set; } = new List<CategoriaProductoModel>();
     }
 }

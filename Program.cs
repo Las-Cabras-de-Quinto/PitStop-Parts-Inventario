@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.AspNetCore.Identity;
 using PitStop_Parts_Inventario.Models;
 using PitStop_Parts_Inventario.Services;
+using PitStop_Parts_Inventario.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,17 @@ builder.Services.AddDefaultIdentity<UsuarioModel>(options => {
 builder.Services.AddScoped<IUserStore<UsuarioModel>, CustomUserStore>();
 builder.Services.AddScoped<UserManager<UsuarioModel>, CustomUserManager>();
 builder.Services.AddScoped<SignInManager<UsuarioModel>, CustomSignInManager>();
+
+// Registrar servicios de la aplicación
+builder.Services.AddScoped<IProductoService, ProductoService>();
+builder.Services.AddScoped<IBodegaService, BodegaService>();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddScoped<IMarcaService, MarcaService>();
+builder.Services.AddScoped<IProveedorService, ProveedorService>();
+builder.Services.AddScoped<IEntradaProductoService, EntradaProductoService>();
+builder.Services.AddScoped<IAjusteInventarioService, AjusteInventarioService>();
+builder.Services.AddScoped<IEstadoService, EstadoService>();
+builder.Services.AddScoped<IRolService, RolService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

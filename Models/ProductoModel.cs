@@ -11,12 +11,12 @@ namespace PitStop_Parts_Inventario.Models
 
         [Required]
         [StringLength(50)]
-        public string Nombre { get; set; }
+        public string Nombre { get; set; } = string.Empty;
 
         public int SKU { get; set; }
 
         [StringLength(1000)]
-        public string Descripcion { get; set; }
+        public string? Descripcion { get; set; }
 
         [ForeignKey("Marca")]
         public int IdMarca { get; set; }
@@ -33,16 +33,17 @@ namespace PitStop_Parts_Inventario.Models
         public int StockMin { get; set; }
 
         public int StockMax { get; set; }
+        public int StockActual { get; set; } = 0;
 
         // Navegación uno a muchos
-        public virtual MarcaModel Marca { get; set; }
-        public virtual EstadoModel Estado { get; set; }
+        public virtual MarcaModel? Marca { get; set; }
+        public virtual EstadoModel? Estado { get; set; }
 
         // Navegación muchos a muchos
-        public virtual ICollection<BodegaProductoModel> BodegaProductos { get; set; }
-        public virtual ICollection<CategoriaProductoModel> CategoriaProductos { get; set; }
-        public virtual ICollection<ProveedorProductoModel> ProveedorProductos { get; set; }
-        public virtual ICollection<AjusteInventarioProductoModel> AjusteInventarioProductos { get; set; }
-        public virtual ICollection<EntradaProductoModel> EntradaProductos { get; set; }
+        public virtual ICollection<BodegaProductoModel>? BodegaProductos { get; set; }
+        public virtual ICollection<CategoriaProductoModel>? CategoriaProductos { get; set; }
+        public virtual ICollection<ProveedorProductoModel>? ProveedorProductos { get; set; }
+        public virtual ICollection<AjusteInventarioProductoModel>? AjusteInventarioProductos { get; set; }
+        public virtual ICollection<EntradaProductoModel>? EntradaProductos { get; set; }
     }
 }

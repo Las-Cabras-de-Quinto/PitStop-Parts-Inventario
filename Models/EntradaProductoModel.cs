@@ -14,7 +14,7 @@ namespace PitStop_Parts_Inventario.Models
         public int IdBodega { get; set; }
 
         [ForeignKey("Usuario")]
-        public string IdUsuario { get; set; }
+        public string IdUsuario { get; set; } = string.Empty;
 
         [Required]
         public DateTime Fecha { get; set; }
@@ -25,8 +25,8 @@ namespace PitStop_Parts_Inventario.Models
         public int CantidadProducto { get; set; }
 
         // Navegación
-        public virtual BodegaModel Bodega { get; set; }
-        public virtual UsuarioModel Usuario { get; set; }
-        public virtual ProductoModel Producto { get; set; }
+        public virtual BodegaModel Bodega { get; set; } = null!;
+        public virtual UsuarioModel Usuario { get; set; } = null!;
+        public virtual ProductoModel Producto { get; set; } = null!;
     }
 }

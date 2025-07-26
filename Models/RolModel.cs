@@ -11,11 +11,11 @@ namespace PitStop_Parts_Inventario.Models
 
         [Required]
         [StringLength(50)]
-        public string Nombre { get; set; }
+        public string Nombre { get; set; } = string.Empty;
 
         [Required]
         [StringLength(100)]
-        public string Funcion { get; set; }
+        public string Funcion { get; set; } = string.Empty;
 
         public bool Admin { get; set; }
 
@@ -23,9 +23,9 @@ namespace PitStop_Parts_Inventario.Models
         public int IdEstado { get; set; }
 
         // Navegación uno a muchos
-        public virtual EstadoModel Estado { get; set; }
+        public virtual EstadoModel Estado { get; set; } = null!;
 
         // Colecciones
-        public virtual ICollection<UsuarioModel> Usuarios { get; set; }
+        public virtual ICollection<UsuarioModel> Usuarios { get; set; } = new List<UsuarioModel>();
     }
 }

@@ -11,23 +11,23 @@ namespace PitStop_Parts_Inventario.Models
 
         [Required]
         [StringLength(50)]
-        public string Nombre { get; set; }
+        public string Nombre { get; set; } = string.Empty;
 
         [StringLength(100)]
-        public string Descripcion { get; set; }
+        public string Descripcion { get; set; } = string.Empty;
 
         [Required]
         [StringLength(50)]
-        public string Funcion { get; set; }
+        public string Funcion { get; set; } = string.Empty;
 
         // Colecciones - Estado es utilizado por múltiples entidades
-        public virtual ICollection<RolModel> Roles { get; set; }
-        public virtual ICollection<UsuarioModel> Usuarios { get; set; }
-        public virtual ICollection<BodegaModel> Bodegas { get; set; }
-        public virtual ICollection<CategoriaModel> Categorias { get; set; }
-        public virtual ICollection<MarcaModel> Marcas { get; set; }
-        public virtual ICollection<ProveedorModel> Proveedores { get; set; }
-        public virtual ICollection<ProductoModel> Productos { get; set; }
-        public virtual ICollection<BodegaProductoModel> BodegaProductos { get; set; }
+        public virtual ICollection<RolModel> Roles { get; set; } = new List<RolModel>();
+        public virtual ICollection<UsuarioModel> Usuarios { get; set; } = new List<UsuarioModel>();
+        public virtual ICollection<BodegaModel> Bodegas { get; set; } = new List<BodegaModel>();
+        public virtual ICollection<CategoriaModel> Categorias { get; set; } = new List<CategoriaModel>();
+        public virtual ICollection<MarcaModel> Marcas { get; set; } = new List<MarcaModel>();
+        public virtual ICollection<ProveedorModel> Proveedores { get; set; } = new List<ProveedorModel>();
+        public virtual ICollection<ProductoModel> Productos { get; set; } = new List<ProductoModel>();
+        public virtual ICollection<BodegaProductoModel> BodegaProductos { get; set; } = new List<BodegaProductoModel>();
     }
 }

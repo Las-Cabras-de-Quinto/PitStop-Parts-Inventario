@@ -8,13 +8,13 @@ namespace PitStop_Parts_Inventario.Data
     {
         private readonly PitStopDbContext _context;
 
-        public CustomUserStore(PitStopDbContext context, IdentityErrorDescriber describer = null)
+        public CustomUserStore(PitStopDbContext context, IdentityErrorDescriber? describer = null)
             : base(context, describer)
         {
             _context = context;
         }
 
-        public override async Task<UsuarioModel> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default)
+        public override async Task<UsuarioModel?> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default)
         {
             var user = await base.FindByEmailAsync(normalizedEmail, cancellationToken);
             
@@ -29,7 +29,7 @@ namespace PitStop_Parts_Inventario.Data
             return user;
         }
 
-        public override async Task<UsuarioModel> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default)
+        public override async Task<UsuarioModel?> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default)
         {
             var user = await base.FindByNameAsync(normalizedUserName, cancellationToken);
             

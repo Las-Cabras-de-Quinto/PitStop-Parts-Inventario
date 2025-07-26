@@ -15,7 +15,7 @@ namespace PitStop_Parts_Inventario.Models
         public int IdProducto { get; set; }
 
         // Navegación
-        public virtual CategoriaModel Categoria { get; set; }
-        public virtual ProductoModel Producto { get; set; }
+        public virtual CategoriaModel Categoria { get; set; } = null!;
+        public virtual ProductoModel Producto { get; set; } = null!;
     }
 }

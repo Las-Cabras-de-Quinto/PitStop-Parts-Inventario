@@ -12,7 +12,7 @@ namespace PitStop_Parts_Inventario.Data
 
         // DbSets para todas las entidades
         public DbSet<EstadoModel> Estados { get; set; }
-        public DbSet<RolModel> Roles { get; set; }
+        public new DbSet<RolModel> Roles { get; set; }
         public DbSet<UsuarioModel> Usuarios { get; set; }
         public DbSet<BodegaModel> Bodegas { get; set; }
         public DbSet<CategoriaModel> Categorias { get; set; }

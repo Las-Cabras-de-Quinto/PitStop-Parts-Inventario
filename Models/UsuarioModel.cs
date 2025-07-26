@@ -16,11 +16,11 @@ namespace PitStop_Parts_Inventario.Models
         public int IdEstado { get; set; }
 
         // Navegación uno a muchos
-        public virtual RolModel Rol { get; set; }
-        public virtual EstadoModel Estado { get; set; }
+        public virtual RolModel Rol { get; set; } = null!;
+        public virtual EstadoModel Estado { get; set; } = null!;
 
         // Colecciones
-        public virtual ICollection<EntradaProductoModel> EntradaProductos { get; set; }
-        public virtual ICollection<AjusteInventarioModel> AjusteInventarios { get; set; }
+        public virtual ICollection<EntradaProductoModel> EntradaProductos { get; set; } = new List<EntradaProductoModel>();
+        public virtual ICollection<AjusteInventarioModel> AjusteInventarios { get; set; } = new List<AjusteInventarioModel>();
     }
 }
