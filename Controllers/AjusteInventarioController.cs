@@ -1,21 +1,33 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using PitStop_Parts_Inventario.Models;
+using PitStop_Parts_Inventario.Services;
+using PitStop_Parts_Inventario.Models.ViewModels;
+
+
 
 namespace PitStop_Parts_Inventario.Controllers
 {
     public class AjusteInventarioController : BaseController
     {
         private readonly ILogger<AjusteInventarioController> _logger;
+        private readonly AjusteInventarioService _AjusteinventarioService;
 
-        public AjusteInventarioController(ILogger<AjusteInventarioController> logger)
+        public AjusteInventarioController(ILogger<AjusteInventarioController> logger, AjusteInventarioService ajusteInventarioService)
         {
             _logger = logger;
+            _AjusteinventarioService = ajusteInventarioService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int numeroPagina , AjusteInventarioFilterOptions filtros)
         {
-            return View();
+            // Usar los parámetros recibidos para consultar el servicio
+            var resultado = await _AjusteinventarioService.GetPagedAsync(
+                numeroPagina,
+                10,
+                filtros
+            );
+            return View(resultado);
         }
 
         public IActionResult Privacy()
