@@ -4,99 +4,76 @@ using PitStop_Parts_Inventario.Models;
 using PitStop_Parts_Inventario.Services;
 using PitStop_Parts_Inventario.Models.ViewModels;
 using PitStop_Parts_Inventario.Services.Interfaces;
+using System.IO;
 
 namespace PitStop_Parts_Inventario.Controllers
 {
     public class ProductoController : BaseController
     {
         private readonly ILogger<ProductoController> _logger;
-        private readonly ProductoService _ProductoService;
+        private readonly IProductoService _ProductoService;
 
         public ProductoController(ILogger<ProductoController> logger, ProductoService productoService)
         {
             _logger = logger;
             _ProductoService = productoService;
         }
+
+        // GET: Producto
         public async Task<IActionResult> Index(int numeroPagina, ProductoFilterOptions filtros)
         {
-            // Usar los parámetros recibidos para consultar el servicio
-            var resultado = await _ProductoService.GetPagedAsync(
-                numeroPagina,
-                10,
-                filtros
-            );
-            return View(resultado);
+            var productos = await _ProductoService.GetPagedAsync(numeroPagina, 10, filtros);
+            return View(productos);
         }
-        [HttpGet]
-        public IActionResult Crear()
+        // GET: Producto/Details/5
+        public async Task<IActionResult> Details(int id)
         {
-            return View();
+            return await ExecuteIfHasRole("Empleado", async () => {
+                var producto = await _ProductoService.GetByIdAsync(id);
+
+                if (producto == null)
+                {
+                    return NotFound();
+                }
+
+                return View(producto);
+            });
         }
 
 
-        // Acción POST para procesar el formulario de creación
+        // GET: Producto/Create
+        public IActionResult Create()
+        {
+            return ExecuteIfHasRole("Empleado", () => {
+                return View(new ProductoModel());
+            });
+        }
+
+        // POST: Producto/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Crear(ProductoModel model)
+        public async Task<IActionResult> Create(ProductoModel producto)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+            return await ExecuteIfHasRole("Administrador", async () => {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
-            // Obtener el ID del usuario actual
-            var userId = CurrentUserId ?? User?.Identity?.Name ?? string.Empty;
-
-            var ajusteCreado = await _ProductoService.CreateAsync(model, userId);
-
-            if (ajusteCreado != null)
-            {
-                // Redirigir al listado o detalle del producto creado
-                return RedirectToAction("Index");
-            }
-
-            ModelState.AddModelError("", "No se pudo crear Producto.");
-            return View(model);
+                await _ProductoService.CreateAsync(producto, CurrentUserId ?? "");
+                TempData["Success"] = "Producto creado correctamente";
+                return RedirectToAction(nameof(Index));
+            });
         }
 
-
+        // DELETE: Solo administradores
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Eliminar(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            // Verificar permisos de administrador primero
-            if (!IsCurrentUserAdmin)
-            {
-                return Json(new { success = false, message = "No tiene permisos para eliminar ajustes de inventario." });
-            }
-
-            try
-            {
-                // Verificar si el prducto existe
-                var existe = await _ProductoService.ExistsAsync(id);
-                if (!existe)
-                {
-                    return Json(new { success = false, message = "El ajuste de inventario no existe." });
-                }
-
-                // Eliminar el producto
-                var eliminado = await _ProductoService.DeleteAsync(id);
-
-                if (eliminado)
-                {
-                    TempData["Success"] = "Ajuste de inventario eliminado correctamente.";
-                    return Json(new { success = true, message = "Ajuste eliminado correctamente." });
-                }
-                else
-                {
-                    return Json(new { success = false, message = "No se pudo eliminar el ajuste de inventario." });
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al eliminar ajuste de inventario con ID: {Id}", id);
-                return Json(new { success = false, message = "Error interno del servidor." });
-            }
+            return await ExecuteIfAdmin(async () => {
+                await _ProductoService.DeleteAsync(id);
+                return Json(new { success = true });
+            });
         }
 
         public IActionResult Privacy()
