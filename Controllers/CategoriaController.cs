@@ -1,8 +1,10 @@
 using System.Diagnostics;
+using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using PitStop_Parts_Inventario.Models;
-using PitStop_Parts_Inventario.Services;
 using PitStop_Parts_Inventario.Models.ViewModels;
+using PitStop_Parts_Inventario.Services;
+using PitStop_Parts_Inventario.Services.Interfaces;
 
 namespace PitStop_Parts_Inventario.Controllers
 {
@@ -16,8 +18,8 @@ namespace PitStop_Parts_Inventario.Controllers
                 _logger = logger;
                 _CategoriaService = categoriaService;
        }
-
-       public async Task<IActionResult> Index(int numeroPagina, CategoriaFilterOptions filtros)
+        //GET: Categoria
+        public async Task<IActionResult> Index(int numeroPagina, CategoriaFilterOptions filtros)
        {
             // Usar los parámetros recibidos para consultar el servicio
             var resultado = await _CategoriaService.GetPagedAsync(
@@ -26,13 +28,7 @@ namespace PitStop_Parts_Inventario.Controllers
             filtros
             );
             return View(resultado);
-            }
-
-        public IActionResult Index()
-        {
-            return View();
-        }
-
+       }
         public IActionResult Privacy()
         {
             return View();
@@ -43,5 +39,41 @@ namespace PitStop_Parts_Inventario.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        // GET: Categoria/Create
+        public IActionResult Create()
+        {
+            return ExecuteIfHasRole("Empleado", () => {
+                return View(new CategoriaModel());
+            });
+        }
+        
+        // POST: Categoria/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CategoriaModel categoria, string userId)
+        {
+            return await ExecuteIfHasRole("Administrador", async () => {
+                if (!ModelState.IsValid)
+                {
+                    return View(categoria);
+                }
+
+                await _CategoriaService.CreateAsync(categoria, userId);
+                TempData["Success"] = "Producto creado correctamente";
+                return RedirectToAction(nameof(Index));
+            });
+        }
+
+        // DELETE: Solo administradores
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            return await ExecuteIfAdmin(async () => {
+                await _CategoriaService.DeleteAsync(id);
+                return Json(new { success = true });
+            });
+        }
     }
 }
+
