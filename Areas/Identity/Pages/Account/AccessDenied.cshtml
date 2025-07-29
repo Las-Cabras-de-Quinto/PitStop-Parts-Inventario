@@ -1,10 +1,110 @@
 ﻿@page
 @model AccessDeniedModel
 @{
-    ViewData["Title"] = "Access denied";
+    ViewData["Title"] = "Acceso Denegado";
 }
 
-<header>
-    <h1 class="text-danger">@ViewData["Title"]</h1>
-    <p class="text-danger">You do not have access to this resource.</p>
-</header>
+<style>
+    body {
+        background-color: #f2f2f2;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .access-denied-card {
+        width: 100%;
+        max-width: 420px;
+        margin: 80px auto;
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .access-denied-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+        .access-denied-header .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .access-denied-header h2 {
+            margin-bottom: 0.25rem;
+            color: #dc3545;
+        }
+
+        .access-denied-header p {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+    .footer-links {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+    }
+
+        .footer-links a {
+            color: #007bff;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+    .error-message {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .primary-button {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: #0f1f29;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+        .primary-button:hover {
+            background-color: #182e3a;
+            color: white;
+            text-decoration: none;
+        }
+</style>
+
+<div class="access-denied-card">
+    <div class="access-denied-header">
+        <div class="icon">🚫</div>
+        <h2>Acceso Denegado</h2>
+    </div>
+
+    <div class="error-message">
+        <p>
+            No tienes acceso a este recurso.
+        </p>
+    </div>
+
+    <a href="/" class="primary-button">Ir al Inicio</a>
+
+    <div class="footer-links">
+        <a asp-page="./Login">Iniciar Sesión</a>
+        <a href="javascript:history.back()">Volver Atrás</a>
+    </div>
+
+    <div class="footer-links small">
+        <a href="/">Sistema de entradas PitStopParts</a>
+    </div>
+</div>

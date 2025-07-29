@@ -1,10 +1,105 @@
 ﻿@page
 @model LockoutModel
 @{
-    ViewData["Title"] = "Locked out";
+    ViewData["Title"] = "Cuenta Bloqueada";
 }
 
-<header>
-    <h1 class="text-danger">@ViewData["Title"]</h1>
-    <p class="text-danger">This account has been locked out, please try again later.</p>
-</header>
+<style>
+    body {
+        background-color: #f2f2f2;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .lockout-card {
+        width: 100%;
+        max-width: 420px;
+        margin: 80px auto;
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .lockout-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+        .lockout-header .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .lockout-header h2 {
+            margin-bottom: 0.25rem;
+            color: #dc3545;
+        }
+
+    .footer-links {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+    }
+
+        .footer-links a {
+            color: #007bff;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+    .warning-message {
+        background-color: #fff3cd;
+        border: 1px solid #ffeaa7;
+        color: #856404;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .primary-button {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: #0f1f29;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+        .primary-button:hover {
+            background-color: #182e3a;
+            color: white;
+            text-decoration: none;
+        }
+</style>
+
+<div class="lockout-card">
+    <div class="lockout-header">
+        <div class="icon">🔒</div>
+        <h2>Cuenta Bloqueada</h2>
+    </div>
+
+    <div class="warning-message">
+        <p>
+            Esta cuenta ha sido bloqueada temporalmente. Por favor, inténtalo de nuevo más tarde.
+        </p>
+    </div>
+
+    <a href="/" class="primary-button">Ir al Inicio</a>
+
+    <div class="footer-links">
+        <a asp-page="./ForgotPassword">¿Olvidaste tu contraseña?</a>
+        <a asp-page="./Register">Crear nueva cuenta</a>
+    </div>
+
+    <div class="footer-links small">
+        <a href="/">Sistema de entradas PitStopParts</a>
+    </div>
+</div>

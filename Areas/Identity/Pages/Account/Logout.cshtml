@@ -1,21 +1,133 @@
 ﻿@page
 @model LogoutModel
 @{
-    ViewData["Title"] = "Log out";
+    ViewData["Title"] = "Cerrar Sesión";
 }
 
-<header>
-    <h1>@ViewData["Title"]</h1>
+<style>
+    body {
+        background-color: #f2f2f2;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .logout-card {
+        width: 100%;
+        max-width: 420px;
+        margin: 80px auto;
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .logout-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+        .logout-header .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logout-header h2 {
+            margin-bottom: 0.25rem;
+        }
+
+        .logout-header p {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+    .footer-links {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+    }
+
+        .footer-links a {
+            color: #007bff;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+    .success-message {
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        button[type="submit"]:hover {
+            background-color: #c82333;
+        }
+
+    .primary-button {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: #0f1f29;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+        .primary-button:hover {
+            background-color: #182e3a;
+            color: white;
+            text-decoration: none;
+        }
+</style>
+
+<div class="logout-card">
+    <div class="logout-header">
+        <div class="icon">👋</div>
+        <h2>Cerrar Sesión</h2>
+    </div>
+
     @{
         if (User.Identity?.IsAuthenticated ?? false)
         {
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
-                <button type="submit" class="nav-link btn btn-link text-dark">Click here to Logout</button>
+            <p style="text-align: center; margin-bottom: 1rem;">¿Estás seguro de que quieres cerrar sesión?</p>
+            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                <button type="submit">Cerrar Sesión</button>
             </form>
         }
         else
         {
-            <p>You have successfully logged out of the application.</p>
+            <div class="success-message">
+                <p>Has cerrado sesión exitosamente.</p>
+            </div>
+            <a asp-page="./Login" class="primary-button">Iniciar Sesión</a>
         }
     }
-</header>
+
+    <div class="footer-links">
+        <a asp-page="./Register">Crear nueva cuenta</a>
+        <a href="/">Ir al inicio</a>
+    </div>
+
+    <div class="footer-links small">
+        <a href="/">Sistema de entradas PitStopParts</a>
+    </div>
+</div>

@@ -1,8 +1,99 @@
 ﻿@page
 @model ConfirmEmailModel
 @{
-    ViewData["Title"] = "Confirm email";
+    ViewData["Title"] = "Confirmar Correo";
 }
 
-<h1>@ViewData["Title"]</h1>
-<partial name="_StatusMessage" model="Model.StatusMessage" />
+<style>
+    body {
+        background-color: #f2f2f2;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .confirm-email-card {
+        width: 100%;
+        max-width: 420px;
+        margin: 80px auto;
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .confirm-email-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+        .confirm-email-header .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .confirm-email-header h2 {
+            margin-bottom: 0.25rem;
+        }
+
+    .footer-links {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+    }
+
+        .footer-links a {
+            color: #007bff;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+    .status-message {
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .primary-button {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: #0f1f29;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+        .primary-button:hover {
+            background-color: #182e3a;
+            color: white;
+            text-decoration: none;
+        }
+</style>
+
+<div class="confirm-email-card">
+    <div class="confirm-email-header">
+        <div class="icon">✉️</div>
+        <h2>Confirmar Correo</h2>
+    </div>
+
+    <div class="status-message">
+        <partial name="_StatusMessage" model="Model.StatusMessage" />
+    </div>
+
+    <a asp-page="./Login" class="primary-button">Ir al Inicio de Sesión</a>
+
+    <div class="footer-links">
+        <a asp-page="./Register">Crear nueva cuenta</a>
+        <a asp-page="./ResendEmailConfirmation">Reenviar confirmación</a>
+    </div>
+
+    <div class="footer-links small">
+        <a href="/">Sistema de entradas PitStopParts</a>
+    </div>
+</div>

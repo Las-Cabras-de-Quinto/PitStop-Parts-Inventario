@@ -1,23 +1,116 @@
 ﻿@page
 @model ResendEmailConfirmationModel
 @{
-    ViewData["Title"] = "Resend email confirmation";
+    ViewData["Title"] = "Reenviar Confirmación de Correo";
 }
 
-<h1>@ViewData["Title"]</h1>
-<h2>Enter your email.</h2>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="All" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email" class="form-label"></label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Resend</button>
-        </form>
+<style>
+    body {
+        background-color: #f2f2f2;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .resend-card {
+        width: 100%;
+        max-width: 420px;
+        margin: 80px auto;
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .resend-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+        .resend-header .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .resend-header h2 {
+            margin-bottom: 0.25rem;
+        }
+
+        .resend-header p {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+    .input-group {
+        margin-bottom: 1rem;
+    }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+    button[type="submit"] {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: #0f1f29;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        button[type="submit"]:hover {
+            background-color: #182e3a;
+        }
+
+    .footer-links {
+        text-align: center;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+    }
+
+        .footer-links a {
+            color: #007bff;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+</style>
+
+<div class="resend-card">
+    <div class="resend-header">
+        <div class="icon">📨</div>
+        <h2>Reenviar Confirmación</h2>
+        <p>Ingresa tu correo para reenviar la confirmación</p>
+    </div>
+
+    <form method="post">
+        <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+        
+        <div class="input-group">
+            <label asp-for="Input.Email">Correo Electrónico</label>
+            <input asp-for="Input.Email" aria-required="true" placeholder="nombre@ejemplo.com" />
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+        
+        <button type="submit">Reenviar Confirmación</button>
+        
+        <div class="footer-links">
+            <a asp-page="./Login">Volver al inicio de sesión</a>
+            <a asp-page="./Register">Crear nueva cuenta</a>
+        </div>
+    </form>
+
+    <div class="footer-links small">
+        <a href="/">Sistema de entradas PitStopParts</a>
     </div>
 </div>
 

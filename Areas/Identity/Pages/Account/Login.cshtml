@@ -1,14 +1,11 @@
 ﻿@page
 @model LoginModel
+
 @{
     ViewData["Title"] = "Iniciar Sesión";
 }
 
-
-
 <style>
-
-
     body {
         background-color: #f2f2f2;
         font-family: 'Segoe UI', sans-serif;
@@ -73,6 +70,21 @@
             text-decoration: none;
         }
 
+    .checkbox-container {
+        margin-bottom: 1rem;
+    }
+
+        .checkbox-container label {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-container input {
+            margin-right: 0.5rem;
+            width: auto;
+        }
+
     button[type="submit"] {
         width: 100%;
         padding: 0.75rem;
@@ -88,15 +100,17 @@
             background-color: #182e3a;
         }
 
-    .footer-link {
+    .footer-links {
         text-align: center;
         margin-top: 1rem;
         font-size: 0.9rem;
     }
 
-        .footer-link a {
+        .footer-links a {
             color: #007bff;
             text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
         }
 
     .external-logins {
@@ -117,45 +131,43 @@
         border-radius: 6px;
         cursor: pointer;
     }
-
-
-
 </style>
-
 
 <div class="login-card">
     <div class="login-header">
-        <div class="icon">🔒</div>
+        <div class="icon">🔐</div>
         <h2>Iniciar Sesión</h2>
-        <p>Ingresa tus credenciales para acceder al sistema</p>
+        <p>Ingresa tus credenciales para acceder</p>
     </div>
 
     <form id="account" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-
+        
         <div class="input-group">
-            <label asp-for="Input.Email">Usuario / Email</label>
-            <input asp-for="Input.Email" autocomplete="username" />
+            <label asp-for="Input.Email">Correo Electrónico</label>
+            <input asp-for="Input.Email" autocomplete="username" aria-required="true" placeholder="nombre@ejemplo.com" />
             <span asp-validation-for="Input.Email" class="text-danger"></span>
         </div>
-
+        
         <div class="input-group">
             <label asp-for="Input.Password">Contraseña</label>
-            <input asp-for="Input.Password" type="password" autocomplete="current-password" />
+            <input asp-for="Input.Password" type="password" autocomplete="current-password" aria-required="true" placeholder="contraseña" />
             <span asp-validation-for="Input.Password" class="text-danger"></span>
         </div>
-
-        <div class="options">
-            <label>
-                <input asp-for="Input.RememberMe" /> Recordarme
+        
+        <div class="checkbox-container">
+            <label asp-for="Input.RememberMe">
+                <input asp-for="Input.RememberMe" />
+                @Html.DisplayNameFor(m => m.Input.RememberMe)
             </label>
-            <a asp-page="./ForgotPassword">¿Olvidaste tu contraseña?</a>
         </div>
-
+        
         <button id="login-submit" type="submit">Iniciar Sesión</button>
-
-        <div class="footer-link">
-            ¿No tienes una cuenta? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Regístrate aquí</a>
+        
+        <div class="footer-links">
+            <a id="forgot-password" asp-page="./ForgotPassword">¿Olvidaste tu contraseña?</a>
+            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Registrarse como nuevo usuario</a>
+            <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Reenviar confirmación de correo</a>
         </div>
 
         @if ((Model.ExternalLogins?.Count ?? 0) > 0)
@@ -172,10 +184,18 @@
                 </div>
             </div>
         }
+        else
+        {
+            <div class="external-logins">
+                <p style="font-size: 0.9rem;">
+                    No hay servicios de autenticación externa configurados. Consulta
+                    <a href="https://go.microsoft.com/fwlink/?LinkID=532715" target="_blank">esta guía</a>.
+                </p>
+            </div>
+        }
     </form>
 
-    <div class="footer-link small">
-        <a asp-page="./ResendEmailConfirmation">¿No recibiste tu confirmación de correo?</a><br />
+    <div class="footer-links small">
         <a href="/">Sistema de entradas PitStopParts</a>
     </div>
 </div>
