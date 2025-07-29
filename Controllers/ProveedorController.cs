@@ -31,6 +31,44 @@ namespace PitStop_Parts_Inventario.Controllers
             return View(resultado);
         }
 
+        // GET: Proveedor/Create
+        public IActionResult Create()
+        {
+            return ExecuteIfHasRole("Empleado", () =>
+            {
+                return View(new ProveedorModel());
+            });
+        }
+
+        // POST: Proveedor/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(ProveedorModel proveedor)
+        {
+            return await ExecuteIfHasRole("Administrador", async () =>
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(proveedor);
+                }
+
+                await _ProveedorService.CreateAsync(proveedor, CurrentUserId ?? "");
+                TempData["Success"] = "Proveedor creado correctamente";
+                return RedirectToAction(nameof(Index));
+            });
+        }
+
+        // DELETE: Solo administradores
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            return await ExecuteIfAdmin(async () =>
+            {
+                await _ProveedorService.DeleteAsync(id);
+                return Json(new { success = true });
+            });
+        }
+
         public IActionResult Privacy()
         {
             return View();
