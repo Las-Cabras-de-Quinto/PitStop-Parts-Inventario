@@ -23,14 +23,22 @@ namespace PitStop_Parts_Inventario.Services
             {
                 throw new InvalidOperationException("SendGrid API key is not configured.");
             }
+            if (string.IsNullOrWhiteSpace(_options.FromAddress))
+            {
+                throw new InvalidOperationException("From email address is not configured.");
+            }
+            if (string.IsNullOrWhiteSpace(_options.FromName))
+            {
+                throw new InvalidOperationException("From email name is not configured.");
+            }
 
-            await Execute(_options.ApiKey, subject, message, toEmail);
+            await Execute(_options.ApiKey, _options.FromAddress, _options.FromName, subject, message, toEmail);
         }
 
-        private async Task Execute(string apiKey, string subject, string message, string toEmail)
+        private async Task Execute(string apiKey, string fromAddress, string fromName, string subject, string message, string toEmail)
         {
             var client = new SendGridClient(apiKey);
-            var from = new EmailAddress("noreply@yourdomain.com", "Your App Name");
+            var from = new EmailAddress(fromAddress, fromName);
             var to = new EmailAddress(toEmail);
             var msg = MailHelper.CreateSingleEmail(from, to, subject, message, message);
             msg.SetClickTracking(false, false);
