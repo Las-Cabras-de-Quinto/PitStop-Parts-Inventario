@@ -88,6 +88,16 @@ namespace PitStop_Parts_Inventario.Controllers
             return unauthorizedAction?.Invoke() ?? RedirectToAction("AccessDenied", "Account", new { area = "Identity" });
         }
 
+        protected async Task<IActionResult> ExecuteIfHasRole(string roleName, Func<Task<IActionResult>> action, Func<IActionResult>? unauthorizedAction = null)
+        {
+            if (CurrentUserHasRole(roleName) || IsCurrentUserAdmin)
+            {
+                return await action();
+            }
+
+            return unauthorizedAction?.Invoke() ?? RedirectToAction("AccessDenied", "Account", new { area = "Identity" });
+        }
+
         /// <summary>
         /// Ejecuta una acción solo si el usuario es administrador
         /// </summary>
@@ -98,6 +108,16 @@ namespace PitStop_Parts_Inventario.Controllers
             if (IsCurrentUserAdmin)
             {
                 return action();
+            }
+
+            return unauthorizedAction?.Invoke() ?? RedirectToAction("AccessDenied", "Account", new { area = "Identity" });
+        }
+
+        protected async Task<IActionResult> ExecuteIfAdmin(Func<Task<IActionResult>> action, Func<IActionResult>? unauthorizedAction = null)
+        {
+            if (IsCurrentUserAdmin)
+            {
+                return await action();
             }
 
             return unauthorizedAction?.Invoke() ?? RedirectToAction("AccessDenied", "Account", new { area = "Identity" });
