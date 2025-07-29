@@ -29,6 +29,74 @@ namespace PitStop_Parts_Inventario.Controllers
             );
             return View(resultado);
         }
+        [HttpGet]
+        public IActionResult Crear()
+        {
+            return View();
+        }
+
+        // Acción POST para procesar el formulario de creación
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Crear(AjusteInventarioModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // Obtener el ID del usuario actual
+            var userId = CurrentUserId ?? User?.Identity?.Name ?? string.Empty;
+
+            var ajusteCreado = await _AjusteinventarioService.CreateAsync(model, userId);
+
+            if (ajusteCreado != null)
+            {
+                // Redirigir al listado o detalle del ajuste creado
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", "No se pudo crear el ajuste de inventario.");
+            return View(model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Eliminar(int id)
+        {
+            // Verificar permisos de administrador primero
+            if (!IsCurrentUserAdmin)
+            {
+                return Json(new { success = false, message = "No tiene permisos para eliminar ajustes de inventario." });
+            }
+
+            try
+            {
+                // Verificar si el ajuste existe
+                var existe = await _AjusteinventarioService.ExistsAsync(id);
+                if (!existe)
+                {
+                    return Json(new { success = false, message = "El ajuste de inventario no existe." });
+                }
+
+                // Eliminar el ajuste de inventario
+                var eliminado = await _AjusteinventarioService.DeleteAsync(id);
+
+                if (eliminado)
+                {
+                    TempData["Success"] = "Ajuste de inventario eliminado correctamente.";
+                    return Json(new { success = true, message = "Ajuste eliminado correctamente." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "No se pudo eliminar el ajuste de inventario." });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar ajuste de inventario con ID: {Id}", id);
+                return Json(new { success = false, message = "Error interno del servidor." });
+            }
+        }
 
         public IActionResult Privacy()
         {
