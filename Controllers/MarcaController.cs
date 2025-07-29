@@ -3,21 +3,22 @@ using Microsoft.AspNetCore.Mvc;
 using PitStop_Parts_Inventario.Models;
 using PitStop_Parts_Inventario.Services;
 using PitStop_Parts_Inventario.Models.ViewModels;
+using PitStop_Parts_Inventario.Services.Interfaces;
 
 namespace PitStop_Parts_Inventario.Controllers
 {
     public class MarcaController : BaseController
     {
         private readonly ILogger<MarcaController> _logger;
-        private readonly MarcaService _marcaService;
+        private readonly IMarcaService _marcaService;
 
-        public MarcaController(ILogger<MarcaController> logger, MarcaService marcaService)
+        public MarcaController(ILogger<MarcaController> logger, IMarcaService marcaService)
         {
             _logger = logger;
             _marcaService = marcaService;
         }
 
-        public async Task<IActionResult> Index(int numeroPagina, MarcaFilterOptions filtros)
+        public async Task<IActionResult> Index(MarcaFilterOptions filtros, int numeroPagina = 1)
         {
             // Usar los parámetros recibidos para consultar el servicio
             var resultado = await _marcaService.GetPagedAsync(

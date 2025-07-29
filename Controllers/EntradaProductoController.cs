@@ -10,15 +10,15 @@ namespace PitStop_Parts_Inventario.Controllers
     public class EntradaProductoController : BaseController
     {
         private readonly ILogger<EntradaProductoController> _logger;
-        private readonly EntradaProductoService _entradaProductoService;
+        private readonly IEntradaProductoService _entradaProductoService;
 
-        public EntradaProductoController(ILogger<EntradaProductoController> logger, EntradaProductoService entradaProductoService)
+        public EntradaProductoController(ILogger<EntradaProductoController> logger, IEntradaProductoService entradaProductoService)
         {
             _logger = logger;
             _entradaProductoService = entradaProductoService;
         }
 
-        public async Task<IActionResult> Index(int numeroPagina, EntradaProductoFilterOptions filtros)
+        public async Task<IActionResult> Index(EntradaProductoFilterOptions filtros, int numeroPagina = 1)
         {
             // Usar los parámetros recibidos para consultar el servicio
             var resultado = await _entradaProductoService.GetPagedAsync(

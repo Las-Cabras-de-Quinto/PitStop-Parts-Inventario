@@ -10,16 +10,16 @@ namespace PitStop_Parts_Inventario.Controllers
     public class RolController : BaseController
     {
         private readonly ILogger<RolController> _logger;
-        private readonly RolService _rolService;
+        private readonly IRolService _rolService;
 
-        public RolController(ILogger<RolController> logger, RolService rolService)
+        public RolController(ILogger<RolController> logger, IRolService rolService)
         {
             _logger = logger;
             _rolService = rolService;
 
         }
 
-        public async Task<IActionResult> Index(int numeroPagina, RolFilterOptions filtros)
+        public async Task<IActionResult> Index(RolFilterOptions filtros, int numeroPagina = 1)
         {
             // Usar los parámetros recibidos para consultar el servicio
             var resultado = await _rolService.GetPagedAsync(

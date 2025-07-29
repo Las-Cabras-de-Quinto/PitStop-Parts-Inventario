@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using PitStop_Parts_Inventario.Models;
 using PitStop_Parts_Inventario.Services;
+using PitStop_Parts_Inventario.Services.Interfaces;
 using PitStop_Parts_Inventario.Models.ViewModels;
 
 
@@ -11,16 +12,16 @@ namespace PitStop_Parts_Inventario.Controllers
     public class ProveedorController : BaseController
     {
         private readonly ILogger<ProveedorController> _logger;
-        private readonly ProveedorService _ProveedorService;
+        private readonly IProveedorService _ProveedorService;
 
-        public ProveedorController(ILogger<ProveedorController> logger, ProveedorService proveedorService)
+        public ProveedorController(ILogger<ProveedorController> logger, IProveedorService proveedorService)
 
         {
             _logger = logger;
             _ProveedorService = proveedorService;
         }
 
-        public async Task<IActionResult> Index(int numeroPagina, ProveedorFilterOptions filtros)
+        public async Task<IActionResult> Index(ProveedorFilterOptions filtros, int numeroPagina = 1)
         {
             // Usar los parámetros recibidos para consultar el servicio
             var resultado = await _ProveedorService.GetPagedAsync(

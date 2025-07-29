@@ -10,15 +10,15 @@ namespace PitStop_Parts_Inventario.Controllers
     public class BodegaController : BaseController
     {
         private readonly ILogger<BodegaController> _logger;
-        private readonly BodegaService _bodegaService;
+        private readonly IBodegaService _bodegaService;
 
-        public BodegaController(ILogger<BodegaController> logger, BodegaService bodegaService)
+        public BodegaController(ILogger<BodegaController> logger, IBodegaService bodegaService)
         {
             _logger = logger;
             _bodegaService = bodegaService;
         }
 
-        public async Task<IActionResult> Index(int numeroPagina, BodegaFilterOptions filtros)
+        public async Task<IActionResult> Index(BodegaFilterOptions filtros, int numeroPagina = 1)
         {
             // Usar los parámetros recibidos para consultar el servicio
             var resultado = await _bodegaService.GetPagedAsync(
