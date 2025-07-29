@@ -51,7 +51,7 @@ namespace PitStop_Parts_Inventario.Controllers
 
             if (ajusteCreado != null)
             {
-                // Redirigir al listado o detalle del ajuste creado
+                // Redirigir al listado o detalle del producto creado
                 return RedirectToAction("Index");
             }
 
@@ -72,14 +72,14 @@ namespace PitStop_Parts_Inventario.Controllers
 
             try
             {
-                // Verificar si el ajuste existe
+                // Verificar si el prducto existe
                 var existe = await _ProductoService.ExistsAsync(id);
                 if (!existe)
                 {
                     return Json(new { success = false, message = "El ajuste de inventario no existe." });
                 }
 
-                // Eliminar el ajuste de inventario
+                // Eliminar el producto
                 var eliminado = await _ProductoService.DeleteAsync(id);
 
                 if (eliminado)
