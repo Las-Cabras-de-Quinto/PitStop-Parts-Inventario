@@ -1,21 +1,32 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using PitStop_Parts_Inventario.Models;
+using PitStop_Parts_Inventario.Models.ViewModels;
+using PitStop_Parts_Inventario.Services;
+using PitStop_Parts_Inventario.Services.Interfaces;
+using System.Diagnostics;
 
 namespace PitStop_Parts_Inventario.Controllers
 {
     public class EntradaProductoController : BaseController
     {
         private readonly ILogger<EntradaProductoController> _logger;
+        private readonly EntradaProductoService _entradaProductoService;
 
-        public EntradaProductoController(ILogger<EntradaProductoController> logger)
+        public EntradaProductoController(ILogger<EntradaProductoController> logger, EntradaProductoService entradaProductoService)
         {
             _logger = logger;
+            _entradaProductoService = entradaProductoService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int numeroPagina, EntradaProductoFilterOptions filtros)
         {
-            return View();
+            // Usar los parámetros recibidos para consultar el servicio
+            var resultado = await _entradaProductoService.GetPagedAsync(
+                numeroPagina,
+                10,
+                filtros
+            );
+            return View(resultado);
         }
 
         public IActionResult Privacy()
