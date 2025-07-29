@@ -10,22 +10,93 @@ namespace PitStop_Parts_Inventario.Controllers
     public class ProductoController : BaseController
     {
         private readonly ILogger<ProductoController> _logger;
-        private readonly IProductoService _productoService;
+        private readonly ProductoService _ProductoService;
 
         public ProductoController(ILogger<ProductoController> logger, ProductoService productoService)
         {
             _logger = logger;
-            _productoService = productoService;
+            _ProductoService = productoService;
         }
         public async Task<IActionResult> Index(int numeroPagina, ProductoFilterOptions filtros)
         {
             // Usar los parámetros recibidos para consultar el servicio
-            var resultado = await _productoService.GetPagedAsync(
+            var resultado = await _ProductoService.GetPagedAsync(
                 numeroPagina,
                 10,
                 filtros
             );
             return View(resultado);
+        }
+        [HttpGet]
+        public IActionResult Crear()
+        {
+            return View();
+        }
+
+
+        // Acción POST para procesar el formulario de creación
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Crear(ProductoModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // Obtener el ID del usuario actual
+            var userId = CurrentUserId ?? User?.Identity?.Name ?? string.Empty;
+
+            var ajusteCreado = await _ProductoService.CreateAsync(model, userId);
+
+            if (ajusteCreado != null)
+            {
+                // Redirigir al listado o detalle del ajuste creado
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", "No se pudo crear Producto.");
+            return View(model);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Eliminar(int id)
+        {
+            // Verificar permisos de administrador primero
+            if (!IsCurrentUserAdmin)
+            {
+                return Json(new { success = false, message = "No tiene permisos para eliminar ajustes de inventario." });
+            }
+
+            try
+            {
+                // Verificar si el ajuste existe
+                var existe = await _ProductoService.ExistsAsync(id);
+                if (!existe)
+                {
+                    return Json(new { success = false, message = "El ajuste de inventario no existe." });
+                }
+
+                // Eliminar el ajuste de inventario
+                var eliminado = await _ProductoService.DeleteAsync(id);
+
+                if (eliminado)
+                {
+                    TempData["Success"] = "Ajuste de inventario eliminado correctamente.";
+                    return Json(new { success = true, message = "Ajuste eliminado correctamente." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "No se pudo eliminar el ajuste de inventario." });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar ajuste de inventario con ID: {Id}", id);
+                return Json(new { success = false, message = "Error interno del servidor." });
+            }
         }
 
         public IActionResult Privacy()
@@ -37,39 +108,6 @@ namespace PitStop_Parts_Inventario.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-        // GET: Producto/Create
-        public IActionResult Create()
-        {
-            return ExecuteIfHasRole("Empleado", () => {
-                return View(new ProductoModel());
-            });
-        }
-        // POST: Producto/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ProductoModel producto)
-        {
-            return await ExecuteIfHasRole("Administrador", async () => {
-                if (!ModelState.IsValid)
-                {
-                    return View(producto);
-                }
-
-                await _productoService.CreateAsync(producto);
-                TempData["Success"] = "Producto creado correctamente";
-                return RedirectToAction(nameof(Index));
-            });
-        }
-
-        // DELETE: Solo administradores
-        [HttpPost]
-        public async Task<IActionResult> Delete(int id)
-        {
-            return await ExecuteIfAdmin(async () => {
-                await _productoService.DeleteAsync(id);
-                return Json(new { success = true });
-            });
         }
     }
 }
