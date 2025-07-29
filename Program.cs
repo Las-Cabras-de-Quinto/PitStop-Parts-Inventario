@@ -20,7 +20,7 @@ builder.Services.AddDbContext<PitStopDbContext>(options =>
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.Configure<AuthMessageSenderOptions>(
-    builder.Configuration.GetSection("AuthMessageSenderOptions"));
+    builder.Configuration.GetSection("SendGrid"));
 
 // Configurar Identity con servicios personalizados
 builder.Services.AddDefaultIdentity<UsuarioModel>(options => {

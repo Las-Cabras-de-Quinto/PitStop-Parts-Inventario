@@ -15,7 +15,7 @@ namespace PitStop_Parts_Inventario.Services
         public EmailSender(IOptions<AuthMessageSenderOptions> optionsAccessor,
                            ILogger<EmailSender> logger)
         {
-            Options = optionsAccessor.Value ?? throw new ArgumentNullException(nameof(optionsAccessor));
+            Options = optionsAccessor?.Value ?? throw new ArgumentNullException(nameof(optionsAccessor));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -25,16 +25,16 @@ namespace PitStop_Parts_Inventario.Services
         // Método requerido por IEmailSender para enviar emails
         public async Task SendEmailAsync(string toEmail, string subject, string message)
         {
-            if (string.IsNullOrWhiteSpace(Options.SendGridKey))
+            if (string.IsNullOrWhiteSpace(Options.ApiKey))
             {
                 throw new InvalidOperationException("SendGrid API key is not configured.");
             }
 
-            await Execute(Options.SendGridKey, subject, message, toEmail);
+            await Execute(Options.ApiKey, subject, message, toEmail);
         }
 
         // Método interno que crea y envía el email usando SendGrid SDK
-        public async Task Execute(string apiKey, string subject, string message, string toEmail)
+        private async Task Execute(string apiKey, string subject, string message, string toEmail)
         {
             var client = new SendGridClient(apiKey);
 
