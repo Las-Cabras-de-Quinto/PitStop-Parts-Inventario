@@ -29,6 +29,31 @@ namespace PitStop_Parts_Inventario.Controllers
             return View(resultado);
         }
 
+        // GET: Producto/Create
+        public IActionResult Create()
+        {
+            return ExecuteIfHasRole("Empleado", () => {
+                return View(new BodegaModel());
+            });
+        }
+
+        // POST: Producto/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(BodegaModel bodega)
+        {
+            return await ExecuteIfHasRole("Administrador", async () => {
+                if (!ModelState.IsValid)
+                {
+                    return View(bodega);
+                }
+
+                await _bodegaService.CreateAsync(bodega, CurrentUserId ?? "");
+                TempData["Success"] = "Producto creado correctamente";
+                return RedirectToAction(nameof(Index));
+            });
+        }
+
         public IActionResult Privacy()
         {
             return View();
