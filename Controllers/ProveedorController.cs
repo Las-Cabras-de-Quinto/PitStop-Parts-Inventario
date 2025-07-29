@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PitStop_Parts_Inventario.Models;
 using PitStop_Parts_Inventario.Services;
 using PitStop_Parts_Inventario.Models.ViewModels;
+using PitStop_Parts_Inventario.Services.Interfaces;
 
 
 
@@ -11,23 +12,31 @@ namespace PitStop_Parts_Inventario.Controllers
     public class ProveedorController : BaseController
     {
         private readonly ILogger<ProveedorController> _logger;
-        private readonly ProveedorService _ProveedorService;
+        private readonly IProveedorService _proveedorService;
 
-        public ProveedorController(ILogger<ProveedorController> logger, ProveedorService proveedorService)
 
+        public ProveedorController(ILogger<ProveedorController> logger, IProveedorService proveedorService)
         {
             _logger = logger;
-            _ProveedorService = proveedorService;
+            _proveedorService = proveedorService;
         }
 
-        public async Task<IActionResult> Index(int numeroPagina, ProveedorFilterOptions filtros)
+        public async Task<IActionResult> Index(int numeroPagina = 1, ProveedorFilterOptions? filtros = null)
         {
-            // Usar los parámetros recibidos para consultar el servicio
-            var resultado = await _ProveedorService.GetPagedAsync(
+            // Validar que la página mínima sea 1 para evitar offset negativo
+            if (numeroPagina < 1)
+            {
+                numeroPagina = 1;
+            }
+
+            filtros ??= new ProveedorFilterOptions();
+
+            var resultado = await _proveedorService.GetPagedAsync(
                 numeroPagina,
-                10,
+                4,
                 filtros
             );
+
             return View(resultado);
         }
 
@@ -52,7 +61,7 @@ namespace PitStop_Parts_Inventario.Controllers
                     return View(proveedor);
                 }
 
-                await _ProveedorService.CreateAsync(proveedor, CurrentUserId ?? "");
+                await _proveedorService.CreateAsync(proveedor, CurrentUserId ?? "");
                 TempData["Success"] = "Proveedor creado correctamente";
                 return RedirectToAction(nameof(Index));
             });
@@ -64,7 +73,7 @@ namespace PitStop_Parts_Inventario.Controllers
         {
             return await ExecuteIfAdmin(async () =>
             {
-                await _ProveedorService.DeleteAsync(id);
+                await _proveedorService.DeleteAsync(id);
                 return Json(new { success = true });
             });
         }
