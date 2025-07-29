@@ -51,7 +51,7 @@ namespace PitStop_Parts_Inventario.Controllers
         // POST: Categoria/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CategoriaModel categoria, string userId)
+        public async Task<IActionResult> Create(CategoriaModel categoria)
         {
             return await ExecuteIfHasRole("Administrador", async () => {
                 if (!ModelState.IsValid)
@@ -59,7 +59,7 @@ namespace PitStop_Parts_Inventario.Controllers
                     return View(categoria);
                 }
 
-                await _CategoriaService.CreateAsync(categoria, userId);
+                await _CategoriaService.CreateAsync(categoria, CurrentUserId ?? "");
                 TempData["Success"] = "Producto creado correctamente";
                 return RedirectToAction(nameof(Index));
             });
