@@ -7,6 +7,8 @@ using PitStop_Parts_Inventario.Services;
 using PitStop_Parts_Inventario.Services.Interfaces;
 using PitStop_Parts_Inventario.Extensions;
 
+using Microsoft.AspNetCore.Identity.UI.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -15,6 +17,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<PitStopDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.Configure<AuthMessageSenderOptions>(
+    builder.Configuration.GetSection("AuthMessageSenderOptions"));
 
 // Configurar Identity con servicios personalizados
 builder.Services.AddDefaultIdentity<UsuarioModel>(options => {
