@@ -78,7 +78,7 @@
                 </div>
                 
                 <div class="actions-wrapper">
-                    <button class="btn btn-crear">
+                    <button class="btn btn-crear" data-bs-toggle="modal" data-bs-target="#nuevoProductoModal">
                         <i class="fas fa-plus"></i> Crear
                     </button>
                 </div>
@@ -186,10 +186,13 @@
                             </div>
                         </div>
                         <div class="product-actions">
-                            <button class="btn-action btn-warning" title="Editar">
+                            <button class="btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarProducto('FLT-001')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-action btn-warning" title="Editar" onclick="abrirModalEditarProducto('FLT-001')">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn-action btn-danger" title="Eliminar">
+                            <button class="btn-action btn-danger" title="Eliminar" onclick="abrirModalEliminarProducto('FLT-001')">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -233,10 +236,13 @@
                             </div>
                         </div>
                         <div class="product-actions">
-                            <button class="btn-action btn-warning" title="Editar">
+                            <button class="btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarProducto('BRK-002')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-action btn-warning" title="Editar" onclick="abrirModalEditarProducto('BRK-002')">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn-action btn-danger" title="Eliminar">
+                            <button class="btn-action btn-danger" title="Eliminar" onclick="abrirModalEliminarProducto('BRK-002')">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -280,10 +286,13 @@
                             </div>
                         </div>
                         <div class="product-actions">
-                            <button class="btn-action btn-warning" title="Editar">
+                            <button class="btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarProducto('SPK-003')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-action btn-warning" title="Editar" onclick="abrirModalEditarProducto('SPK-003')">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn-action btn-danger" title="Eliminar">
+                            <button class="btn-action btn-danger" title="Eliminar" onclick="abrirModalEliminarProducto('SPK-003')">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -327,10 +336,13 @@
                             </div>
                         </div>
                         <div class="product-actions">
-                            <button class="btn-action btn-warning" title="Editar">
+                            <button class="btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarProducto('BLT-004')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-action btn-warning" title="Editar" onclick="abrirModalEditarProducto('BLT-004')">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn-action btn-danger" title="Eliminar">
+                            <button class="btn-action btn-danger" title="Eliminar" onclick="abrirModalEliminarProducto('BLT-004')">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -374,10 +386,13 @@
                             </div>
                         </div>
                         <div class="product-actions">
-                            <button class="btn-action btn-warning" title="Editar">
+                            <button class="btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarProducto('OIL-005')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-action btn-warning" title="Editar" onclick="abrirModalEditarProducto('OIL-005')">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn-action btn-danger" title="Eliminar">
+                            <button class="btn-action btn-danger" title="Eliminar" onclick="abrirModalEliminarProducto('OIL-005')">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -421,10 +436,13 @@
                             </div>
                         </div>
                         <div class="product-actions">
-                            <button class="btn-action btn-warning" title="Editar">
+                            <button class="btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarProducto('BAT-006')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-action btn-warning" title="Editar" onclick="abrirModalEditarProducto('BAT-006')">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn-action btn-danger" title="Eliminar">
+                            <button class="btn-action btn-danger" title="Eliminar" onclick="abrirModalEliminarProducto('BAT-006')">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -471,3 +489,289 @@
             </div>
         </section>
     </div>
+
+<section class="modal-container">
+<!-- Modal Nuevo Producto -->
+<div class="modal fade" id="nuevoProductoModal" tabindex="-1" aria-labelledby="nuevoProductoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="nuevoProductoModalLabel">
+                    <i class="fas fa-plus-circle me-2"></i>Nuevo Producto
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="nuevoProductoForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="nombreProducto" class="form-label">Nombre Producto</label>
+                            <input type="text" class="form-control" id="nombreProducto" name="nombre" placeholder="Ingrese el nombre..." required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="marcaProducto" class="form-label">Marca</label>
+                            <div class="input-group">
+                                <select class="form-select" id="marcaProducto" name="marca_id" required>
+                                    <option value="">Seleccionar marca</option>
+                                </select>
+                                <span class="input-group-text"><i class="fas fa-edit"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="skuProducto" class="form-label">SKU</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="skuProducto" name="sku" placeholder="Ingrese SKU" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="categoriaProducto" class="form-label">Categoría</label>
+                            <div class="input-group">
+                                <select class="form-select" id="categoriaProducto" name="categoria_id" required>
+                                    <option value="">Seleccionar categoría</option>
+                                </select>
+                                <span class="input-group-text"><i class="fas fa-edit"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="proveedorProducto" class="form-label">Proveedor</label>
+                            <div class="input-group">
+                                <select class="form-select" id="proveedorProducto" name="proveedor_id" multiple required>
+                                    <option value="">Seleccionar proveedor</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="precioProducto" class="form-label">Precio Unitario</label>
+                            <input type="number" class="form-control" id="precioProducto" name="precio" placeholder="0" min="0" step="0.01" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcionProducto" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="descripcionProducto" name="descripcion" rows="4" placeholder="Agregar descripción del producto..." required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" onclick="guardarProducto()">
+                    <i class="fas fa-save me-1"></i>Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Editar Producto -->
+<div class="modal fade" id="editarProductoModal" tabindex="-1" aria-labelledby="editarProductoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="editarProductoModalLabel">
+                    <i class="fas fa-edit me-2"></i>Editar Producto
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editarProductoForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editNombreProducto" class="form-label">Nombre Producto</label>
+                            <input type="text" class="form-control" id="editNombreProducto" name="nombre" value="iPhone 14 Pro" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editMarcaProducto" class="form-label">Marca</label>
+                            <div class="input-group">
+                                <select class="form-select" id="editMarcaProducto" name="marca_id" required>
+                                    <option value="">Seleccionar marca</option>
+                                </select>
+                                <span class="input-group-text"><i class="fas fa-edit"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editSkuProducto" class="form-label">SKU</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="editSkuProducto" name="sku" value="IPH14PRO128" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editCategoriaProducto" class="form-label">Categoría</label>
+                            <div class="input-group">
+                                <select class="form-select" id="editCategoriaProducto" name="categoria_id" required>
+                                    <option value="">Seleccionar categoría</option>
+                                </select>
+                                <span class="input-group-text"><i class="fas fa-edit"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editProveedorProducto" class="form-label">Proveedor</label>
+                            <div class="input-group">
+                                <select class="form-select" id="editProveedorProducto" name="proveedor_id" multiple required>
+                                    <option value="">Seleccionar proveedor</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editPrecioProducto" class="form-label">Precio Unitario</label>
+                            <input type="number" class="form-control" id="editPrecioProducto" name="precio" value="999.99" min="0" step="0.01" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editEstadoProducto" class="form-label">Estado</label>
+                            <select class="form-select" id="editEstadoProducto" name="estado_id" required>
+                                <option value="">Seleccionar estado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDescripcionProducto" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="editDescripcionProducto" name="descripcion" rows="4" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" onclick="actualizarProducto()">
+                    <i class="fas fa-save me-1"></i>Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Visualizar Producto -->
+<div class="modal fade" id="visualizarProductoModal" tabindex="-1" aria-labelledby="visualizarProductoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="visualizarProductoModalLabel">
+                    <i class="fas fa-eye me-2 text-info"></i>Detalles del Producto
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="product-info">
+                            <div class="product-info-label">Nombre del Producto</div>
+                            <p class="product-info-value" id="visualizarNombreProducto">Cargando...</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="product-info">
+                            <div class="product-info-label">Marca</div>
+                            <p class="product-info-value" id="visualizarMarcaProducto">Cargando...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="product-info">
+                            <div class="product-info-label">SKU</div>
+                            <p class="product-info-value" id="visualizarSkuProducto">Cargando...</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="product-info">
+                            <div class="product-info-label">Categoría</div>
+                            <p class="product-info-value" id="visualizarCategoriaProducto">Cargando...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="product-info">
+                            <div class="product-info-label">Precio Unitario</div>
+                            <p class="product-info-value" id="visualizarPrecioProducto">Cargando...</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="product-info">
+                            <div class="product-info-label">Estado</div>
+                            <span class="badge bg-success fs-6" id="visualizarEstadoProducto">Cargando...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="product-info">
+                            <div class="product-info-label">Stock</div>
+                            <span class="badge bg-warning text-dark fs-6" id="visualizarStockProducto">Cargando...</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="product-info">
+                            <div class="product-info-label">Fecha de Registro</div>
+                            <p class="product-info-value" id="visualizarFechaProducto">Cargando...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="product-info">
+                            <div class="product-info-label">Proveedores</div>
+                            <p class="product-info-value" id="visualizarProveedoresProducto">Cargando...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-info-label">Descripción</div>
+                    <p class="product-info-value" id="visualizarDescripcionProducto">Cargando...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editarProductoModal">
+                    <i class="fas fa-edit me-1"></i>Editar Producto
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Eliminar Producto -->
+<div class="modal fade" id="eliminarProductoModal" tabindex="-1" aria-labelledby="eliminarProductoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="eliminarProductoModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2 text-danger"></i>Eliminar Producto
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>¡Atención!</strong> Esta acción no se puede deshacer.
+                </div>
+                <p class="text-white mb-3">¿Está seguro que desea eliminar el siguiente producto?</p>
+                <div class="bg-dark p-3 rounded">
+                    <p class="text-white mb-1"><strong>Nombre:</strong> <span id="eliminarNombreProducto">-</span></p>
+                    <p class="text-white mb-1"><strong>Descripción:</strong> <span id="eliminarDescripcionProducto">-</span></p>
+                    <p class="text-white mb-1"><strong>Marca:</strong> <span id="eliminarMarcaProducto">-</span></p>
+                    <p class="text-white mb-0"><strong>Precio:</strong> $<span id="eliminarPrecioProducto">-</span></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-danger" onclick="eliminarProducto()">
+                    <i class="fas fa-trash me-1"></i>Eliminar Producto
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</section>

@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="~/assets/css/layout.css" asp-append-version="true">
+    <link href="~/assets/css/modals.css" rel="stylesheet" asp-append-version="true">
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
@@ -174,6 +175,18 @@
             <div class="content-area">
                 @RenderBody()
             </div>
+            <!-- Toast para notificaciones -->
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                <div id="successToast" class="toast" role="alert">
+                    <div class="toast-header bg-success text-white">
+                        <strong class="me-auto toast-title">Éxito</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="toast-body bg-dark text-white">
+                        Operación realizada exitosamente.
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -182,6 +195,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- Custom JS -->
     <script src="~/assets/js/layout.js" asp-append-version="true"></script>
+
+    <script src="~/assets/js/modals.js" asp-append-version="true"></script>
+    <script src="~/assets/js/modal-helpers.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

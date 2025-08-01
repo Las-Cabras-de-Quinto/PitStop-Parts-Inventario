@@ -39,7 +39,7 @@
             <input type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")">
         </div>
         <div class="col-md-2">
-            <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addEntryModal">
+            <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#nuevaEntradaModal">
                 <i class="fas fa-plus me-2"></i>Nueva Entrada
             </button>
         </div>
@@ -92,14 +92,14 @@
                             <td><span class="badge bg-success">Completada</span></td>
                             <td>
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles">
+                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles" onclick="abrirModalVisualizarEntrada('ENT-001')">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-secondary" title="Imprimir">
-                                        <i class="fas fa-print"></i>
+                                    <button class="btn btn-sm btn-outline-warning" title="Editar" onclick="abrirModalEditarEntrada('ENT-001')">
+                                        <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger" title="Anular">
-                                        <i class="fas fa-times"></i>
+                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="abrirModalEliminarEntrada('ENT-001')">
+                                        <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
@@ -116,14 +116,14 @@
                             <td><span class="badge bg-warning">En Proceso</span></td>
                             <td>
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles">
+                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles" onclick="abrirModalVisualizarEntrada('ENT-002')">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-success" title="Completar">
-                                        <i class="fas fa-check"></i>
+                                    <button class="btn btn-sm btn-outline-warning" title="Editar" onclick="abrirModalEditarEntrada('ENT-002')">
+                                        <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger" title="Anular">
-                                        <i class="fas fa-times"></i>
+                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="abrirModalEliminarEntrada('ENT-002')">
+                                        <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
@@ -140,14 +140,14 @@
                             <td><span class="badge bg-success">Completada</span></td>
                             <td>
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles">
+                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles" onclick="abrirModalVisualizarEntrada('ENT-003')">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-secondary" title="Imprimir">
-                                        <i class="fas fa-print"></i>
+                                    <button class="btn btn-sm btn-outline-warning" title="Editar" onclick="abrirModalEditarEntrada('ENT-003')">
+                                        <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger" title="Anular">
-                                        <i class="fas fa-times"></i>
+                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="abrirModalEliminarEntrada('ENT-003')">
+                                        <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
@@ -301,6 +301,236 @@
         </div>
     </div>
 </div>
+
+<section class="modal-container">
+<!-- Modal Nueva Entrada -->
+<div class="modal fade" id="nuevaEntradaModal" tabindex="-1" aria-labelledby="nuevaEntradaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="nuevaEntradaModalLabel">
+                    <i class="fas fa-plus-circle me-2"></i>Nueva Entrada de Producto
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="nuevaEntradaForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="productoEntrada" class="form-label">Producto</label>
+                            <div class="input-group">
+                                <select class="form-select" id="productoEntrada" name="producto_id" required>
+                                    <option value="">Seleccionar producto</option>
+                                </select>
+                                <span class="input-group-text"><i class="fas fa-box"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="bodegaEntrada" class="form-label">Bodega</label>
+                            <div class="input-group">
+                                <select class="form-select" id="bodegaEntrada" name="bodega_id" required>
+                                    <option value="">Seleccionar bodega</option>
+                                </select>
+                                <span class="input-group-text"><i class="fas fa-warehouse"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="cantidadEntrada" class="form-label">Cantidad</label>
+                            <input type="number" class="form-control" id="cantidadEntrada" name="cantidad" placeholder="0" min="1" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="fechaIngresoEntrada" class="form-label">Fecha de Ingreso</label>
+                            <input type="date" class="form-control" id="fechaIngresoEntrada" name="fecha_ingreso" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" onclick="guardarEntrada()">
+                    <i class="fas fa-save me-1"></i>Guardar Entrada
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Editar Entrada -->
+<div class="modal fade" id="editarEntradaModal" tabindex="-1" aria-labelledby="editarEntradaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="editarEntradaModalLabel">
+                    <i class="fas fa-edit me-2"></i>Editar Entrada de Producto
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editarEntradaForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editProductoEntrada" class="form-label">Producto</label>
+                            <div class="input-group">
+                                <select class="form-select" id="editProductoEntrada" name="producto_id" required>
+                                    <option value="">Seleccionar producto</option>
+                                </select>
+                                <span class="input-group-text"><i class="fas fa-box"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editBodegaEntrada" class="form-label">Bodega</label>
+                            <div class="input-group">
+                                <select class="form-select" id="editBodegaEntrada" name="bodega_id" required>
+                                    <option value="">Seleccionar bodega</option>
+                                </select>
+                                <span class="input-group-text"><i class="fas fa-warehouse"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editCantidadEntrada" class="form-label">Cantidad</label>
+                            <input type="number" class="form-control" id="editCantidadEntrada" name="cantidad" min="1" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editFechaIngresoEntrada" class="form-label">Fecha de Ingreso</label>
+                            <input type="date" class="form-control" id="editFechaIngresoEntrada" name="fecha_ingreso" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editEstadoEntrada" class="form-label">Estado</label>
+                            <select class="form-select" id="editEstadoEntrada" name="estado_id" required>
+                                <option value="">Seleccionar estado</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" onclick="actualizarEntrada()">
+                    <i class="fas fa-save me-1"></i>Actualizar Entrada
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Visualizar Entrada -->
+<div class="modal fade" id="visualizarEntradaModal" tabindex="-1" aria-labelledby="visualizarEntradaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="visualizarEntradaModalLabel">
+                    <i class="fas fa-eye me-2 text-info"></i>Detalles de la Entrada
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="product-info">
+                            <div class="product-info-label">Producto</div>
+                            <p class="product-info-value" id="visualizarProductoEntrada">Cargando...</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="product-info">
+                            <div class="product-info-label">Bodega</div>
+                            <p class="product-info-value" id="visualizarBodegaEntrada">Cargando...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="product-info">
+                            <div class="product-info-label">Cantidad Ingresada</div>
+                            <p class="product-info-value" id="visualizarCantidadEntrada">Cargando...</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="product-info">
+                            <div class="product-info-label">Fecha de Ingreso</div>
+                            <p class="product-info-value" id="visualizarFechaIngresoEntrada">Cargando...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Información adicional -->
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <div class="product-info">
+                            <div class="product-info-label">Estado</div>
+                            <p class="product-info-value">
+                                <span class="badge bg-success fs-6" id="visualizarEstadoEntrada">Cargando...</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="product-info">
+                            <div class="product-info-label">Usuario</div>
+                            <p class="product-info-value">
+                                <span class="badge bg-info text-dark fs-6" id="visualizarUsuarioEntrada">Cargando...</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="product-info">
+                            <div class="product-info-label">Hora de Registro</div>
+                            <p class="product-info-value" id="visualizarHoraEntrada">Cargando...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editarEntradaModal">
+                    <i class="fas fa-edit me-1"></i>Editar Entrada
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Eliminar Entrada -->
+<div class="modal fade" id="eliminarEntradaModal" tabindex="-1" aria-labelledby="eliminarEntradaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="eliminarEntradaModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2 text-danger"></i>Eliminar Entrada
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>¡Atención!</strong> Esta acción no se puede deshacer y afectará el inventario.
+                </div>
+                <p class="text-white mb-3">¿Está seguro que desea eliminar la siguiente entrada?</p>
+                <div class="bg-dark p-3 rounded">
+                    <p class="text-white mb-1"><strong>Producto:</strong> <span id="eliminarProductoEntrada">-</span></p>
+                    <p class="text-white mb-0"><strong>Cantidad:</strong> <span id="eliminarCantidadEntrada">-</span></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-danger" onclick="eliminarEntrada()">
+                    <i class="fas fa-trash me-1"></i>Eliminar Entrada
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
 
 @section Scripts {
     <script>

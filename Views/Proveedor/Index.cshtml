@@ -29,7 +29,7 @@
                 </div>
                 
                 <div class="actions-wrapper">
-                    <button class="btn btn-crear">
+                    <button class="btn btn-crear" data-bs-toggle="modal" data-bs-target="#nuevoProveedorModal">
                         <i class="fas fa-plus"></i> Crear
                     </button>
                 </div>
@@ -73,10 +73,13 @@
                                     <td class="supplier-contact">Placeholder@gmail.com</td>
                                     <td class="supplier-address">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
                                     <td class="actions-cell">
-                                        <button class="btn btn-action btn-edit" title="Editar">
+                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarProveedor('C01')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarProveedor('C01')">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarProveedor('C01')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -87,10 +90,13 @@
                                     <td class="supplier-contact">Placeholder@gmail.com</td>
                                     <td class="supplier-address">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
                                     <td class="actions-cell">
-                                        <button class="btn btn-action btn-edit" title="Editar">
+                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarProveedor('C02')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarProveedor('C02')">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarProveedor('C02')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -101,10 +107,13 @@
                                     <td class="supplier-contact">Placeholder@gmail.com</td>
                                     <td class="supplier-address">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
                                     <td class="actions-cell">
-                                        <button class="btn btn-action btn-edit" title="Editar">
+                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarProveedor('C03')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarProveedor('C03')">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarProveedor('C03')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -115,10 +124,13 @@
                                     <td class="supplier-contact">Placeholder@gmail.com</td>
                                     <td class="supplier-address">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
                                     <td class="actions-cell">
-                                        <button class="btn btn-action btn-edit" title="Editar">
+                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarProveedor('C04')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarProveedor('C04')">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarProveedor('C04')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -181,3 +193,161 @@
             </div>
         </section>
     </div>
+
+<section class="modal-container">
+<!-- Modal Nuevo Proveedor -->
+<div class="modal fade" id="nuevoProveedorModal" tabindex="-1" aria-labelledby="nuevoProveedorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="nuevoProveedorModalLabel">
+                    <i class="fas fa-plus-circle me-2"></i>Nuevo Proveedor
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="nuevoProveedorForm">
+                    <div class="mb-3">
+                        <label for="nombreProveedor" class="form-label">Nombre Proveedor</label>
+                        <input type="text" class="form-control" id="nombreProveedor" name="nombre" placeholder="Ingrese el nombre del proveedor..." required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contacto" class="form-label">Contacto</label>
+                        <input type="email" class="form-control" id="contacto" name="contacto" placeholder="correo@ejemplo.com" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="direccion" class="form-label">Dirección</label>
+                        <textarea class="form-control" id="direccion" name="direccion" rows="3" placeholder="Dirección del proveedor..." required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" onclick="guardarProveedor()">
+                    <i class="fas fa-save me-1"></i>Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Editar Proveedor -->
+<div class="modal fade" id="editarProveedorModal" tabindex="-1" aria-labelledby="editarProveedorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="editarProveedorModalLabel">
+                    <i class="fas fa-edit me-2"></i>Editar Proveedor
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editarProveedorForm">
+                    <div class="mb-3">
+                        <label for="editNombreProveedor" class="form-label">Nombre Proveedor</label>
+                        <input type="text" class="form-control" id="editNombreProveedor" name="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editContacto" class="form-label">Contacto</label>
+                        <input type="email" class="form-control" id="editContacto" name="contacto" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDireccion" class="form-label">Dirección</label>
+                        <textarea class="form-control" id="editDireccion" name="direccion" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editEstadoProveedor" class="form-label">Estado</label>
+                        <select class="form-select" id="editEstadoProveedor" name="estado_id" required>
+                            <option value="">Seleccionar estado</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" onclick="actualizarProveedor()">
+                    <i class="fas fa-save me-1"></i>Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Visualizar Proveedor -->
+<div class="modal fade" id="visualizarProveedorModal" tabindex="-1" aria-labelledby="visualizarProveedorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="visualizarProveedorModalLabel">
+                    <i class="fas fa-eye me-2 text-info"></i>Detalles del Proveedor
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="product-info">
+                    <div class="product-info-label">Nombre Proveedor</div>
+                    <p class="product-info-value" id="visualizarNombreProveedor">Cargando...</p>
+                </div>
+                <div class="product-info">
+                    <div class="product-info-label">Contacto</div>
+                    <p class="product-info-value" id="visualizarContactoProveedor">Cargando...</p>
+                </div>
+                <div class="product-info">
+                    <div class="product-info-label">Dirección</div>
+                    <p class="product-info-value" id="visualizarDireccionProveedor">Cargando...</p>
+                </div>
+                <div class="product-info">
+                    <div class="product-info-label">Fecha de Registro</div>
+                    <p class="product-info-value" id="visualizarFechaProveedor">Cargando...</p>
+                </div>
+                <div class="product-info">
+                    <div class="product-info-label">Estado</div>
+                    <p class="product-info-value" id="visualizarEstadoProveedor">Cargando...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editarProveedorModal">
+                    <i class="fas fa-edit me-1"></i>Editar Proveedor
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Eliminar Proveedor -->
+<div class="modal fade" id="eliminarProveedorModal" tabindex="-1" aria-labelledby="eliminarProveedorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="eliminarProveedorModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2 text-danger"></i>Eliminar Proveedor
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>¡Atención!</strong> Esta acción no se puede deshacer.
+                </div>
+                <p class="text-white mb-3">¿Está seguro que desea eliminar el siguiente proveedor?</p>
+                <div class="bg-dark p-3 rounded">
+                    <p class="text-white mb-1"><strong>Nombre:</strong> <span id="eliminarNombreProveedor">-</span></p>
+                    <p class="text-white mb-0"><strong>Contacto:</strong> <span id="eliminarContactoProveedor">-</span></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-danger" onclick="eliminarProveedor()">
+                    <i class="fas fa-trash me-1"></i>Eliminar Proveedor
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</section>

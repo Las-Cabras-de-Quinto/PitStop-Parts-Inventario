@@ -37,7 +37,7 @@
                         </select>
                     </div>
                     
-                    <button class="btn btn-crear">
+                    <button class="btn btn-crear" data-bs-toggle="modal" data-bs-target="#nuevaCategoriaModal">
                         <i class="fas fa-plus"></i> Crear
                     </button>
                 </div>
@@ -79,10 +79,13 @@
                                     <td class="category-name">Placeholder</td>
                                     <td class="category-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
                                     <td class="actions-cell">
-                                        <button class="btn btn-action btn-edit" title="Editar">
+                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarCategoria('C01')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarCategoria('C01')">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarCategoria('C01')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -92,10 +95,13 @@
                                     <td class="category-name">Placeholder</td>
                                     <td class="category-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
                                     <td class="actions-cell">
-                                        <button class="btn btn-action btn-edit" title="Editar">
+                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarCategoria('C02')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarCategoria('C02')">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarCategoria('C02')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -105,10 +111,13 @@
                                     <td class="category-name">Placeholder</td>
                                     <td class="category-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
                                     <td class="actions-cell">
-                                        <button class="btn btn-action btn-edit" title="Editar">
+                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarCategoria('C03')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarCategoria('C03')">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarCategoria('C03')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -118,10 +127,13 @@
                                     <td class="category-name">Placeholder</td>
                                     <td class="category-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
                                     <td class="actions-cell">
-                                        <button class="btn btn-action btn-edit" title="Editar">
+                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarCategoria('C04')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarCategoria('C04')">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarCategoria('C04')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -184,3 +196,167 @@
             </div>
         </section>
     </div>
+
+<section class="modal-container">
+<!-- Modal Nueva Categoría -->
+<div class="modal fade" id="nuevaCategoriaModal" tabindex="-1" aria-labelledby="nuevaCategoriaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="nuevaCategoriaModalLabel">
+                    <i class="fas fa-plus-circle me-2"></i>Nueva Categoría
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="nuevaCategoriaForm">
+                    <div class="mb-3">
+                        <label for="nombreCategoria" class="form-label">Nombre Categoría</label>
+                        <input type="text" class="form-control" id="nombreCategoria" name="nombre" placeholder="Ingrese la categoría..." required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="4" placeholder="Agregar descripción de la categoría..." required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" onclick="guardarCategoria()">
+                    <i class="fas fa-save me-1"></i>Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Editar Categoría -->
+<div class="modal fade" id="editarCategoriaModal" tabindex="-1" aria-labelledby="editarCategoriaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="editarCategoriaModalLabel">
+                    <i class="fas fa-edit me-2"></i>Editar Categoría
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editarCategoriaForm">
+                    <div class="mb-3">
+                        <label for="editNombreCategoria" class="form-label">Nombre Categoría</label>
+                        <input type="text" class="form-control" id="editNombreCategoria" name="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDescripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="editDescripcion" name="descripcion" rows="4" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editEstadoCategoria" class="form-label">Estado</label>
+                        <select class="form-select" id="editEstadoCategoria" name="estado_id" required>
+                            <option value="">Seleccionar estado</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" onclick="actualizarCategoria()">
+                    <i class="fas fa-save me-1"></i>Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Visualizar Categoría -->
+<div class="modal fade" id="visualizarCategoriaModal" tabindex="-1" aria-labelledby="visualizarCategoriaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="visualizarCategoriaModalLabel">
+                    <i class="fas fa-eye me-2 text-info"></i>Detalles de la Categoría
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="product-info">
+                    <div class="product-info-label">Nombre de la Categoría</div>
+                    <p class="product-info-value" id="visualizarNombre">Cargando...</p>
+                </div>
+                <div class="product-info">
+                    <div class="product-info-label">Descripción</div>
+                    <p class="product-info-value" id="visualizarDescripcion">Cargando...</p>
+                </div>
+                
+                <!-- Información adicional -->
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <div class="product-info">
+                            <div class="product-info-label">Estado</div>
+                            <p class="product-info-value">
+                                <span class="badge bg-success fs-6" id="visualizarEstado">Cargando...</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="product-info">
+                            <div class="product-info-label">Productos</div>
+                            <p class="product-info-value">
+                                <span class="badge bg-warning text-dark fs-6" id="visualizarProductos">Cargando...</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="product-info">
+                            <div class="product-info-label">Fecha de Registro</div>
+                            <p class="product-info-value" id="visualizarFecha">Cargando...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editarCategoriaModal">
+                    <i class="fas fa-edit me-1"></i>Editar Categoría
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Eliminar Categoría -->
+<div class="modal fade" id="eliminarCategoriaModal" tabindex="-1" aria-labelledby="eliminarCategoriaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="eliminarCategoriaModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2 text-danger"></i>Eliminar Categoría
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>¡Atención!</strong> Esta acción no se puede deshacer.
+                </div>
+                <p class="text-white mb-3">¿Está seguro que desea eliminar la siguiente categoría?</p>
+                <div class="bg-dark p-3 rounded">
+                    <p class="text-white mb-1"><strong>Nombre:</strong> <span id="eliminarNombre">-</span></p>
+                    <p class="text-white mb-0"><strong>Descripción:</strong> <span id="eliminarDescripcion">-</span></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-danger" onclick="eliminarCategoria()">
+                    <i class="fas fa-trash me-1"></i>Eliminar Categoría
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</section>

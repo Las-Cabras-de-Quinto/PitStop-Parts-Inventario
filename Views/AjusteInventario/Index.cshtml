@@ -39,7 +39,7 @@
             <input type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")">
         </div>
         <div class="col-md-2">
-            <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addAdjustmentModal">
+            <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#nuevoAjusteModal">
                 <i class="fas fa-plus me-2"></i>Nuevo Ajuste
             </button>
         </div>
@@ -94,11 +94,14 @@
                             <td>Juan Pérez</td>
                             <td>
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles">
+                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles" onclick="abrirModalVisualizarAjuste('AJU-001')">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-secondary" title="Imprimir">
-                                        <i class="fas fa-print"></i>
+                                    <button class="btn btn-sm btn-outline-warning" title="Editar" onclick="abrirModalEditarAjuste('AJU-001')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="abrirModalEliminarAjuste('AJU-001')">
+                                        <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
@@ -116,11 +119,14 @@
                             <td>María García</td>
                             <td>
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles">
+                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles" onclick="abrirModalVisualizarAjuste('AJU-002')">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-secondary" title="Imprimir">
-                                        <i class="fas fa-print"></i>
+                                    <button class="btn btn-sm btn-outline-warning" title="Editar" onclick="abrirModalEditarAjuste('AJU-002')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="abrirModalEliminarAjuste('AJU-002')">
+                                        <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
@@ -138,11 +144,14 @@
                             <td>Carlos López</td>
                             <td>
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles">
+                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles" onclick="abrirModalVisualizarAjuste('AJU-003')">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-secondary" title="Imprimir">
-                                        <i class="fas fa-print"></i>
+                                    <button class="btn btn-sm btn-outline-warning" title="Editar" onclick="abrirModalEditarAjuste('AJU-003')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="abrirModalEliminarAjuste('AJU-003')">
+                                        <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
@@ -160,11 +169,14 @@
                             <td>Ana Rodríguez</td>
                             <td>
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles">
+                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles" onclick="abrirModalVisualizarAjuste('AJU-004')">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-secondary" title="Imprimir">
-                                        <i class="fas fa-print"></i>
+                                    <button class="btn btn-sm btn-outline-warning" title="Editar" onclick="abrirModalEditarAjuste('AJU-004')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="abrirModalEliminarAjuste('AJU-004')">
+                                        <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
@@ -311,6 +323,277 @@
         </div>
     </div>
 </div>
+
+<section class="modal-container">
+<!-- Modal Nuevo Ajuste -->
+<div class="modal fade" id="nuevoAjusteModal" tabindex="-1" aria-labelledby="nuevoAjusteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="nuevoAjusteModalLabel">
+                    <i class="fas fa-plus-circle me-2"></i>Nuevo Ajuste de Inventario
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="nuevoAjusteForm">
+                    <!-- Información general -->
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="bodegaAjuste" class="form-label">Bodega</label>
+                            <div class="input-group">
+                                <select class="form-select" id="bodegaAjuste" name="bodega_id" required>
+                                    <option value="">Seleccionar bodega</option>
+                                </select>
+                                <span class="input-group-text"><i class="fas fa-warehouse"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="fechaAjuste" class="form-label">Fecha de Ajuste</label>
+                            <input type="date" class="form-control" id="fechaAjuste" name="fecha" required>
+                        </div>
+                    </div>
+                    <!-- Selección de productos -->
+                    <div class="row mb-3">
+                        <div class="col-lg-8 col-12">
+                            <label for="productoAjuste" class="form-label">Agregar Producto</label>
+                            <select class="form-select" id="productoAjuste">
+                                <option value="">Seleccionar producto</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-6 mt-lg-0 mt-3">
+                            <label for="cantidadAjuste" class="form-label">Cantidad</label>
+                            <input type="number" class="form-control" id="cantidadAjuste" placeholder="0" min="1">
+                        </div>
+                        <div class="col-lg-2 col-6 d-flex align-items-end mt-lg-0 mt-3">
+                            <button type="button" class="btn btn-success w-100" style="height: 50px;" onclick="agregarProductoAjuste('agregar')">
+                                <i class="fas fa-plus"></i> Agregar
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Tabla de productos -->
+                    <div class="table-responsive">
+                        <table class="table table-dark table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad Nueva</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaProductosAjuste">
+                                <tr class="text-center">
+                                    <td colspan="3" class="text-white">No hay productos agregados</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" onclick="guardarAjuste()">
+                    <i class="fas fa-save me-1"></i>Guardar Ajuste
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Editar Ajuste -->
+<div class="modal fade" id="editarAjusteModal" tabindex="-1" aria-labelledby="editarAjusteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="editarAjusteModalLabel">
+                    <i class="fas fa-edit me-2"></i>Editar Ajuste de Inventario
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editarAjusteForm">
+                    <!-- Información general -->
+                    <div class="row mb-4">
+                        <div class="col-md-4 mb-3">
+                            <label for="editBodegaAjuste" class="form-label">Bodega</label>
+                            <div class="input-group">
+                                <select class="form-select" id="editBodegaAjuste" name="bodega_id" required>
+                                    <option value="">Seleccionar bodega</option>
+                                </select>
+                                <span class="input-group-text"><i class="fas fa-warehouse"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="editFecha" class="form-label">Fecha de Ajuste</label>
+                            <input type="date" class="form-control" id="editFechaAjuste" name="fecha" value="2024-03-15" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="editEstadoAjuste" class="form-label">Estado</label>
+                            <select class="form-select" id="editEstadoAjuste" name="estado_id" required>
+                                <option value="">Seleccionar estado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Selección de productos -->
+                    <div class="row mb-3">
+                        <div class="col-lg-8 col-12">
+                            <label for="editProductoAjuste" class="form-label">Agregar Producto</label>
+                            <select class="form-select" id="editProductoAjuste">
+                                <option value="">Seleccionar producto</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-6 mt-lg-0 mt-3">
+                            <label for="editCantidadAjuste" class="form-label">Cantidad</label>
+                            <input type="number" class="form-control" id="editCantidadAjuste" placeholder="0" min="1">
+                        </div>
+                        <div class="col-lg-2 col-6 d-flex align-items-end mt-lg-0 mt-3">
+                            <button type="button" class="btn btn-success w-100" style="height: 50px;" onclick="agregarProductoAjuste('editar')">
+                                <i class="fas fa-plus"></i> Agregar
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Tabla de productos -->
+                    <div class="table-responsive">
+                        <table class="table table-dark table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad Nueva</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="editTablaProductosAjuste">
+                                <tr class="text-center">
+                                    <td colspan="3" class="text-white">No hay productos agregados</td>
+                                </tr>
+                                <!-- Los productos se cargan dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" onclick="actualizarAjuste()">
+                    <i class="fas fa-save me-1"></i>Actualizar Ajuste
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Visualizar Ajuste -->
+<div class="modal fade" id="visualizarAjusteModal" tabindex="-1" aria-labelledby="visualizarAjusteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="visualizarAjusteModalLabel">
+                    <i class="fas fa-eye me-2 text-info"></i>Detalles del Ajuste de Inventario
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="product-info">
+                            <div class="product-info-label">Bodega</div>
+                            <p class="product-info-value" id="visualizarBodegaAjuste">Cargando...</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="product-info">
+                            <div class="product-info-label">Fecha de Ajuste</div>
+                            <p class="product-info-value" id="visualizarFechaAjuste">Cargando...</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="product-info">
+                            <div class="product-info-label">Estado</div>
+                            <p class="product-info-value">
+                                <span class="badge bg-success fs-6" id="visualizarEstadoAjuste">Cargando...</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="product-info">
+                            <div class="product-info-label">Total de Productos</div>
+                            <p class="product-info-value" id="visualizarTotalProductosAjuste">Cargando...</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="product-info">
+                            <div class="product-info-label">Usuario Responsable</div>
+                            <p class="product-info-value" id="visualizarUsuarioAjuste">Cargando...</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Tabla de productos ajustados -->
+                <h5 class="text-white mb-3">Productos Ajustados</h5>
+                <div class="table-responsive">
+                    <table class="table table-dark table-striped">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad Anterior</th>
+                                <th>Cantidad Nueva</th>
+                                <th>Diferencia</th>
+                            </tr>
+                        </thead>
+                        <tbody id="visualizarTablaProductosAjuste">
+                            <!-- Los productos se cargarán dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editarAjusteModal">
+                    <i class="fas fa-edit me-1"></i>Editar Ajuste
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Eliminar Ajuste -->
+<div class="modal fade" id="eliminarAjusteModal" tabindex="-1" aria-labelledby="eliminarAjusteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="eliminarAjusteModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2 text-danger"></i>Eliminar Ajuste de Inventario
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>¡Atención!</strong> Esta acción no se puede deshacer y afectará el inventario.
+                </div>
+                <p class="text-white mb-3">¿Está seguro que desea eliminar el siguiente ajuste de inventario?</p>
+                <div class="bg-dark p-3 rounded">
+                    <p class="text-white mb-1"><strong>Fecha:</strong> <span id="eliminarFechaAjuste">-</span></p>
+                    <p class="text-white mb-1"><strong>Bodega:</strong> <span id="eliminarBodegaAjuste">-</span></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-danger" onclick="eliminarAjuste()">
+                    <i class="fas fa-trash me-1"></i>Eliminar Ajuste
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
 
 @section Scripts {
     <script>

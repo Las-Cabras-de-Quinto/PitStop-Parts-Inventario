@@ -37,7 +37,7 @@
                         </select>
                     </div>
                     
-                    <button class="btn btn-crear">
+                    <button class="btn btn-crear" data-bs-toggle="modal" data-bs-target="#nuevoEstadoModal">
                         <i class="fas fa-plus"></i> Crear
                     </button>
                 </div>
@@ -79,10 +79,13 @@
                                     <td class="state-name">Placeholder</td>
                                     <td class="state-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
                                     <td class="actions-cell">
-                                        <button class="btn btn-action btn-edit" title="Editar">
+                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarEstado('E00')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarEstado('E00')">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarEstado('E00')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -184,3 +187,173 @@
             </div>
         </section>
     </div>
+
+<section class="modal-container">
+<!-- Modal Nuevo Estado -->
+<div class="modal fade" id="nuevoEstadoModal" tabindex="-1" aria-labelledby="nuevoEstadoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="nuevoEstadoModalLabel">
+                    <i class="fas fa-plus-circle me-2"></i>Nuevo Estado
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="nuevoEstadoForm">
+                    <div class="mb-3">
+                        <label for="nombreEstado" class="form-label">Nombre Estado</label>
+                        <input type="text" class="form-control" id="nombreEstado" name="nombre" placeholder="Ingrese el estado..." required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="funcion" class="form-label">Función</label>
+                        <input type="text" class="form-control" id="funcion" name="funcion" placeholder="Ingrese la función del estado..." required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="4" placeholder="Agregar descripción del estado..." required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" onclick="guardarEstado()">
+                    <i class="fas fa-save me-1"></i>Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Editar Estado -->
+<div class="modal fade" id="editarEstadoModal" tabindex="-1" aria-labelledby="editarEstadoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="editarEstadoModalLabel">
+                    <i class="fas fa-edit me-2"></i>Editar Estado
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editarEstadoForm">
+                    <div class="mb-3">
+                        <label for="editNombreEstado" class="form-label">Nombre Estado</label>
+                        <input type="text" class="form-control" id="editNombreEstado" name="nombre" value="Activo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editFuncion" class="form-label">Función</label>
+                        <input type="text" class="form-control" id="editFuncion" name="funcion" value="Habilitar funcionalidades" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDescripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="editDescripcion" name="descripcion" rows="4" required>Estado que indica que el elemento se encuentra operativo y disponible para su uso normal.</textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" onclick="actualizarEstado()">
+                    <i class="fas fa-save me-1"></i>Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Visualizar Estado -->
+<div class="modal fade" id="visualizarEstadoModal" tabindex="-1" aria-labelledby="visualizarEstadoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="visualizarEstadoModalLabel">
+                    <i class="fas fa-eye me-2 text-info"></i>Detalles del Estado
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="product-info">
+                    <div class="product-info-label">Nombre del Estado</div>
+                    <p class="product-info-value" id="visualizarNombreEstado">Cargando...</p>
+                </div>
+                <div class="product-info">
+                    <div class="product-info-label">Función</div>
+                    <p class="product-info-value" id="visualizarFuncionEstado">Cargando...</p>
+                </div>
+                <div class="product-info">
+                    <div class="product-info-label">Descripción</div>
+                    <p class="product-info-value" id="visualizarDescripcionEstado">Cargando...</p>
+                </div>
+                
+                <!-- Información adicional -->
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <div class="product-info">
+                            <div class="product-info-label">Estado</div>
+                            <p class="product-info-value">
+                                <span class="badge bg-success fs-6">Habilitado</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="product-info">
+                            <div class="product-info-label">Elementos</div>
+                            <p class="product-info-value">
+                                <span class="badge bg-warning text-dark fs-6" id="visualizarElementosEstado">Cargando...</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="product-info">
+                            <div class="product-info-label">Fecha de Registro</div>
+                            <p class="product-info-value" id="visualizarFechaEstado">Cargando...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editarEstadoModal">
+                    <i class="fas fa-edit me-1"></i>Editar Estado
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Eliminar Estado -->
+<div class="modal fade" id="eliminarEstadoModal" tabindex="-1" aria-labelledby="eliminarEstadoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="eliminarEstadoModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2 text-danger"></i>Eliminar Estado
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>¡Atención!</strong> Esta acción no se puede deshacer.
+                </div>
+                <p class="text-white mb-3">¿Está seguro que desea eliminar el siguiente estado?</p>
+                <div class="bg-dark p-3 rounded">
+                    <p class="text-white mb-1"><strong>Nombre:</strong> <span id="eliminarNombreEstado">-</span></p>
+                    <p class="text-white mb-0"><strong>Función:</strong> <span id="eliminarFuncionEstado">-</span></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-danger" onclick="eliminarEstado()">
+                    <i class="fas fa-trash me-1"></i>Eliminar Estado
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</section>

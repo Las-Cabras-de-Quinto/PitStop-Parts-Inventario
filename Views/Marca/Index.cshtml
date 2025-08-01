@@ -37,7 +37,7 @@
                         </select>
                     </div>
                     
-                    <button class="btn btn-crear">
+                    <button class="btn btn-crear" data-bs-toggle="modal" data-bs-target="#nuevaMarcaModal">
                         <i class="fas fa-plus"></i> Crear
                     </button>
                 </div>
@@ -79,10 +79,13 @@
                                     <td class="brand-name">Placeholder</td>
                                     <td class="brand-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
                                     <td class="actions-cell">
-                                        <button class="btn btn-action btn-edit" title="Editar">
+                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarMarca('M01')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarMarca('M01')">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarMarca('M01')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -92,10 +95,13 @@
                                     <td class="brand-name">Placeholder</td>
                                     <td class="brand-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
                                     <td class="actions-cell">
-                                        <button class="btn btn-action btn-edit" title="Editar">
+                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarMarca('M02')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarMarca('M02')">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarMarca('M02')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -105,10 +111,13 @@
                                     <td class="brand-name">Placeholder</td>
                                     <td class="brand-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
                                     <td class="actions-cell">
-                                        <button class="btn btn-action btn-edit" title="Editar">
+                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarMarca('M03')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarMarca('M03')">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarMarca('M03')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -118,10 +127,13 @@
                                     <td class="brand-name">Placeholder</td>
                                     <td class="brand-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
                                     <td class="actions-cell">
-                                        <button class="btn btn-action btn-edit" title="Editar">
+                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarMarca('M04')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarMarca('M04')">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarMarca('M04')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -178,3 +190,167 @@
             </div>
         </section>
     </div>
+
+<section class="modal-container">
+<!-- Modal Nuevo Marca -->
+<div class="modal fade" id="nuevaMarcaModal" tabindex="-1" aria-labelledby="nuevaMarcaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="nuevaMarcaModalLabel">
+                    <i class="fas fa-plus-circle me-2"></i>Nueva Marca
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="nuevaMarcaForm">
+                    <div class="mb-3">
+                        <label for="nombreMarca" class="form-label">Nombre Marca</label>
+                        <input type="text" class="form-control" id="nombreMarca" name="nombre" placeholder="Ingrese la marca..." required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcionMarca" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="descripcionMarca" name="descripcion" rows="4" placeholder="Agregar descripción de la marca..." required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" onclick="guardarMarca()">
+                    <i class="fas fa-save me-1"></i>Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Editar Marca -->
+<div class="modal fade" id="editarMarcaModal" tabindex="-1" aria-labelledby="editarMarcaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="editarMarcaModalLabel">
+                    <i class="fas fa-edit me-2"></i>Editar Marca
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editarMarcaForm">
+                    <div class="mb-3">
+                        <label for="editNombreMarca" class="form-label">Nombre Marca</label>
+                        <input type="text" class="form-control" id="editNombreMarca" name="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDescripcionMarca" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="editDescripcionMarca" name="descripcion" rows="4" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editEstadoMarca" class="form-label">Estado</label>
+                        <select class="form-select" id="editEstadoMarca" name="estado_id" required>
+                            <option value="">Seleccionar estado</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" onclick="actualizarMarca()">
+                    <i class="fas fa-save me-1"></i>Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Visualizar Marca -->
+<div class="modal fade" id="visualizarMarcaModal" tabindex="-1" aria-labelledby="visualizarMarcaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="visualizarMarcaModalLabel">
+                    <i class="fas fa-eye me-2 text-info"></i>Detalles de la Marca
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="product-info">
+                    <div class="product-info-label">Nombre de la Marca</div>
+                    <p class="product-info-value" id="visualizarNombreMarca">Cargando...</p>
+                </div>
+                <div class="product-info">
+                    <div class="product-info-label">Descripción</div>
+                    <p class="product-info-value" id="visualizarDescripcionMarca">Cargando...</p>
+                </div>
+                
+                <!-- Información adicional -->
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <div class="product-info">
+                            <div class="product-info-label">Estado</div>
+                            <p class="product-info-value">
+                                <span class="badge bg-success fs-6" id="visualizarEstadoMarca">Cargando...</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="product-info">
+                            <div class="product-info-label">Productos</div>
+                            <p class="product-info-value">
+                                <span class="badge bg-warning text-dark fs-6" id="visualizarProductosMarca">Cargando...</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="product-info">
+                            <div class="product-info-label">Fecha de Registro</div>
+                            <p class="product-info-value" id="visualizarFechaMarca">Cargando...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editarMarcaModal">
+                    <i class="fas fa-edit me-1"></i>Editar Marca
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Eliminar Marca -->
+<div class="modal fade" id="eliminarMarcaModal" tabindex="-1" aria-labelledby="eliminarMarcaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="eliminarMarcaModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2 text-danger"></i>Eliminar Marca
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>¡Atención!</strong> Esta acción no se puede deshacer.
+                </div>
+                <p class="text-white mb-3">¿Está seguro que desea eliminar la siguiente marca?</p>
+                <div class="bg-dark p-3 rounded">
+                    <p class="text-white mb-1"><strong>Nombre:</strong> <span id="eliminarNombreMarca">-</span></p>
+                    <p class="text-white mb-0"><strong>Descripción:</strong> <span id="eliminarDescripcionMarca">-</span></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-danger" onclick="eliminarMarca()">
+                    <i class="fas fa-trash me-1"></i>Eliminar Marca
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</section>

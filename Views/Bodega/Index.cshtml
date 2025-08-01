@@ -37,7 +37,7 @@
                         </select>
                     </div>
                     
-                    <button class="btn btn-crear">
+                    <button class="btn btn-crear" data-bs-toggle="modal" data-bs-target="#nuevaBodegaModal">
                         <i class="fas fa-plus"></i> Crear
                     </button>
                 </div>
@@ -81,10 +81,13 @@
                                     <td class="warehouse-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
                                     <td class="warehouse-location">Placeholder</td>
                                     <td class="actions-cell">
-                                        <button class="btn btn-action btn-edit" title="Editar">
+                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarBodega('B00')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarBodega('B00')">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarBodega('B00')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -95,10 +98,13 @@
                                     <td class="warehouse-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
                                     <td class="warehouse-location">Placeholder</td>
                                     <td class="actions-cell">
-                                        <button class="btn btn-action btn-edit" title="Editar">
+                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarBodega('B01')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarBodega('B01')">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarBodega('B01')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -109,10 +115,13 @@
                                     <td class="warehouse-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
                                     <td class="warehouse-location">Placeholder</td>
                                     <td class="actions-cell">
-                                        <button class="btn btn-action btn-edit" title="Editar">
+                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarBodega('B02')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarBodega('B02')">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarBodega('B02')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -123,10 +132,13 @@
                                     <td class="warehouse-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
                                     <td class="warehouse-location">Placeholder</td>
                                     <td class="actions-cell">
-                                        <button class="btn btn-action btn-edit" title="Editar">
+                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarBodega('B03')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarBodega('B03')">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar">
+                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarBodega('B03')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -189,3 +201,165 @@
             </div>
         </section>
     </div>
+
+<section class="modal-container">
+<!-- Modal Nueva Bodega -->
+<div class="modal fade" id="nuevaBodegaModal" tabindex="-1" aria-labelledby="nuevaBodegaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="nuevaBodegaModalLabel">
+                    <i class="fas fa-plus-circle me-2"></i>Nueva Bodega
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="nuevaBodegaForm">
+                    <div class="mb-3">
+                        <label for="nombreBodega" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombreBodega" name="nombre" placeholder="Ingrese el nombre de la bodega..." required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcionBodega" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="descripcionBodega" name="descripcion" rows="4" placeholder="Ingrese la descripción..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ubicacionBodega" class="form-label">Ubicación</label>
+                        <input type="text" class="form-control" id="ubicacionBodega" name="ubicacion" placeholder="Ingrese la ubicación..." required />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" onclick="guardarBodega()">
+                    <i class="fas fa-save me-1"></i>Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Editar Bodega -->
+<div class="modal fade" id="editarBodegaModal" tabindex="-1" aria-labelledby="editarBodegaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="editarBodegaModalLabel">
+                    <i class="fas fa-edit me-2"></i>Editar Bodega
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editarBodegaForm">
+                    <div class="mb-3">
+                        <label for="editNombreBodega" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="editNombreBodega" name="nombre" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDescripcionBodega" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="editDescripcionBodega" name="descripcion" rows="4" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUbicacionBodega" class="form-label">Ubicación</label>
+                        <input type="text" class="form-control" id="editUbicacionBodega" name="ubicacion" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="editEstadoBodega" class="form-label">Estado</label>
+                        <select class="form-select" id="editEstadoBodega" name="estado_id" required>
+                            <option value="">Seleccionar estado</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" onclick="actualizarBodega()">
+                    <i class="fas fa-save me-1"></i>Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Visualizar Bodega -->
+<div class="modal fade" id="visualizarBodegaModal" tabindex="-1" aria-labelledby="visualizarBodegaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="visualizarBodegaModalLabel">
+                    <i class="fas fa-eye me-2 text-info"></i>Detalles de la Bodega
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="product-info">
+                    <div class="product-info-label">Nombre</div>
+                    <p class="product-info-value" id="visualizarNombreBodega">Cargando...</p>
+                </div>
+                <div class="product-info">
+                    <div class="product-info-label">Descripción</div>
+                    <p class="product-info-value" id="visualizarDescripcionBodega">Cargando...</p>
+                </div>
+                <div class="product-info">
+                    <div class="product-info-label">Ubicación</div>
+                    <p class="product-info-value" id="visualizarUbicacionBodega">Cargando...</p>
+                </div>
+                <div class="product-info">
+                    <div class="product-info-label">Productos Almacenados</div>
+                    <span class="badge bg-warning text-dark fs-6" id="visualizarProductosBodega">Cargando...</span>
+                </div>
+                <div class="product-info">
+                    <div class="product-info-label">Fecha de Registro</div>
+                    <p class="product-info-value" id="visualizarFechaBodega">Cargando...</p>
+                </div>
+                <div class="product-info">
+                    <div class="product-info-label">Estado</div>
+                    <span class="badge bg-success text-dark fs-6" id="visualizarEstadoBodega">Cargando...</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editarBodegaModal">
+                    <i class="fas fa-edit me-1"></i>Editar Bodega
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Eliminar Bodega -->
+<div class="modal fade" id="eliminarBodegaModal" tabindex="-1" aria-labelledby="eliminarBodegaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="eliminarBodegaModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2 text-danger"></i>Eliminar Bodega
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>¡Atención!</strong> Esta acción no se puede deshacer.
+                </div>
+                <p class="text-white mb-3">¿Está seguro que desea eliminar la siguiente bodega?</p>
+                <div class="bg-dark p-3 rounded">
+                    <p class="text-white mb-1"><strong>Nombre:</strong> <span id="eliminarNombreBodega">-</span></p>
+                    <p class="text-white mb-0"><strong>Ubicación:</strong> <span id="eliminarUbicacionBodega">-</span></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-danger" onclick="eliminarBodega()">
+                    <i class="fas fa-trash me-1"></i>Eliminar Bodega
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
