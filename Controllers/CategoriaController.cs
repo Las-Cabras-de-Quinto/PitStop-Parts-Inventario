@@ -56,7 +56,7 @@ namespace PitStop_Parts_Inventario.Controllers
             return await ExecuteIfHasRole("Administrador", async () => {
                 if (!ModelState.IsValid)
                 {
-                    return View(categoria);
+                    return BadRequest(ModelState);
                 }
 
                 await _CategoriaService.CreateAsync(categoria, CurrentUserId ?? "");
