@@ -1,3 +1,4 @@
+@model PitStop_Parts_Inventario.Models.ViewModels.PagedResult<PitStop_Parts_Inventario.Models.CategoriaModel>
 @{
     ViewData["Title"] = "Categorías";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -20,28 +21,35 @@
 
         <!-- Search and Actions Section -->
         <section class="search-actions-section">
-            <div class="search-actions-container">
-                <div class="search-wrapper">
-                    <div class="search-container">
-                        <input type="text" class="form-control search-input" placeholder="Buscar categoría...">
-                        <i class="fas fa-search search-icon"></i>
-                    </div>
-                </div>
-                
-                <div class="actions-wrapper">
-                    <div class="filter-container">
-                        <select class="form-select filter-select">
-                            <option value="" selected>Filtrar orden</option>
-                            <option value="a-z">A-Z</option>
-                            <option value="z-a">Z-A</option>
-                        </select>
+            <form method="get" asp-action="Index" id="filtrosForm">
+                <div class="search-actions-container">
+                    <div class="search-wrapper">
+                        <div class="search-container">
+                            <input type="text" name="filtros.SearchTerm" class="form-control search-input" placeholder="Buscar categoría..." value="@ViewBag.SearchTerm">
+                            <i class="fas fa-search search-icon"></i>
+                        </div>
                     </div>
                     
-                    <button class="btn btn-crear" data-bs-toggle="modal" data-bs-target="#nuevaCategoriaModal">
-                        <i class="fas fa-plus"></i> Crear
-                    </button>
+                    <div class="actions-wrapper">
+                        <div class="filter-container">
+                            <select name="filtros.SoloActivos" class="form-select filter-select" onchange="document.getElementById('filtrosForm').submit();">
+                                <option value="">Todas las categorías</option>
+                                <option value="true" selected="@(ViewBag.SoloActivos == true ? "selected" : null)">Solo activas</option>
+                                <option value="false" selected="@(ViewBag.SoloActivos == false ? "selected" : null)">Solo inactivas</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-secondary">
+                            <i class="fas fa-filter"></i> Filtrar
+                        </button>
+                        
+                        <button class="btn btn-crear" data-bs-toggle="modal" data-bs-target="#nuevaCategoriaModal">
+                            <i class="fas fa-plus"></i> Crear
+                        </button>
+                    </div>
                 </div>
-            </div>
+                <input type="hidden" name="numeroPagina" value="@Model.PageNumber" />
+            </form>
         </section>
 
         <!-- Table Section -->
@@ -49,16 +57,9 @@
             <div class="card table-card">
                 <div class="card-header table-header">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="table-title mb-0">Tabla de Categoría</h5>
+                        <h5 class="table-title mb-0">Tabla de Categorías</h5>
                         <div class="pagination-info">
-                            <span class="pagination-text">Página:</span>
-                            <button class="btn btn-pagination" disabled>
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <span class="page-number">1</span>
-                            <button class="btn btn-pagination">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
+                            <span class="pagination-text">Mostrando @(((Model.PageNumber - 1) * Model.PageSize) + 1) - @(Math.Min(Model.PageNumber * Model.PageSize, Model.TotalRecords)) de @Model.TotalRecords categorías</span>
                         </div>
                     </div>
                 </div>
@@ -74,70 +75,34 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="table-row">
-                                    <td class="category-id">C01</td>
-                                    <td class="category-name">Placeholder</td>
-                                    <td class="category-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                                    <td class="actions-cell">
-                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarCategoria('C01')">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarCategoria('C01')">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarCategoria('C01')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="table-row">
-                                    <td class="category-id">C02</td>
-                                    <td class="category-name">Placeholder</td>
-                                    <td class="category-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                                    <td class="actions-cell">
-                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarCategoria('C02')">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarCategoria('C02')">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarCategoria('C02')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="table-row">
-                                    <td class="category-id">C03</td>
-                                    <td class="category-name">Placeholder</td>
-                                    <td class="category-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                                    <td class="actions-cell">
-                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarCategoria('C03')">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarCategoria('C03')">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarCategoria('C03')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="table-row">
-                                    <td class="category-id">C04</td>
-                                    <td class="category-name">Placeholder</td>
-                                    <td class="category-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                                    <td class="actions-cell">
-                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarCategoria('C04')">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarCategoria('C04')">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarCategoria('C04')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                @if (Model.Data.Any())
+                                {
+                                    @foreach (var categoria in Model.Data)
+                                    {
+                                        <tr class="table-row">
+                                            <td class="category-id">@categoria.IdCategoria</td>
+                                            <td class="category-name">@categoria.Nombre</td>
+                                            <td class="category-description">@categoria.Descripcion</td>
+                                            <td class="actions-cell">
+                                                <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarCategoria(@categoria.IdCategoria)">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarCategoria(@categoria.IdCategoria)">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarCategoria(@categoria.IdCategoria)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center">No se encontraron categorías</td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -148,13 +113,13 @@
         <!-- Stats Cards Section -->
         <section class="stats-section">
             <div class="row mt-4">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card stat-card">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="stat-info">
                                     <h6 class="stat-label">Total Categorías</h6>
-                                    <h2 class="stat-number">7</h2>
+                                    <h2 class="stat-number">@Model.TotalRecords</h2>
                                 </div>
                                 <div class="stat-icon-container">
                                     <i class="fas fa-th-large stat-icon"></i>
@@ -163,13 +128,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card stat-card stat-card-current">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="stat-info">
-                                    <h6 class="stat-label">Página actual</h6>
-                                    <h2 class="stat-number">1</h2>
+                                    <h6 class="stat-label">Página Actual</h6>
+                                    <h2 class="stat-number">@Model.PageNumber</h2>
                                 </div>
                                 <div class="stat-icon-container">
                                     <i class="fas fa-file-alt stat-icon"></i>
@@ -178,13 +143,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card stat-card">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="stat-info">
                                     <h6 class="stat-label">Total Páginas</h6>
-                                    <h2 class="stat-number">1</h2>
+                                    <h2 class="stat-number">@Model.TotalPages</h2>
                                 </div>
                                 <div class="stat-icon-container">
                                     <i class="fas fa-copy stat-icon"></i>
@@ -193,8 +158,85 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-3">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="stat-info">
+                                    <h6 class="stat-label">Por Página</h6>
+                                    <h2 class="stat-number">@Model.PageSize</h2>
+                                </div>
+                                <div class="stat-icon-container">
+                                    <i class="fas fa-list stat-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
+
+        <!-- Pagination Section -->
+        @if (Model.TotalPages > 1)
+        {
+            <section class="pagination-section mt-4">
+                <div class="pagination-wrapper">
+                    <nav aria-label="Navegación de categorías">
+                        <ul class="pagination justify-content-center">
+                            @if (Model.HasPreviousPage)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="?numeroPagina=@(Model.PageNumber - 1)&filtros.SearchTerm=@ViewBag.SearchTerm&filtros.SoloActivos=@ViewBag.SoloActivos">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                </li>
+                            }
+
+                            @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.TotalPages, Model.PageNumber + 2); i++)
+                            {
+                                if (i == Model.PageNumber)
+                                {
+                                    <li class="page-item active">
+                                        <span class="page-link">@i</span>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="?numeroPagina=@i&filtros.SearchTerm=@ViewBag.SearchTerm&filtros.SoloActivos=@ViewBag.SoloActivos">@i</a>
+                                    </li>
+                                }
+                            }
+
+                            @if (Model.HasNextPage)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="?numeroPagina=@(Model.PageNumber + 1)&filtros.SearchTerm=@ViewBag.SearchTerm&filtros.SoloActivos=@ViewBag.SoloActivos">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            </section>
+        }
     </div>
 
 <section class="modal-container">

@@ -1,3 +1,4 @@
+@model PitStop_Parts_Inventario.Models.ViewModels.PagedResult<PitStop_Parts_Inventario.Models.AjusteInventarioModel>
 @{
     ViewData["Title"] = "Ajuste de Inventario";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -18,32 +19,35 @@
 
 <!-- Search and Actions Section -->
 <section class="search-actions-section mb-4">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Buscar ajuste...">
-                <span class="input-group-text">
-                    <i class="fas fa-search"></i>
-                </span>
+    <form method="get" asp-action="Index" id="filtrosForm">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="text" name="filtros.SearchTerm" class="form-control" placeholder="Buscar ajuste..." value="@ViewBag.SearchTerm">
+                    <span class="input-group-text">
+                        <i class="fas fa-search"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select name="filtros.TipoAjuste" class="form-select" onchange="document.getElementById('filtrosForm').submit();">
+                    <option value="">Todos los tipos</option>
+                    <option value="aumento" selected="@(ViewBag.TipoAjuste == "aumento" ? "selected" : null)">Aumento</option>
+                    <option value="disminucion" selected="@(ViewBag.TipoAjuste == "disminucion" ? "selected" : null)">Disminución</option>
+                    <option value="correccion" selected="@(ViewBag.TipoAjuste == "correccion" ? "selected" : null)">Corrección</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="date" name="filtros.FechaFiltro" class="form-control" value="@ViewBag.FechaFiltro">
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#nuevoAjusteModal">
+                    <i class="fas fa-plus me-2"></i>Nuevo Ajuste
+                </button>
             </div>
         </div>
-        <div class="col-md-3">
-            <select class="form-select">
-                <option value="" selected>Todos los tipos</option>
-                <option value="aumento">Aumento</option>
-                <option value="disminucion">Disminución</option>
-                <option value="correccion">Corrección</option>
-            </select>
-        </div>
-        <div class="col-md-3">
-            <input type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")">
-        </div>
-        <div class="col-md-2">
-            <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#nuevoAjusteModal">
-                <i class="fas fa-plus me-2"></i>Nuevo Ajuste
-            </button>
-        </div>
-    </div>
+        <input type="hidden" name="numeroPagina" value="@Model.PageNumber" />
+    </form>
 </section>
 
 <!-- Adjustments Table Section -->
@@ -69,121 +73,92 @@
                         <tr>
                             <th>Nº Ajuste</th>
                             <th>Fecha</th>
-                            <th>Producto</th>
                             <th>Bodega</th>
-                            <th>Stock Anterior</th>
-                            <th>Ajuste</th>
-                            <th>Stock Actual</th>
-                            <th>Tipo</th>
-                            <th>Motivo</th>
                             <th>Usuario</th>
+                            <th>Total Productos</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><strong>AJU-001</strong></td>
-                            <td>24/07/2025</td>
-                            <td>Filtro de Aire Premium</td>
-                            <td>Bodega Principal</td>
-                            <td><span class="badge bg-secondary">20</span></td>
-                            <td><span class="badge bg-success">+5</span></td>
-                            <td><span class="badge bg-primary">25</span></td>
-                            <td><span class="badge bg-success">Aumento</span></td>
-                            <td>Mercancía encontrada</td>
-                            <td>Juan Pérez</td>
-                            <td>
-                                <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles" onclick="abrirModalVisualizarAjuste('AJU-001')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-warning" title="Editar" onclick="abrirModalEditarAjuste('AJU-001')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="abrirModalEliminarAjuste('AJU-001')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>AJU-002</strong></td>
-                            <td>23/07/2025</td>
-                            <td>Pastillas de Freno</td>
-                            <td>Bodega Norte</td>
-                            <td><span class="badge bg-secondary">8</span></td>
-                            <td><span class="badge bg-danger">-3</span></td>
-                            <td><span class="badge bg-primary">5</span></td>
-                            <td><span class="badge bg-danger">Disminución</span></td>
-                            <td>Producto dañado</td>
-                            <td>María García</td>
-                            <td>
-                                <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles" onclick="abrirModalVisualizarAjuste('AJU-002')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-warning" title="Editar" onclick="abrirModalEditarAjuste('AJU-002')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="abrirModalEliminarAjuste('AJU-002')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>AJU-003</strong></td>
-                            <td>22/07/2025</td>
-                            <td>Aceite Motor 5W-30</td>
-                            <td>Bodega Principal</td>
-                            <td><span class="badge bg-secondary">15</span></td>
-                            <td><span class="badge bg-warning">±0</span></td>
-                            <td><span class="badge bg-primary">15</span></td>
-                            <td><span class="badge bg-warning">Corrección</span></td>
-                            <td>Ajuste de inventario físico</td>
-                            <td>Carlos López</td>
-                            <td>
-                                <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles" onclick="abrirModalVisualizarAjuste('AJU-003')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-warning" title="Editar" onclick="abrirModalEditarAjuste('AJU-003')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="abrirModalEliminarAjuste('AJU-003')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>AJU-004</strong></td>
-                            <td>21/07/2025</td>
-                            <td>Amortiguador Delantero</td>
-                            <td>Bodega Sur</td>
-                            <td><span class="badge bg-secondary">12</span></td>
-                            <td><span class="badge bg-success">+8</span></td>
-                            <td><span class="badge bg-primary">20</span></td>
-                            <td><span class="badge bg-success">Aumento</span></td>
-                            <td>Reconteo por discrepancia</td>
-                            <td>Ana Rodríguez</td>
-                            <td>
-                                <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles" onclick="abrirModalVisualizarAjuste('AJU-004')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-warning" title="Editar" onclick="abrirModalEditarAjuste('AJU-004')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="abrirModalEliminarAjuste('AJU-004')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                        @if (Model.Data.Any())
+                        {
+                            @foreach (var ajuste in Model.Data)
+                            {
+                                <tr>
+                                    <td><strong>AJU-@ajuste.IdAjusteInventario</strong></td>
+                                    <td>@ajuste.Fecha.ToString("dd/MM/yyyy")</td>
+                                    <td>@(ajuste.Bodega?.Nombre ?? "N/A")</td>
+                                    <td>@(ajuste.Usuario?.UserName ?? "N/A")</td>
+                                    <td><span class="badge bg-info">@(ajuste.AjusteInventarioProductos?.Count ?? 0)</span></td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-primary" title="Ver detalles" onclick="abrirModalVisualizarAjuste('@ajuste.IdAjusteInventario')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-warning" title="Editar" onclick="abrirModalEditarAjuste('@ajuste.IdAjusteInventario')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="abrirModalEliminarAjuste('@ajuste.IdAjusteInventario')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    <i class="fas fa-search fa-2x mb-2"></i>
+                                    <p class="mb-0">No se encontraron ajustes con los criterios especificados.</p>
+                                </td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Pagination Section -->
+            @if (Model.TotalPages > 1)
+            {
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div>
+                        <span class="text-muted">
+                            Mostrando página @Model.PageNumber de @Model.TotalPages 
+                            (Total: @Model.TotalRecords ajustes)
+                        </span>
+                    </div>
+                    <nav aria-label="Paginación de ajustes">
+                        <ul class="pagination mb-0">
+                            @if (Model.PageNumber > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="?numeroPagina=@(Model.PageNumber - 1)&filtros.SearchTerm=@ViewBag.SearchTerm&filtros.TipoAjuste=@ViewBag.TipoAjuste&filtros.FechaFiltro=@ViewBag.FechaFiltro">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                            }
+                            
+                            @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.TotalPages, Model.PageNumber + 2); i++)
+                            {
+                                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                    <a class="page-link" href="?numeroPagina=@i&filtros.SearchTerm=@ViewBag.SearchTerm&filtros.TipoAjuste=@ViewBag.TipoAjuste&filtros.FechaFiltro=@ViewBag.FechaFiltro">@i</a>
+                                </li>
+                            }
+                            
+                            @if (Model.PageNumber < Model.TotalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="?numeroPagina=@(Model.PageNumber + 1)&filtros.SearchTerm=@ViewBag.SearchTerm&filtros.TipoAjuste=@ViewBag.TipoAjuste&filtros.FechaFiltro=@ViewBag.FechaFiltro">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            }
         </div>
     </div>
 </section>

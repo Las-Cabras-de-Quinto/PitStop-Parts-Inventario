@@ -1,3 +1,4 @@
+@model PitStop_Parts_Inventario.Models.ViewModels.PagedResult<PitStop_Parts_Inventario.Models.EntradaProductoModel>
 @{
     ViewData["Title"] = "Entrada de Productos";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -18,32 +19,33 @@
 
 <!-- Search and Actions Section -->
 <section class="search-actions-section mb-4">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Buscar entrada...">
-                <span class="input-group-text">
-                    <i class="fas fa-search"></i>
-                </span>
+    <form method="get" asp-action="Index" id="filtrosForm">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="text" name="filtros.SearchTerm" class="form-control" placeholder="Buscar entrada..." value="@ViewBag.SearchTerm">
+                    <span class="input-group-text">
+                        <i class="fas fa-search"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select name="filtros.IdBodega" class="form-select" onchange="document.getElementById('filtrosForm').submit();">
+                    <option value="">Todas las bodegas</option>
+                    <!-- Aquí se cargarían las bodegas dinámicamente -->
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="date" name="filtros.FechaFiltro" class="form-control" value="@ViewBag.FechaFiltro">
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#nuevaEntradaModal">
+                    <i class="fas fa-plus me-2"></i>Nueva Entrada
+                </button>
             </div>
         </div>
-        <div class="col-md-3">
-            <select class="form-select">
-                <option value="" selected>Todas las bodegas</option>
-                <option value="principal">Bodega Principal</option>
-                <option value="norte">Bodega Norte</option>
-                <option value="sur">Bodega Sur</option>
-            </select>
-        </div>
-        <div class="col-md-3">
-            <input type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")">
-        </div>
-        <div class="col-md-2">
-            <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#nuevaEntradaModal">
-                <i class="fas fa-plus me-2"></i>Nueva Entrada
-            </button>
-        </div>
-    </div>
+        <input type="hidden" name="numeroPagina" value="@Model.PageNumber" />
+    </form>
 </section>
 
 <!-- Entries Table Section -->
@@ -80,81 +82,89 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><strong>ENT-001</strong></td>
-                            <td>24/07/2025</td>
-                            <td>AutoParts Supply Co.</td>
-                            <td>Bodega Principal</td>
-                            <td>5</td>
-                            <td><span class="badge bg-info">120</span></td>
-                            <td><strong>$2,450.00</strong></td>
-                            <td>Juan Pérez</td>
-                            <td><span class="badge bg-success">Completada</span></td>
-                            <td>
-                                <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles" onclick="abrirModalVisualizarEntrada('ENT-001')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-warning" title="Editar" onclick="abrirModalEditarEntrada('ENT-001')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="abrirModalEliminarEntrada('ENT-001')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>ENT-002</strong></td>
-                            <td>23/07/2025</td>
-                            <td>BrakeTech Industries</td>
-                            <td>Bodega Norte</td>
-                            <td>3</td>
-                            <td><span class="badge bg-info">75</span></td>
-                            <td><strong>$1,890.00</strong></td>
-                            <td>María García</td>
-                            <td><span class="badge bg-warning">En Proceso</span></td>
-                            <td>
-                                <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles" onclick="abrirModalVisualizarEntrada('ENT-002')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-warning" title="Editar" onclick="abrirModalEditarEntrada('ENT-002')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="abrirModalEliminarEntrada('ENT-002')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>ENT-003</strong></td>
-                            <td>22/07/2025</td>
-                            <td>MotorOil Solutions</td>
-                            <td>Bodega Principal</td>
-                            <td>2</td>
-                            <td><span class="badge bg-info">50</span></td>
-                            <td><strong>$875.00</strong></td>
-                            <td>Carlos López</td>
-                            <td><span class="badge bg-success">Completada</span></td>
-                            <td>
-                                <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary" title="Ver detalles" onclick="abrirModalVisualizarEntrada('ENT-003')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-warning" title="Editar" onclick="abrirModalEditarEntrada('ENT-003')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="abrirModalEliminarEntrada('ENT-003')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                        @if (Model.Data.Any())
+                        {
+                            @foreach (var entrada in Model.Data)
+                            {
+                                <tr>
+                                    <td><strong>ENT-@entrada.IdEntrada</strong></td>
+                                    <td>@entrada.Fecha.ToString("dd/MM/yyyy")</td>
+                                    <td>@string.Join(", ", entrada.Producto?.ProveedorProductos?.Take(1).Select(pp => pp.Proveedor?.Nombre) ?? new List<string> { "N/A" })</td>
+                                    <td>@(entrada.Bodega?.Nombre ?? "N/A")</td>
+                                    <td>1</td>
+                                    <td><span class="badge bg-info">@entrada.CantidadProducto</span></td>
+                                    <td><strong>$@((entrada.Producto?.PrecioCompra ?? 0) * entrada.CantidadProducto)</strong></td>
+                                    <td>@(entrada.Usuario?.UserName ?? "N/A")</td>
+                                    <td><span class="badge bg-success">Completada</span></td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-primary" title="Ver detalles" onclick="abrirModalVisualizarEntrada('@entrada.IdEntrada')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-warning" title="Editar" onclick="abrirModalEditarEntrada('@entrada.IdEntrada')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="abrirModalEliminarEntrada('@entrada.IdEntrada')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="10" class="text-center text-muted py-4">
+                                    <i class="fas fa-search fa-2x mb-2"></i>
+                                    <p class="mb-0">No se encontraron entradas con los criterios especificados.</p>
+                                </td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Pagination Section -->
+            @if (Model.TotalPages > 1)
+            {
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div>
+                        <span class="text-muted">
+                            Mostrando página @Model.PageNumber de @Model.TotalPages 
+                            (Total: @Model.TotalRecords entradas)
+                        </span>
+                    </div>
+                    <nav aria-label="Paginación de entradas">
+                        <ul class="pagination mb-0">
+                            @if (Model.PageNumber > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="?numeroPagina=@(Model.PageNumber - 1)&filtros.SearchTerm=@ViewBag.SearchTerm&filtros.IdBodega=@ViewBag.IdBodega&filtros.FechaFiltro=@ViewBag.FechaFiltro">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                            }
+                            
+                            @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.TotalPages, Model.PageNumber + 2); i++)
+                            {
+                                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                    <a class="page-link" href="?numeroPagina=@i&filtros.SearchTerm=@ViewBag.SearchTerm&filtros.IdBodega=@ViewBag.IdBodega&filtros.FechaFiltro=@ViewBag.FechaFiltro">@i</a>
+                                </li>
+                            }
+                            
+                            @if (Model.PageNumber < Model.TotalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="?numeroPagina=@(Model.PageNumber + 1)&filtros.SearchTerm=@ViewBag.SearchTerm&filtros.IdBodega=@ViewBag.IdBodega&filtros.FechaFiltro=@ViewBag.FechaFiltro">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            }
         </div>
     </div>
 </section>

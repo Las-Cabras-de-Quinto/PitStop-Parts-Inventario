@@ -1,3 +1,4 @@
+@model PitStop_Parts_Inventario.Models.ViewModels.PagedResult<PitStop_Parts_Inventario.Models.BodegaModel>
 @{
     ViewData["Title"] = "Bodegas";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -20,28 +21,35 @@
 
         <!-- Search and Actions Section -->
         <section class="search-actions-section">
-            <div class="search-actions-container">
-                <div class="search-wrapper">
-                    <div class="search-container">
-                        <input type="text" class="form-control search-input" placeholder="Buscar bodega...">
-                        <i class="fas fa-search search-icon"></i>
-                    </div>
-                </div>
-                
-                <div class="actions-wrapper">
-                    <div class="filter-container">
-                        <select class="form-select filter-select">
-                            <option value="" selected>Filtrar orden</option>
-                            <option value="a-z">A-Z</option>
-                            <option value="z-a">Z-A</option>
-                        </select>
+            <form method="get" asp-action="Index" id="filtrosForm">
+                <div class="search-actions-container">
+                    <div class="search-wrapper">
+                        <div class="search-container">
+                            <input type="text" name="filtros.SearchTerm" class="form-control search-input" placeholder="Buscar bodega..." value="@ViewBag.SearchTerm">
+                            <i class="fas fa-search search-icon"></i>
+                        </div>
                     </div>
                     
-                    <button class="btn btn-crear" data-bs-toggle="modal" data-bs-target="#nuevaBodegaModal">
-                        <i class="fas fa-plus"></i> Crear
-                    </button>
+                    <div class="actions-wrapper">
+                        <div class="filter-container">
+                            <select name="filtros.SoloActivos" class="form-select filter-select" onchange="document.getElementById('filtrosForm').submit();">
+                                <option value="">Todas las bodegas</option>
+                                <option value="true" selected="@(ViewBag.SoloActivos == true ? "selected" : null)">Solo activas</option>
+                                <option value="false" selected="@(ViewBag.SoloActivos == false ? "selected" : null)">Solo inactivas</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-secondary">
+                            <i class="fas fa-filter"></i> Filtrar
+                        </button>
+                        
+                        <button class="btn btn-crear" data-bs-toggle="modal" data-bs-target="#nuevaBodegaModal">
+                            <i class="fas fa-plus"></i> Crear
+                        </button>
+                    </div>
                 </div>
-            </div>
+                <input type="hidden" name="numeroPagina" value="@Model.PageNumber" />
+            </form>
         </section>
 
         <!-- Table Section -->
@@ -51,14 +59,32 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="table-title mb-0">Tabla de Bodega</h5>
                         <div class="pagination-info">
-                            <span class="pagination-text">Página:</span>
-                            <button class="btn btn-pagination" disabled>
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <span class="page-number">1</span>
-                            <button class="btn btn-pagination">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
+                            <span class="pagination-text">Página @Model.PageNumber de @Model.TotalPages</span>
+                            @if (Model.PageNumber > 1)
+                            {
+                                <a href="?numeroPagina=@(Model.PageNumber - 1)&filtros.SearchTerm=@ViewBag.SearchTerm&filtros.SoloActivos=@ViewBag.SoloActivos" class="btn btn-pagination">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <button class="btn btn-pagination" disabled>
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                            }
+                            
+                            @if (Model.PageNumber < Model.TotalPages)
+                            {
+                                <a href="?numeroPagina=@(Model.PageNumber + 1)&filtros.SearchTerm=@ViewBag.SearchTerm&filtros.SoloActivos=@ViewBag.SoloActivos" class="btn btn-pagination">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <button class="btn btn-pagination" disabled>
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            }
                         </div>
                     </div>
                 </div>
@@ -75,74 +101,38 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="table-row">
-                                    <td class="warehouse-id">B00</td>
-                                    <td class="warehouse-name">Placeholder</td>
-                                    <td class="warehouse-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                                    <td class="warehouse-location">Placeholder</td>
-                                    <td class="actions-cell">
-                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarBodega('B00')">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarBodega('B00')">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarBodega('B00')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="table-row">
-                                    <td class="warehouse-id">B01</td>
-                                    <td class="warehouse-name">Placeholder</td>
-                                    <td class="warehouse-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                                    <td class="warehouse-location">Placeholder</td>
-                                    <td class="actions-cell">
-                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarBodega('B01')">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarBodega('B01')">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarBodega('B01')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="table-row">
-                                    <td class="warehouse-id">B02</td>
-                                    <td class="warehouse-name">Placeholder</td>
-                                    <td class="warehouse-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                                    <td class="warehouse-location">Placeholder</td>
-                                    <td class="actions-cell">
-                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarBodega('B02')">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarBodega('B02')">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarBodega('B02')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="table-row">
-                                    <td class="warehouse-id">B03</td>
-                                    <td class="warehouse-name">Placeholder</td>
-                                    <td class="warehouse-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                                    <td class="warehouse-location">Placeholder</td>
-                                    <td class="actions-cell">
-                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarBodega('B03')">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarBodega('B03')">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarBodega('B03')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                @if (Model.Data.Any())
+                                {
+                                    @foreach (var bodega in Model.Data)
+                                    {
+                                        <tr class="table-row">
+                                            <td class="warehouse-id">@bodega.IdBodega</td>
+                                            <td class="warehouse-name">@bodega.Nombre</td>
+                                            <td class="warehouse-description">@bodega.Descripcion</td>
+                                            <td class="warehouse-location">@bodega.Ubicacion</td>
+                                            <td class="actions-cell">
+                                                <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarBodega('@bodega.IdBodega')">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarBodega('@bodega.IdBodega')">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarBodega('@bodega.IdBodega')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-4">
+                                            <i class="fas fa-search fa-2x mb-2"></i>
+                                            <p class="mb-0">No se encontraron bodegas con los criterios especificados.</p>
+                                        </td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -159,7 +149,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="stat-info">
                                     <h6 class="stat-label">Total Bodegas</h6>
-                                    <h2 class="stat-number">7</h2>
+                                    <h2 class="stat-number">@Model.TotalRecords</h2>
                                 </div>
                                 <div class="stat-icon-container">
                                     <i class="fas fa-warehouse stat-icon"></i>
@@ -174,7 +164,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="stat-info">
                                     <h6 class="stat-label">Página actual</h6>
-                                    <h2 class="stat-number">1</h2>
+                                    <h2 class="stat-number">@Model.PageNumber</h2>
                                 </div>
                                 <div class="stat-icon-container">
                                     <i class="fas fa-file-alt stat-icon"></i>
@@ -189,7 +179,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="stat-info">
                                     <h6 class="stat-label">Total Páginas</h6>
-                                    <h2 class="stat-number">1</h2>
+                                    <h2 class="stat-number">@Model.TotalPages</h2>
                                 </div>
                                 <div class="stat-icon-container">
                                     <i class="fas fa-copy stat-icon"></i>

@@ -1,3 +1,4 @@
+@model PitStop_Parts_Inventario.Models.ViewModels.PagedResult<PitStop_Parts_Inventario.Models.ProveedorModel>
 @{
     ViewData["Title"] = "Proveedores";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -20,20 +21,35 @@
 
         <!-- Search and Actions Section -->
         <section class="search-actions-section">
-            <div class="search-actions-container">
-                <div class="search-wrapper">
-                    <div class="search-container">
-                        <input type="text" class="form-control search-input" placeholder="Buscar proveedor...">
-                        <i class="fas fa-search search-icon"></i>
+            <form method="get" asp-action="Index" id="filtrosForm">
+                <div class="search-actions-container">
+                    <div class="search-wrapper">
+                        <div class="search-container">
+                            <input type="text" name="filtros.SearchTerm" class="form-control search-input" placeholder="Buscar proveedor..." value="@ViewBag.SearchTerm">
+                            <i class="fas fa-search search-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="actions-wrapper">
+                        <div class="filter-container">
+                            <select name="filtros.SoloActivos" class="form-select filter-select" onchange="document.getElementById('filtrosForm').submit();">
+                                <option value="">Todos los proveedores</option>
+                                <option value="true" selected="@(ViewBag.SoloActivos == true ? "selected" : null)">Solo activos</option>
+                                <option value="false" selected="@(ViewBag.SoloActivos == false ? "selected" : null)">Solo inactivos</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-secondary">
+                            <i class="fas fa-filter"></i> Filtrar
+                        </button>
+                        
+                        <button class="btn btn-crear" data-bs-toggle="modal" data-bs-target="#nuevoProveedorModal">
+                            <i class="fas fa-plus"></i> Crear
+                        </button>
                     </div>
                 </div>
-                
-                <div class="actions-wrapper">
-                    <button class="btn btn-crear" data-bs-toggle="modal" data-bs-target="#nuevoProveedorModal">
-                        <i class="fas fa-plus"></i> Crear
-                    </button>
-                </div>
-            </div>
+                <input type="hidden" name="numeroPagina" value="@Model.PageNumber" />
+            </form>
         </section>
 
         <!-- Table Section -->
@@ -41,16 +57,9 @@
             <div class="card table-card">
                 <div class="card-header table-header">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="table-title mb-0">Tabla de Proveedor</h5>
+                        <h5 class="table-title mb-0">Tabla de Proveedores</h5>
                         <div class="pagination-info">
-                            <span class="pagination-text">Página:</span>
-                            <button class="btn btn-pagination" disabled>
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <span class="page-number">1</span>
-                            <button class="btn btn-pagination">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
+                            <span class="pagination-text">Mostrando @(((Model.PageNumber - 1) * Model.PageSize) + 1) - @(Math.Min(Model.PageNumber * Model.PageSize, Model.TotalRecords)) de @Model.TotalRecords proveedores</span>
                         </div>
                     </div>
                 </div>
@@ -59,82 +68,43 @@
                         <table class="table table-hover mb-0 suppliers-table">
                             <thead class="table-dark">
                                 <tr>
-                                    <th class="col-id">Id Categoría</th>
-                                    <th class="col-categoria">Categoría</th>
+                                    <th class="col-id">Id Proveedor</th>
+                                    <th class="col-nombre">Nombre</th>
                                     <th class="col-contacto">Contacto</th>
                                     <th class="col-direccion">Dirección</th>
                                     <th class="col-acciones">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="table-row">
-                                    <td class="supplier-id">C01</td>
-                                    <td class="supplier-category">Placeholder</td>
-                                    <td class="supplier-contact">Placeholder@gmail.com</td>
-                                    <td class="supplier-address">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                                    <td class="actions-cell">
-                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarProveedor('C01')">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarProveedor('C01')">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarProveedor('C01')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="table-row">
-                                    <td class="supplier-id">C02</td>
-                                    <td class="supplier-category">Placeholder</td>
-                                    <td class="supplier-contact">Placeholder@gmail.com</td>
-                                    <td class="supplier-address">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                                    <td class="actions-cell">
-                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarProveedor('C02')">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarProveedor('C02')">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarProveedor('C02')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="table-row">
-                                    <td class="supplier-id">C03</td>
-                                    <td class="supplier-category">Placeholder</td>
-                                    <td class="supplier-contact">Placeholder@gmail.com</td>
-                                    <td class="supplier-address">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                                    <td class="actions-cell">
-                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarProveedor('C03')">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarProveedor('C03')">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarProveedor('C03')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="table-row">
-                                    <td class="supplier-id">C04</td>
-                                    <td class="supplier-category">Placeholder</td>
-                                    <td class="supplier-contact">Placeholder@gmail.com</td>
-                                    <td class="supplier-address">Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                                    <td class="actions-cell">
-                                        <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarProveedor('C04')">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarProveedor('C04')">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarProveedor('C04')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                @if (Model.Data.Any())
+                                {
+                                    @foreach (var proveedor in Model.Data)
+                                    {
+                                        <tr class="table-row">
+                                            <td class="supplier-id">@proveedor.IdProveedor</td>
+                                            <td class="supplier-name">@proveedor.Nombre</td>
+                                            <td class="supplier-contact">@proveedor.Contacto</td>
+                                            <td class="supplier-address">@proveedor.Direccion</td>
+                                            <td class="actions-cell">
+                                                <button class="btn btn-action btn-info" title="Visualizar" onclick="abrirModalVisualizarProveedor(@proveedor.IdProveedor)">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-action btn-edit" title="Editar" onclick="abrirModalEditarProveedor(@proveedor.IdProveedor)">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-action btn-delete" title="Eliminar" onclick="abrirModalEliminarProveedor(@proveedor.IdProveedor)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center">No se encontraron proveedores</td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -145,13 +115,13 @@
         <!-- Stats Cards Section -->
         <section class="stats-section">
             <div class="row mt-4">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card stat-card">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="stat-info">
                                     <h6 class="stat-label">Total Proveedores</h6>
-                                    <h2 class="stat-number">8</h2>
+                                    <h2 class="stat-number">@Model.TotalRecords</h2>
                                 </div>
                                 <div class="stat-icon-container">
                                     <i class="fas fa-truck stat-icon"></i>
@@ -160,13 +130,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card stat-card stat-card-current">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="stat-info">
-                                    <h6 class="stat-label">Página actual</h6>
-                                    <h2 class="stat-number">1</h2>
+                                    <h6 class="stat-label">Página Actual</h6>
+                                    <h2 class="stat-number">@Model.PageNumber</h2>
                                 </div>
                                 <div class="stat-icon-container">
                                     <i class="fas fa-file-alt stat-icon"></i>
@@ -175,13 +145,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card stat-card">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="stat-info">
                                     <h6 class="stat-label">Total Páginas</h6>
-                                    <h2 class="stat-number">1</h2>
+                                    <h2 class="stat-number">@Model.TotalPages</h2>
                                 </div>
                                 <div class="stat-icon-container">
                                     <i class="fas fa-copy stat-icon"></i>
@@ -190,8 +160,85 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-3">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="stat-info">
+                                    <h6 class="stat-label">Por Página</h6>
+                                    <h2 class="stat-number">@Model.PageSize</h2>
+                                </div>
+                                <div class="stat-icon-container">
+                                    <i class="fas fa-list stat-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
+
+        <!-- Pagination Section -->
+        @if (Model.TotalPages > 1)
+        {
+            <section class="pagination-section mt-4">
+                <div class="pagination-wrapper">
+                    <nav aria-label="Navegación de proveedores">
+                        <ul class="pagination justify-content-center">
+                            @if (Model.HasPreviousPage)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="?numeroPagina=@(Model.PageNumber - 1)&filtros.SearchTerm=@ViewBag.SearchTerm&filtros.SoloActivos=@ViewBag.SoloActivos">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                </li>
+                            }
+
+                            @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.TotalPages, Model.PageNumber + 2); i++)
+                            {
+                                if (i == Model.PageNumber)
+                                {
+                                    <li class="page-item active">
+                                        <span class="page-link">@i</span>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="?numeroPagina=@i&filtros.SearchTerm=@ViewBag.SearchTerm&filtros.SoloActivos=@ViewBag.SoloActivos">@i</a>
+                                    </li>
+                                }
+                            }
+
+                            @if (Model.HasNextPage)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="?numeroPagina=@(Model.PageNumber + 1)&filtros.SearchTerm=@ViewBag.SearchTerm&filtros.SoloActivos=@ViewBag.SoloActivos">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            </section>
+        }
     </div>
 
 <section class="modal-container">
