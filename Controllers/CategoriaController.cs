@@ -1,26 +1,154 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using PitStop_Parts_Inventario.Models;
+using PitStop_Parts_Inventario.Services.Interfaces;
+using PitStop_Parts_Inventario.Models.ViewModels;
 
 namespace PitStop_Parts_Inventario.Controllers
 {
     public class CategoriaController : BaseController
     {
         private readonly ILogger<CategoriaController> _logger;
+        private readonly ICategoriaService _categoriaService;
 
-        public CategoriaController(ILogger<CategoriaController> logger)
+        public CategoriaController(ILogger<CategoriaController> logger, ICategoriaService categoriaService)
         {
             _logger = logger;
+            _categoriaService = categoriaService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(CategoriaFilterOptions? filtros, int numeroPagina = 1)
         {
-            return View();
+            // Inicializar filtros si son null para evitar errores en los servicios
+            filtros ??= new CategoriaFilterOptions();
+            
+            // Usar los parámetros recibidos para consultar el servicio
+            var resultado = await _categoriaService.GetPagedAsync(
+                numeroPagina,
+                10,
+                filtros
+            );
+            return View(resultado);
         }
 
-        public IActionResult Privacy()
+        // Acción POST para procesar el formulario de creación
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Crear([FromBody] CategoriaModel model)
         {
-            return View();
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Datos inválidos", errors = ModelState });
+            }
+
+            // Obtener el ID del usuario actual
+            var userId = CurrentUserId ?? User?.Identity?.Name ?? string.Empty;
+
+            try
+            {
+                var categoriaCreada = await _categoriaService.CreateAsync(model, userId);
+                if (categoriaCreada != null)
+                {
+                    return Json(new { success = true, message = "Categoría creada correctamente." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "No se pudo crear la categoría." });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al crear categoría");
+                return Json(new { success = false, message = "Error interno del servidor." });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObtenerPorId(int id)
+        {
+            try
+            {
+                var categoria = await _categoriaService.GetByIdAsync(id);
+                if (categoria == null)
+                {
+                    return Json(new { success = false, message = "La categoría no existe." });
+                }
+                return Json(new { success = true, data = categoria });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener categoría con ID: {Id}", id);
+                return Json(new { success = false, message = "Error interno del servidor." });
+            }
+        }
+
+        [HttpPut]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Editar([FromBody] CategoriaModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Datos inválidos", errors = ModelState });
+            }
+
+            // Obtener el ID del usuario actual
+            var userId = CurrentUserId ?? User?.Identity?.Name ?? string.Empty;
+
+            try
+            {
+                var categoriaActualizada = await _categoriaService.UpdateAsync(model, userId);
+                if (categoriaActualizada != null)
+                {
+                    return Json(new { success = true, message = "Categoría actualizada correctamente." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "No se pudo actualizar la categoría." });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar categoría con ID: {Id}", model.IdCategoria);
+                return Json(new { success = false, message = "Error interno del servidor." });
+            }
+        }
+
+        [HttpDelete]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Eliminar(int id)
+        {
+            // Verificar permisos de administrador primero
+            if (!IsCurrentUserAdmin)
+            {
+                return Json(new { success = false, message = "No tiene permisos para eliminar categorías." });
+            }
+
+            try
+            {
+                // Verificar si la categoría existe
+                var existe = await _categoriaService.ExistsAsync(id);
+                if (!existe)
+                {
+                    return Json(new { success = false, message = "La categoría no existe." });
+                }
+
+                // Eliminar la categoría
+                var eliminado = await _categoriaService.DeleteAsync(id);
+
+                if (eliminado)
+                {
+                    return Json(new { success = true, message = "Categoría eliminada correctamente." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "No se pudo eliminar la categoría." });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar categoría con ID: {Id}", id);
+                return Json(new { success = false, message = "Error interno del servidor." });
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

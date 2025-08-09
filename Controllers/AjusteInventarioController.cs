@@ -20,8 +20,11 @@ namespace PitStop_Parts_Inventario.Controllers
             _AjusteinventarioService = ajusteInventarioService;
         }
 
-        public async Task<IActionResult> Index(AjusteInventarioFilterOptions filtros, int numeroPagina = 1)
+        public async Task<IActionResult> Index(AjusteInventarioFilterOptions? filtros, int numeroPagina = 1)
         {
+            // Inicializar filtros si son null para evitar errores en los servicios
+            filtros ??= new AjusteInventarioFilterOptions();
+            
             // Usar los parámetros recibidos para consultar el servicio
             var resultado = await _AjusteinventarioService.GetPagedAsync(
                 numeroPagina,
@@ -30,37 +33,90 @@ namespace PitStop_Parts_Inventario.Controllers
             );
             return View(resultado);
         }
-        [HttpGet]
-        public IActionResult Crear()
-        {
-            return View();
-        }
 
         // Acción POST para procesar el formulario de creación
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Crear(AjusteInventarioModel model)
+        public async Task<IActionResult> Crear([FromBody] AjusteInventarioModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return Json(new { success = false, message = "Datos inválidos", errors = ModelState });
             }
 
             // Obtener el ID del usuario actual
             var userId = CurrentUserId ?? User?.Identity?.Name ?? string.Empty;
 
-            var ajusteCreado = await _AjusteinventarioService.CreateAsync(model, userId);
-
-            if (ajusteCreado != null)
+            try
             {
-                // Redirigir al listado o detalle del ajuste creado
-                return RedirectToAction("Index");
+                var ajusteCreado = await _AjusteinventarioService.CreateAsync(model, userId);
+                if (ajusteCreado != null)
+                {
+                    return Json(new { success = true, message = "Ajuste de inventario creado correctamente." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "No se pudo crear el ajuste de inventario." });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al crear ajuste de inventario");
+                return Json(new { success = false, message = "Error interno del servidor." });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObtenerPorId(int id)
+        {
+            try
+            {
+                var ajuste = await _AjusteinventarioService.GetByIdAsync(id);
+                if (ajuste == null)
+                {
+                    return Json(new { success = false, message = "El ajuste de inventario no existe." });
+                }
+                return Json(new { success = true, data = ajuste });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener ajuste de inventario con ID: {Id}", id);
+                return Json(new { success = false, message = "Error interno del servidor." });
+            }
+        }
+
+        [HttpPut]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Editar([FromBody] AjusteInventarioModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Datos inválidos", errors = ModelState });
             }
 
-            ModelState.AddModelError("", "No se pudo crear el ajuste de inventario.");
-            return View(model);
+            // Obtener el ID del usuario actual
+            var userId = CurrentUserId ?? User?.Identity?.Name ?? string.Empty;
+
+            try
+            {
+                var ajusteActualizado = await _AjusteinventarioService.UpdateAsync(model, userId);
+                if (ajusteActualizado != null)
+                {
+                    return Json(new { success = true, message = "Ajuste de inventario actualizado correctamente." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "No se pudo actualizar el ajuste de inventario." });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar ajuste de inventario con ID: {Id}", model.IdAjusteInventario);
+                return Json(new { success = false, message = "Error interno del servidor." });
+            }
         }
-        [HttpPost]
+
+        [HttpDelete]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Eliminar(int id)
         {
@@ -84,8 +140,7 @@ namespace PitStop_Parts_Inventario.Controllers
 
                 if (eliminado)
                 {
-                    TempData["Success"] = "Ajuste de inventario eliminado correctamente.";
-                    return Json(new { success = true, message = "Ajuste eliminado correctamente." });
+                    return Json(new { success = true, message = "Ajuste de inventario eliminado correctamente." });
                 }
                 else
                 {
@@ -97,11 +152,6 @@ namespace PitStop_Parts_Inventario.Controllers
                 _logger.LogError(ex, "Error al eliminar ajuste de inventario con ID: {Id}", id);
                 return Json(new { success = false, message = "Error interno del servidor." });
             }
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
