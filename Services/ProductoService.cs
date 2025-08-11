@@ -255,9 +255,11 @@ namespace PitStop_Parts_Inventario.Services
         private async Task<int> RecalcularStockInternoAsync(int productoId, bool guardar)
         {
             // Sumar el stock total de todas las bodegas activas para este producto
-            var stockTotal = await _context.BodegaProductos
+            var bodegasProducto = await _context.BodegaProductos
                 .Where(bp => bp.IdProducto == productoId && bp.IdEstado == 1)
-                .SumAsync(bp => bp.StockTotal);
+                .ToListAsync();
+                
+            var stockTotal = bodegasProducto.Sum(bp => bp.StockTotal);
 
             // Actualizar el producto
             var producto = await _context.Productos.FindAsync(productoId);

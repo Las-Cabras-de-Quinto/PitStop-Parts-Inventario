@@ -332,6 +332,13 @@
                     </div>
                     <!-- Selección de productos -->
                     <div class="row mb-3">
+                        <div class="col-12 mb-2">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Ajuste de Inventario:</strong> Ingrese la cantidad final deseada para cada producto. 
+                                El sistema calculará automáticamente la diferencia con el stock actual.
+                            </div>
+                        </div>
                         <div class="col-lg-8 col-12">
                             <label for="productoAjuste" class="form-label">Agregar Producto</label>
                             <select class="form-select" id="productoAjuste">
@@ -339,8 +346,9 @@
                             </select>
                         </div>
                         <div class="col-lg-2 col-6 mt-lg-0 mt-3">
-                            <label for="cantidadAjuste" class="form-label">Cantidad</label>
-                            <input type="number" class="form-control" id="cantidadAjuste" placeholder="0" min="1">
+                            <label for="cantidadAjuste" class="form-label">Cantidad Nueva</label>
+                            <input type="number" class="form-control" id="cantidadAjuste" placeholder="0" min="0">
+                            <small class="text-muted">Cantidad final deseada</small>
                         </div>
                         <div class="col-lg-2 col-6 d-flex align-items-end mt-lg-0 mt-3">
                             <button type="button" class="btn btn-success w-100" style="height: 50px;" onclick="agregarProductoAjuste('agregar')">
@@ -414,6 +422,13 @@
                     </div>
                     <!-- Selección de productos -->
                     <div class="row mb-3">
+                        <div class="col-12 mb-2">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Editar Ajuste:</strong> Ingrese la cantidad final deseada para cada producto. 
+                                El sistema calculará automáticamente la diferencia con el stock actual.
+                            </div>
+                        </div>
                         <div class="col-lg-8 col-12">
                             <label for="editProductoAjuste" class="form-label">Agregar Producto</label>
                             <select class="form-select" id="editProductoAjuste">
@@ -421,8 +436,9 @@
                             </select>
                         </div>
                         <div class="col-lg-2 col-6 mt-lg-0 mt-3">
-                            <label for="editCantidadAjuste" class="form-label">Cantidad</label>
-                            <input type="number" class="form-control" id="editCantidadAjuste" placeholder="0" min="1">
+                            <label for="editCantidadAjuste" class="form-label">Cantidad Nueva</label>
+                            <input type="number" class="form-control" id="editCantidadAjuste" placeholder="0" min="0">
+                            <small class="text-muted">Cantidad final deseada</small>
                         </div>
                         <div class="col-lg-2 col-6 d-flex align-items-end mt-lg-0 mt-3">
                             <button type="button" class="btn btn-success w-100" style="height: 50px;" onclick="agregarProductoAjuste('editar')">
@@ -516,9 +532,8 @@
                         <thead>
                             <tr>
                                 <th>Producto</th>
-                                <th>Cantidad Anterior</th>
-                                <th>Cantidad Nueva</th>
                                 <th>Diferencia</th>
+                                <th>Tipo de Ajuste</th>
                             </tr>
                         </thead>
                         <tbody id="visualizarTablaProductosAjuste">

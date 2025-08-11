@@ -132,13 +132,34 @@ namespace PitStop_Parts_Inventario.Services
         /// </summary>
         private async Task RevertirCambiosStockAsync(int idBodega, int idProducto, int cantidadAjuste)
         {
-            // Revertir usando el método centralizado (cantidad negativa para revertir)
-            await _productoService.ActualizarStockBodegaAsync(
-                idBodega, 
-                idProducto, 
-                -cantidadAjuste, 
-                "Reversión de ajuste de inventario"
-            );
+            var bodegaProducto = await _context.BodegaProductos
+                .FirstOrDefaultAsync(bp => bp.IdBodega == idBodega && bp.IdProducto == idProducto);
+
+            if (bodegaProducto != null)
+            {
+                // Revertir el ajuste (restar la cantidad que se había agregado)
+                bodegaProducto.StockTotal -= cantidadAjuste;
+                
+                // Asegurar que el stock no sea negativo
+                if (bodegaProducto.StockTotal < 0)
+                    bodegaProducto.StockTotal = 0;
+                
+                _context.BodegaProductos.Update(bodegaProducto);
+            }
+
+            // Recalcular el stock del producto directamente desde las entidades cargadas
+            var todasBodegasProducto = await _context.BodegaProductos
+                .Where(bp => bp.IdProducto == idProducto && bp.IdEstado == 1)
+                .ToListAsync();
+                
+            var stockTotal = todasBodegasProducto.Sum(bp => bp.StockTotal);
+
+            var producto = await _context.Productos.FindAsync(idProducto);
+            if (producto != null)
+            {
+                producto.StockActual = stockTotal < 0 ? 0 : stockTotal;
+                _context.Productos.Update(producto);
+            }
         }
 
         public async Task<bool> ExistsAsync(int id)
@@ -201,13 +222,49 @@ namespace PitStop_Parts_Inventario.Services
 
                 _context.AjusteInventarioProductos.Add(ajusteProducto);
 
-                // Actualizar stock usando el método centralizado
-                await _productoService.ActualizarStockBodegaAsync(
-                    ajuste.IdBodega, 
-                    productoId, 
-                    diferencia, 
-                    $"Ajuste de inventario: {motivo}"
-                );
+                // Actualizar stock en BodegaProducto directamente
+                var bodegaProducto = await _context.BodegaProductos
+                    .FirstOrDefaultAsync(bp => bp.IdBodega == ajuste.IdBodega && bp.IdProducto == productoId);
+
+                if (bodegaProducto != null)
+                {
+                    bodegaProducto.StockTotal += diferencia;
+                    // Asegurar que el stock no sea negativo
+                    if (bodegaProducto.StockTotal < 0)
+                        bodegaProducto.StockTotal = 0;
+                    
+                    _context.BodegaProductos.Update(bodegaProducto);
+                }
+                else if (diferencia > 0)
+                {
+                    // Si no existe el registro y la diferencia es positiva, crear uno nuevo
+                    bodegaProducto = new BodegaProductoModel
+                    {
+                        IdBodega = ajuste.IdBodega,
+                        IdProducto = productoId,
+                        StockTotal = diferencia,
+                        IdEstado = 1,
+                        Descripcion = $"Ajuste de inventario: {motivo}"
+                    };
+                    _context.BodegaProductos.Add(bodegaProducto);
+                }
+
+                // Guardar cambios de BodegaProducto primero
+                await _context.SaveChangesAsync();
+
+                // Ahora recalcular el stock actual del producto con los datos actualizados
+                var todasBodegasProducto = await _context.BodegaProductos
+                    .Where(bp => bp.IdProducto == productoId && bp.IdEstado == 1)
+                    .ToListAsync();
+                    
+                var stockTotal = todasBodegasProducto.Sum(bp => bp.StockTotal);
+
+                var producto = await _context.Productos.FindAsync(productoId);
+                if (producto != null)
+                {
+                    producto.StockActual = stockTotal < 0 ? 0 : stockTotal;
+                    _context.Productos.Update(producto);
+                }
 
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -242,15 +299,39 @@ namespace PitStop_Parts_Inventario.Services
                 if (ajuste == null)
                     return false;
 
-                // Revertir el cambio usando el método centralizado
-                await _productoService.ActualizarStockBodegaAsync(
-                    ajuste.IdBodega, 
-                    productoId, 
-                    -ajusteProducto.CantidadProducto, 
-                    "Eliminación de producto de ajuste"
-                );
+                // Revertir el cambio en el stock de BodegaProducto directamente
+                var bodegaProducto = await _context.BodegaProductos
+                    .FirstOrDefaultAsync(bp => bp.IdBodega == ajuste.IdBodega && bp.IdProducto == productoId);
+
+                if (bodegaProducto != null)
+                {
+                    bodegaProducto.StockTotal -= ajusteProducto.CantidadProducto;
+                    // Asegurar que el stock no sea negativo
+                    if (bodegaProducto.StockTotal < 0)
+                        bodegaProducto.StockTotal = 0;
+                    
+                    _context.BodegaProductos.Update(bodegaProducto);
+                }
 
                 _context.AjusteInventarioProductos.Remove(ajusteProducto);
+                
+                // Guardar cambios de BodegaProducto primero
+                await _context.SaveChangesAsync();
+
+                // Ahora recalcular el stock actual del producto con los datos actualizados
+                var todasBodegasProducto = await _context.BodegaProductos
+                    .Where(bp => bp.IdProducto == productoId && bp.IdEstado == 1)
+                    .ToListAsync();
+                    
+                var stockTotal = todasBodegasProducto.Sum(bp => bp.StockTotal);
+
+                var producto = await _context.Productos.FindAsync(productoId);
+                if (producto != null)
+                {
+                    producto.StockActual = stockTotal < 0 ? 0 : stockTotal;
+                    _context.Productos.Update(producto);
+                }
+
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
                 return true;

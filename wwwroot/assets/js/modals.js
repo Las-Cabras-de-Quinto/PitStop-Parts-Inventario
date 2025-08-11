@@ -1716,7 +1716,8 @@ async function guardarAjuste() {
     
     filas.forEach(fila => {
         const celdas = fila.querySelectorAll('td');
-        const cantidadElement = fila.querySelector('p[data-field="cantidad"]');
+        // Buscar tanto badges como elementos p para mayor compatibilidad
+        const cantidadElement = fila.querySelector('span.badge[data-field="cantidad"]') || fila.querySelector('p[data-field="cantidad"]');
         if (celdas.length > 1 && cantidadElement && fila.dataset.productoId) {
             productos.push({
                 IdProducto: parseInt(fila.dataset.productoId),
@@ -1793,7 +1794,7 @@ async function actualizarAjuste() {
     filas.forEach(fila => {
         const celdas = fila.querySelectorAll('td');
         // Buscar tanto badges como elementos p para mayor compatibilidad
-        const cantidadElement = fila.querySelector('span.badge') || fila.querySelector('p[data-field="cantidad"]');
+        const cantidadElement = fila.querySelector('span.badge[data-field="cantidad"]') || fila.querySelector('p[data-field="cantidad"]');
         if (celdas.length > 1 && cantidadElement && fila.dataset.productoId) {
             productos.push({
                 IdProducto: parseInt(fila.dataset.productoId),
@@ -1962,9 +1963,21 @@ function mostrarDatosAjuste(ajuste, modo) {
             const productos = ajuste.ajusteInventarioProductos || [];
             productos.forEach(producto => {
                 const fila = document.createElement('tr');
+                const diferencia = producto.cantidadProducto || 0;
+                const tipoAjuste = diferencia > 0 ? 'Aumento' : diferencia < 0 ? 'Disminución' : 'Sin cambio';
+                const badgeClass = diferencia > 0 ? 'bg-success' : diferencia < 0 ? 'bg-danger' : 'bg-secondary';
+                const tipoBadgeClass = diferencia > 0 ? 'bg-success' : diferencia < 0 ? 'bg-warning' : 'bg-secondary';
+                
                 fila.innerHTML = `
                     <td>${producto.producto?.nombre || ''}</td>
-                    <td><span class="badge bg-primary">${producto.cantidadProducto || 0}</span></td>
+                    <td>
+                        <span class="badge ${badgeClass}">
+                            ${diferencia > 0 ? '+' : ''}${diferencia}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge ${tipoBadgeClass}">${tipoAjuste}</span>
+                    </td>
                 `;
                 tabla.appendChild(fila);
             });
@@ -2002,9 +2015,15 @@ function mostrarDatosAjuste(ajuste, modo) {
             productos.forEach(producto => {
                 const fila = document.createElement('tr');
                 fila.dataset.productoId = producto.idProducto;
+                const cantidad = producto.cantidadProducto || 0;
+                
                 fila.innerHTML = `
                     <td><p data-field="nombre">${producto.producto?.nombre || ''}</p></td>
-                    <td><p data-field="cantidad">${producto.cantidadProducto || 0}</p></td>
+                    <td>
+                        <span class="badge ${cantidad >= 0 ? 'bg-primary' : 'bg-warning'}" data-field="cantidad">
+                            ${cantidad}
+                        </span>
+                    </td>
                     <td>
                         <button type="button" class="btn btn-danger btn-sm" onclick="editQuitarProductoAjuste(this)">
                             <i class="fas fa-trash"></i>

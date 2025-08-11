@@ -476,8 +476,8 @@ function agregarProductoAjuste(tipo = 'agregar') {
     }
 
     // Validar que se seleccionó un producto y se especificó la cantidad
-    if (!selectProducto.value || !inputCantidad.value) {
-        showToast('Seleccione un producto y especifique la cantidad', 'warning');
+    if (!selectProducto.value || inputCantidad.value === '' || inputCantidad.value === null) {
+        showToast('Seleccione un producto y especifique una cantidad válida', 'warning');
         return;
     }
     
@@ -492,9 +492,16 @@ function agregarProductoAjuste(tipo = 'agregar') {
     // Crear nueva fila
     const fila = document.createElement('tr');
     fila.dataset.productoId = selectProducto.value;
+    
+    const cantidad = parseInt(inputCantidad.value);
+    
     fila.innerHTML = `
         <td><p data-field="nombre">${selectProducto.options[selectProducto.selectedIndex].text}</p></td>
-        <td><p data-field="cantidad">${inputCantidad.value}</p></td>
+        <td>
+            <span class="badge ${cantidad >= 0 ? 'bg-primary' : 'bg-warning'}" data-field="cantidad">
+                ${cantidad}
+            </span>
+        </td>
         <td>
             <button type="button" class="btn btn-danger btn-sm" onclick="quitarProductoAjuste(this)">
                 <i class="fas fa-trash"></i>
@@ -512,6 +519,8 @@ function agregarProductoAjuste(tipo = 'agregar') {
     // Limpiar campos
     selectProducto.value = '';
     inputCantidad.value = '';
+    
+    showToast('Producto agregado correctamente', 'success');
 }
 
 /**
