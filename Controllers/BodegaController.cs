@@ -32,28 +32,35 @@ namespace PitStop_Parts_Inventario.Controllers
             return View(resultado);
         }
 
-        // POST: Bodega/Create
+        // POST: Bodega/Crear
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([FromBody] BodegaModel bodega)
+        public async Task<IActionResult> Crear([FromBody] BodegaEditRequest request)
         {
-            return await ExecuteIfHasRole("Administrador", async () => {
-                if (!ModelState.IsValid)
-                {
-                    return Json(new { success = false, message = "Datos inválidos", errors = ModelState });
-                }
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Datos inválidos", errors = ModelState });
+            }
 
-                try
+            try
+            {
+                // Crear el modelo base
+                var bodega = new BodegaModel
                 {
-                    await _bodegaService.CreateAsync(bodega, CurrentUserId ?? "");
-                    return Json(new { success = true, message = "Bodega creada correctamente" });
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error al crear bodega");
-                    return Json(new { success = false, message = "Error interno del servidor" });
-                }
-            });
+                    Nombre = request.Nombre,
+                    Descripcion = request.Descripcion,
+                    Ubicacion = request.Ubicacion,
+                    IdEstado = request.IdEstado
+                };
+
+                await _bodegaService.CreateAsync(bodega, CurrentUserId ?? "");
+                return Json(new { success = true, message = "Bodega creada correctamente" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al crear bodega");
+                return Json(new { success = false, message = "Error interno del servidor" });
+            }
         }
 
         [HttpGet]
@@ -66,7 +73,28 @@ namespace PitStop_Parts_Inventario.Controllers
                 {
                     return Json(new { success = false, message = "La bodega no existe." });
                 }
-                return Json(new { success = true, data = bodega });
+
+                // Incluir los productos relacionados
+                var productos = bodega.BodegaProductos?.Select(bp => new {
+                    Id = bp.Producto?.IdProducto ?? 0,
+                    Nombre = bp.Producto?.Nombre ?? "Sin nombre",
+                    StockTotal = bp.StockTotal
+                }).ToList();
+
+                var bodegaConRelaciones = new
+                {
+                    bodega.IdBodega,
+                    bodega.Nombre,
+                    bodega.Descripcion,
+                    bodega.Ubicacion,
+                    bodega.IdEstado,
+                    bodega.Estado,
+                    BodegaProductos = productos,
+                    TotalProductos = productos?.Count ?? 0, // Para debugging
+                    TotalStock = productos?.Sum(p => p.StockTotal) ?? 0 // Para debugging
+                };
+
+                return Json(new { success = true, data = bodegaConRelaciones });
             }
             catch (Exception ex)
             {
@@ -77,7 +105,7 @@ namespace PitStop_Parts_Inventario.Controllers
 
         [HttpPut]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Editar([FromBody] BodegaModel model)
+        public async Task<IActionResult> Editar([FromBody] BodegaEditRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -89,10 +117,32 @@ namespace PitStop_Parts_Inventario.Controllers
 
             try
             {
+                // Crear el modelo de bodega base
+                var model = new BodegaModel
+                {
+                    IdBodega = request.IdBodega,
+                    Nombre = request.Nombre,
+                    Descripcion = request.Descripcion,
+                    Ubicacion = request.Ubicacion,
+                    IdEstado = request.IdEstado
+                };
+
                 var bodegaActualizada = await _bodegaService.UpdateAsync(model, userId);
                 if (bodegaActualizada != null)
                 {
-                    return Json(new { success = true, message = "Bodega actualizada correctamente." });
+                    // Actualizar relaciones de productos si se proporcionaron
+                    if (request.Productos?.Any() == true)
+                    {
+                        foreach (var producto in request.Productos)
+                        {
+                            await _bodegaService.AsignarProductoAsync(request.IdBodega, producto.IdProducto, producto.StockTotal);
+                        }
+                    }
+
+                    return Json(new { 
+                        success = true, 
+                        message = "Bodega actualizada correctamente."
+                    });
                 }
                 else
                 {
@@ -101,7 +151,7 @@ namespace PitStop_Parts_Inventario.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al actualizar bodega con ID: {Id}", model.IdBodega);
+                _logger.LogError(ex, "Error al actualizar bodega con ID: {Id}", request.IdBodega);
                 return Json(new { success = false, message = "Error interno del servidor." });
             }
         }
@@ -110,12 +160,6 @@ namespace PitStop_Parts_Inventario.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Eliminar(int id)
         {
-            // Verificar permisos de administrador primero
-            if (!IsCurrentUserAdmin)
-            {
-                return Json(new { success = false, message = "No tiene permisos para eliminar bodegas." });
-            }
-
             try
             {
                 // Verificar si la bodega existe
@@ -140,6 +184,25 @@ namespace PitStop_Parts_Inventario.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al eliminar bodega con ID: {Id}", id);
+                return Json(new { success = false, message = "Error interno del servidor." });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObtenerParaSelect()
+        {
+            try
+            {
+                var bodegas = await _bodegaService.GetAllAsync();
+                var bodegasSelect = bodegas.Select(b => new { 
+                    id = b.IdBodega, 
+                    nombre = b.Nombre 
+                });
+                return Json(new { success = true, data = bodegasSelect });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener bodegas para select");
                 return Json(new { success = false, message = "Error interno del servidor." });
             }
         }

@@ -117,12 +117,6 @@ namespace PitStop_Parts_Inventario.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Eliminar(int id)
         {
-            // Verificar permisos de administrador primero
-            if (!IsCurrentUserAdmin)
-            {
-                return Json(new { success = false, message = "No tiene permisos para eliminar estados." });
-            }
-
             try
             {
                 // Verificar si el estado existe
@@ -147,6 +141,25 @@ namespace PitStop_Parts_Inventario.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al eliminar estado con ID: {Id}", id);
+                return Json(new { success = false, message = "Error interno del servidor." });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObtenerParaSelect()
+        {
+            try
+            {
+                var estados = await _estadoService.GetAllAsync();
+                var estadosSelect = estados.Select(e => new { 
+                    id = e.IdEstado, 
+                    nombre = e.Nombre 
+                });
+                return Json(new { success = true, data = estadosSelect });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener estados para select");
                 return Json(new { success = false, message = "Error interno del servidor." });
             }
         }

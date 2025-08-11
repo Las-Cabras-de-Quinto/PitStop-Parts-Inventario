@@ -35,7 +35,7 @@ namespace PitStop_Parts_Inventario.Controllers
         // Acción POST para procesar el formulario de creación
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Crear([FromBody] EntradaProductoModel model)
+        public async Task<IActionResult> Crear([FromBody] EntradaProductoEditRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -47,6 +47,16 @@ namespace PitStop_Parts_Inventario.Controllers
 
             try
             {
+                // Crear el modelo base
+                var model = new EntradaProductoModel
+                {
+                    IdBodega = request.IdBodega,
+                    IdUsuario = userId, // Usar el userId de la sesión
+                    Fecha = request.Fecha,
+                    IdProducto = request.IdProducto,
+                    CantidadProducto = request.CantidadProducto
+                };
+
                 var entradaCreada = await _entradaProductoService.CreateAsync(model, userId);
                 if (entradaCreada != null)
                 {
@@ -74,7 +84,51 @@ namespace PitStop_Parts_Inventario.Controllers
                 {
                     return Json(new { success = false, message = "La entrada de producto no existe." });
                 }
-                return Json(new { success = true, data = entrada });
+
+                // Estructurar los datos para facilitar el manejo en el frontend
+                var entradaEstructurada = new
+                {
+                    entrada.IdEntrada,
+                    entrada.IdBodega,
+                    entrada.IdUsuario,
+                    entrada.Fecha,
+                    entrada.IdProducto,
+                    entrada.CantidadProducto,
+                    Bodega = new
+                    {
+                        entrada.Bodega?.IdBodega,
+                        entrada.Bodega?.Nombre,
+                        entrada.Bodega?.Descripcion,
+                        entrada.Bodega?.Ubicacion
+                    },
+                    Usuario = new
+                    {
+                        entrada.Usuario?.Id,
+                        entrada.Usuario?.UserName,
+                        entrada.Usuario?.Email
+                    },
+                    Producto = new
+                    {
+                        entrada.Producto?.IdProducto,
+                        entrada.Producto?.Nombre,
+                        entrada.Producto?.SKU,
+                        entrada.Producto?.Descripcion,
+                        entrada.Producto?.PrecioVenta,
+                        entrada.Producto?.PrecioCompra,
+                        Marca = new
+                        {
+                            entrada.Producto?.Marca?.IdMarca,
+                            entrada.Producto?.Marca?.Nombre
+                        },
+                        Estado = new
+                        {
+                            entrada.Producto?.Estado?.IdEstado,
+                            entrada.Producto?.Estado?.Nombre
+                        }
+                    }
+                };
+
+                return Json(new { success = true, data = entradaEstructurada });
             }
             catch (Exception ex)
             {
@@ -85,7 +139,7 @@ namespace PitStop_Parts_Inventario.Controllers
 
         [HttpPut]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Editar([FromBody] EntradaProductoModel model)
+        public async Task<IActionResult> Editar([FromBody] EntradaProductoEditRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -97,7 +151,21 @@ namespace PitStop_Parts_Inventario.Controllers
 
             try
             {
-                var entradaActualizada = await _entradaProductoService.UpdateAsync(model, userId);
+                // Obtener la entrada existente
+                var entradaExistente = await _entradaProductoService.GetByIdAsync(request.IdEntrada);
+                if (entradaExistente == null)
+                {
+                    return Json(new { success = false, message = "Entrada de producto no encontrada." });
+                }
+
+                // Actualizar las propiedades
+                entradaExistente.IdBodega = request.IdBodega;
+                entradaExistente.IdUsuario = userId; // Usar el userId de la sesión
+                entradaExistente.Fecha = request.Fecha;
+                entradaExistente.IdProducto = request.IdProducto;
+                entradaExistente.CantidadProducto = request.CantidadProducto;
+
+                var entradaActualizada = await _entradaProductoService.UpdateAsync(entradaExistente, userId);
                 if (entradaActualizada != null)
                 {
                     return Json(new { success = true, message = "Entrada de producto actualizada correctamente." });
@@ -109,7 +177,7 @@ namespace PitStop_Parts_Inventario.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al actualizar entrada de producto con ID: {Id}", model.IdEntrada);
+                _logger.LogError(ex, "Error al actualizar entrada de producto con ID: {Id}", request.IdEntrada);
                 return Json(new { success = false, message = "Error interno del servidor." });
             }
         }
@@ -118,12 +186,6 @@ namespace PitStop_Parts_Inventario.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Eliminar(int id)
         {
-            // Verificar permisos de administrador primero
-            if (!IsCurrentUserAdmin)
-            {
-                return Json(new { success = false, message = "No tiene permisos para eliminar entradas de producto." });
-            }
-
             try
             {
                 // Verificar si la entrada existe

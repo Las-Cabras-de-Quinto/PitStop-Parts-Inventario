@@ -30,6 +30,11 @@ namespace PitStop_Parts_Inventario.Services.Interfaces
         Task<bool> RemoverProveedorAsync(int productoId, int proveedorId);
         Task<IEnumerable<ProveedorModel>> GetProveedoresByProductoAsync(int productoId);
         
+        // Métodos para manejar relación con categorías
+        Task<bool> AsignarCategoriasAsync(int productoId, List<int> categoriaIds);
+        Task<bool> RemoverCategoriaAsync(int productoId, int categoriaId);
+        Task<IEnumerable<CategoriaModel>> GetCategoriasByProductoAsync(int productoId);
+        
         // Métodos para recalcular stock
         Task<int> RecalcularStockAsync(int productoId);
         Task RecalcularTodosLosStocksAsync();

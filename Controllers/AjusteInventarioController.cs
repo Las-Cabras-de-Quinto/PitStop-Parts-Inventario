@@ -36,22 +36,46 @@ namespace PitStop_Parts_Inventario.Controllers
 
         // Acción POST para procesar el formulario de creación
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Crear([FromBody] AjusteInventarioModel model)
+        public async Task<IActionResult> Crear([FromBody] AjusteInventarioEditRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                return Json(new { success = false, message = "Datos inválidos", errors = ModelState });
-            }
-
-            // Obtener el ID del usuario actual
-            var userId = CurrentUserId ?? User?.Identity?.Name ?? string.Empty;
-
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogWarning("Model state is invalid: {@ModelState}", ModelState);
+                    return Json(new { success = false, message = "Datos inválidos", errors = ModelState });
+                }
+
+                // Obtener el ID del usuario actual
+                var userId = CurrentUserId ?? User?.Identity?.Name ?? string.Empty;
+
+                // Crear el modelo base
+                var model = new AjusteInventarioModel
+                {
+                    IdBodega = request.IdBodega,
+                    IdUsuario = userId,
+                    Fecha = request.Fecha
+                };
+
                 var ajusteCreado = await _AjusteinventarioService.CreateAsync(model, userId);
                 if (ajusteCreado != null)
                 {
+                    // Procesar los productos del ajuste
+                    foreach (var producto in request.Productos)
+                    {
+                        // Obtener la cantidad anterior del stock actual en la bodega
+                        var cantidadAnterior = await _AjusteinventarioService.ObtenerStockActualAsync(request.IdBodega, producto.IdProducto);
+                        
+                        // Usar CantidadProducto como la nueva cantidad del ajuste
+                        await _AjusteinventarioService.AgregarProductoAsync(
+                            ajusteCreado.IdAjusteInventario,
+                            producto.IdProducto,
+                            cantidadAnterior, // Cantidad obtenida de la BD
+                            producto.CantidadProducto, // La cantidad nueva viene del frontend
+                            producto.Motivo ?? "Ajuste de inventario"
+                        );
+                    }
+
                     return Json(new { success = true, message = "Ajuste de inventario creado correctamente." });
                 }
                 else
@@ -62,7 +86,7 @@ namespace PitStop_Parts_Inventario.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al crear ajuste de inventario");
-                return Json(new { success = false, message = "Error interno del servidor." });
+                return Json(new { success = false, message = "Error interno del servidor: " + ex.Message });
             }
         }
 
@@ -76,7 +100,43 @@ namespace PitStop_Parts_Inventario.Controllers
                 {
                     return Json(new { success = false, message = "El ajuste de inventario no existe." });
                 }
-                return Json(new { success = true, data = ajuste });
+
+                // Estructurar los datos con nombres que coincidan con la respuesta esperada
+                var ajusteEstructurado = new
+                {
+                    idAjusteInventario = ajuste.IdAjusteInventario,
+                    idBodega = ajuste.IdBodega,
+                    idUsuario = ajuste.IdUsuario,
+                    fecha = ajuste.Fecha,
+                    bodega = new
+                    {
+                        idBodega = ajuste.Bodega?.IdBodega,
+                        nombre = ajuste.Bodega?.Nombre,
+                        descripcion = ajuste.Bodega?.Descripcion,
+                        ubicacion = ajuste.Bodega?.Ubicacion
+                    },
+                    usuario = new
+                    {
+                        id = ajuste.Usuario?.Id,
+                        userName = ajuste.Usuario?.UserName,
+                        email = ajuste.Usuario?.Email
+                    },
+                    ajusteInventarioProductos = ajuste.AjusteInventarioProductos?.Select(aip => new
+                    {
+                        idAjusteInventario = aip.IdAjusteInventario,
+                        idProducto = aip.IdProducto,
+                        cantidadProducto = aip.CantidadProducto,
+                        producto = new
+                        {
+                            idProducto = aip.Producto?.IdProducto,
+                            nombre = aip.Producto?.Nombre,
+                            sku = aip.Producto?.SKU,
+                            descripcion = aip.Producto?.Descripcion
+                        }
+                    }).ToList()
+                };
+
+                return Json(new { success = true, data = ajusteEstructurado });
             }
             catch (Exception ex)
             {
@@ -86,8 +146,7 @@ namespace PitStop_Parts_Inventario.Controllers
         }
 
         [HttpPut]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Editar([FromBody] AjusteInventarioModel model)
+        public async Task<IActionResult> Editar([FromBody] AjusteInventarioEditRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -99,9 +158,44 @@ namespace PitStop_Parts_Inventario.Controllers
 
             try
             {
+                // Crear el modelo base para actualizar
+                var model = new AjusteInventarioModel
+                {
+                    IdAjusteInventario = request.IdAjusteInventario,
+                    IdBodega = request.IdBodega,
+                    IdUsuario = userId,
+                    Fecha = request.Fecha
+                };
+
                 var ajusteActualizado = await _AjusteinventarioService.UpdateAsync(model, userId);
                 if (ajusteActualizado != null)
                 {
+                    // Limpiar productos existentes del ajuste
+                    var productosExistentes = await _AjusteinventarioService.GetByIdAsync(request.IdAjusteInventario);
+                    if (productosExistentes?.AjusteInventarioProductos != null)
+                    {
+                        foreach (var productoExistente in productosExistentes.AjusteInventarioProductos)
+                        {
+                            await _AjusteinventarioService.RemoverProductoAsync(request.IdAjusteInventario, productoExistente.IdProducto);
+                        }
+                    }
+
+                    // Agregar los nuevos productos
+                    foreach (var producto in request.Productos)
+                    {
+                        // Obtener la cantidad anterior del stock actual en la bodega
+                        var cantidadAnterior = await _AjusteinventarioService.ObtenerStockActualAsync(request.IdBodega, producto.IdProducto);
+                        
+                        // Usar CantidadProducto como la nueva cantidad del ajuste
+                        await _AjusteinventarioService.AgregarProductoAsync(
+                            request.IdAjusteInventario,
+                            producto.IdProducto,
+                            cantidadAnterior, // Cantidad obtenida de la BD
+                            producto.CantidadProducto, // La cantidad nueva viene del frontend
+                            producto.Motivo ?? "Ajuste de inventario"
+                        );
+                    }
+
                     return Json(new { success = true, message = "Ajuste de inventario actualizado correctamente." });
                 }
                 else
@@ -111,27 +205,23 @@ namespace PitStop_Parts_Inventario.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al actualizar ajuste de inventario con ID: {Id}", model.IdAjusteInventario);
+                _logger.LogError(ex, "Error al actualizar ajuste de inventario con ID: {Id}", request.IdAjusteInventario);
                 return Json(new { success = false, message = "Error interno del servidor." });
             }
         }
 
         [HttpDelete]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Eliminar(int id)
         {
-            // Verificar permisos de administrador primero
-            if (!IsCurrentUserAdmin)
-            {
-                return Json(new { success = false, message = "No tiene permisos para eliminar ajustes de inventario." });
-            }
-
             try
             {
+                _logger.LogInformation("Iniciando eliminación de ajuste de inventario con ID: {Id}", id);
+                
                 // Verificar si el ajuste existe
                 var existe = await _AjusteinventarioService.ExistsAsync(id);
                 if (!existe)
                 {
+                    _logger.LogWarning("Ajuste de inventario con ID {Id} no existe", id);
                     return Json(new { success = false, message = "El ajuste de inventario no existe." });
                 }
 
@@ -140,17 +230,19 @@ namespace PitStop_Parts_Inventario.Controllers
 
                 if (eliminado)
                 {
+                    _logger.LogInformation("Ajuste de inventario con ID {Id} eliminado exitosamente", id);
                     return Json(new { success = true, message = "Ajuste de inventario eliminado correctamente." });
                 }
                 else
                 {
+                    _logger.LogWarning("No se pudo eliminar el ajuste de inventario con ID {Id}", id);
                     return Json(new { success = false, message = "No se pudo eliminar el ajuste de inventario." });
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al eliminar ajuste de inventario con ID: {Id}", id);
-                return Json(new { success = false, message = "Error interno del servidor." });
+                _logger.LogError(ex, "Error al eliminar ajuste de inventario con ID: {Id}. Detalles: {Message}", id, ex.Message);
+                return Json(new { success = false, message = $"Error interno del servidor: {ex.Message}" });
             }
         }
 

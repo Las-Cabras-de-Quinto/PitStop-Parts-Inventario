@@ -264,5 +264,77 @@ namespace PitStop_Parts_Inventario.Services
                 await RecalcularStockAsync(producto.IdProducto);
             }
         }
+
+        /// <summary>
+        /// Asigna múltiples categorías a un producto
+        /// </summary>
+        /// <param name="productoId">ID del producto</param>
+        /// <param name="categoriaIds">Lista de IDs de categorías</param>
+        /// <returns>True si se asignaron exitosamente</returns>
+        public async Task<bool> AsignarCategoriasAsync(int productoId, List<int> categoriaIds)
+        {
+            try
+            {
+                // Remover todas las categorías existentes del producto
+                var categoriasExistentes = await _context.CategoriaProductos
+                    .Where(cp => cp.IdProducto == productoId)
+                    .ToListAsync();
+                
+                _context.CategoriaProductos.RemoveRange(categoriasExistentes);
+
+                // Agregar las nuevas categorías
+                foreach (var categoriaId in categoriaIds)
+                {
+                    var categoriaProducto = new CategoriaProductoModel
+                    {
+                        IdProducto = productoId,
+                        IdCategoria = categoriaId
+                    };
+                    _context.CategoriaProductos.Add(categoriaProducto);
+                }
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Remueve una categoría específica de un producto
+        /// </summary>
+        /// <param name="productoId">ID del producto</param>
+        /// <param name="categoriaId">ID de la categoría a remover</param>
+        /// <returns>True si se removió exitosamente</returns>
+        public async Task<bool> RemoverCategoriaAsync(int productoId, int categoriaId)
+        {
+            var categoriaProducto = await _context.CategoriaProductos
+                .FirstOrDefaultAsync(cp => cp.IdProducto == productoId && cp.IdCategoria == categoriaId);
+
+            if (categoriaProducto == null)
+                return false;
+
+            _context.CategoriaProductos.Remove(categoriaProducto);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        /// <summary>
+        /// Obtiene todas las categorías asignadas a un producto
+        /// </summary>
+        /// <param name="productoId">ID del producto</param>
+        /// <returns>Lista de categorías</returns>
+        public async Task<IEnumerable<CategoriaModel>> GetCategoriasByProductoAsync(int productoId)
+        {
+            return await _context.CategoriaProductos
+                .Where(cp => cp.IdProducto == productoId)
+                .Include(cp => cp.Categoria!)
+                    .ThenInclude(c => c.Estado)
+                .Select(cp => cp.Categoria)
+                .Where(c => c != null)
+                .ToListAsync();
+        }
     }
 }

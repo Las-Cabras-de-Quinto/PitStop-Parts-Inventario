@@ -88,16 +88,74 @@ namespace PitStop_Parts_Inventario.Services
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var ajusteInventario = await _context.AjusteInventarios
-                .Include(ai => ai.AjusteInventarioProductos)
-                .FirstOrDefaultAsync(ai => ai.IdAjusteInventario == id);
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var ajusteInventario = await _context.AjusteInventarios
+                    .Include(ai => ai.AjusteInventarioProductos)
+                    .FirstOrDefaultAsync(ai => ai.IdAjusteInventario == id);
 
-            if (ajusteInventario == null)
-                return false;
+                if (ajusteInventario == null)
+                    return false;
 
-            _context.AjusteInventarios.Remove(ajusteInventario);
-            await _context.SaveChangesAsync();
-            return true;
+                // Primero eliminar todos los productos del ajuste y revertir cambios en stock
+                if (ajusteInventario.AjusteInventarioProductos != null)
+                {
+                    foreach (var ajusteProducto in ajusteInventario.AjusteInventarioProductos.ToList())
+                    {
+                        // Revertir cambios en el stock antes de eliminar
+                        await RevertirCambiosStockAsync(ajusteInventario.IdBodega, ajusteProducto.IdProducto, ajusteProducto.CantidadProducto);
+                        
+                        // Eliminar el registro de ajuste-producto
+                        _context.AjusteInventarioProductos.Remove(ajusteProducto);
+                    }
+                }
+
+                // Luego eliminar el ajuste principal
+                _context.AjusteInventarios.Remove(ajusteInventario);
+                
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return true;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Revierte los cambios de stock realizados por un ajuste
+        /// </summary>
+        private async Task RevertirCambiosStockAsync(int idBodega, int idProducto, int cantidadAjuste)
+        {
+            var bodegaProducto = await _context.BodegaProductos
+                .FirstOrDefaultAsync(bp => bp.IdBodega == idBodega && bp.IdProducto == idProducto);
+
+            if (bodegaProducto != null)
+            {
+                // Revertir el ajuste (restar la cantidad que se había agregado)
+                bodegaProducto.StockTotal -= cantidadAjuste;
+                
+                // Asegurar que el stock no sea negativo
+                if (bodegaProducto.StockTotal < 0)
+                    bodegaProducto.StockTotal = 0;
+                
+                _context.BodegaProductos.Update(bodegaProducto);
+
+                // Recalcular el stock actual del producto sumando todas las bodegas
+                var producto = await _context.Productos.FindAsync(idProducto);
+                if (producto != null)
+                {
+                    var stockTotal = await _context.BodegaProductos
+                        .Where(bp => bp.IdProducto == idProducto && bp.IdEstado == 1)
+                        .SumAsync(bp => bp.StockTotal);
+                    
+                    producto.StockActual = stockTotal;
+                    _context.Productos.Update(producto);
+                }
+            }
         }
 
         public async Task<bool> ExistsAsync(int id)
@@ -268,6 +326,14 @@ namespace PitStop_Parts_Inventario.Services
                 await transaction.RollbackAsync();
                 throw;
             }
+        }
+
+        public async Task<int> ObtenerStockActualAsync(int idBodega, int idProducto)
+        {
+            var bodegaProducto = await _context.BodegaProductos
+                .FirstOrDefaultAsync(bp => bp.IdBodega == idBodega && bp.IdProducto == idProducto);
+            
+            return bodegaProducto?.StockTotal ?? 0;
         }
     }
 }

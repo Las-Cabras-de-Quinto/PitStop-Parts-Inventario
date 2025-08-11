@@ -35,29 +35,34 @@ namespace PitStop_Parts_Inventario.Controllers
             return View(resultado);
         }
 
-        // POST: Proveedor/Create
+        // POST: Proveedor/Crear
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([FromBody] ProveedorModel proveedor)
+        public async Task<IActionResult> Crear([FromBody] ProveedorEditRequest request)
         {
-            return await ExecuteIfHasRole("Administrador", async () =>
+            if (!ModelState.IsValid)
             {
-                if (!ModelState.IsValid)
+                return Json(new { success = false, message = "Datos inválidos", errors = ModelState });
+            }
+            try
+            {
+                // Crear el modelo base
+                var proveedor = new ProveedorModel
                 {
-                    return Json(new { success = false, message = "Datos inválidos", errors = ModelState });
-                }
+                    Nombre = request.Nombre,
+                    Contacto = request.Contacto,
+                    Direccion = request.Direccion,
+                    IdEstado = request.IdEstado
+                };
 
-                try
-                {
-                    await _ProveedorService.CreateAsync(proveedor, CurrentUserId ?? "");
-                    return Json(new { success = true, message = "Proveedor creado correctamente" });
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error al crear proveedor");
-                    return Json(new { success = false, message = "Error interno del servidor" });
-                }
-            });
+                await _ProveedorService.CreateAsync(proveedor, CurrentUserId ?? "");
+                return Json(new { success = true, message = "Proveedor creado correctamente" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al crear proveedor");
+                return Json(new { success = false, message = "Error interno del servidor" });
+            }
         }
 
         [HttpGet]
@@ -70,7 +75,25 @@ namespace PitStop_Parts_Inventario.Controllers
                 {
                     return Json(new { success = false, message = "El proveedor no existe." });
                 }
-                return Json(new { success = true, data = proveedor });
+
+                // Incluir los productos relacionados
+                var productos = proveedor.ProveedorProductos?.Select(pp => new {
+                    Id = pp.Producto.IdProducto,
+                    Nombre = pp.Producto.Nombre
+                }).ToList();
+
+                var proveedorConRelaciones = new
+                {
+                    proveedor.IdProveedor,
+                    proveedor.Nombre,
+                    proveedor.Contacto,
+                    proveedor.Direccion,
+                    proveedor.IdEstado,
+                    proveedor.Estado,
+                    Productos = productos
+                };
+
+                return Json(new { success = true, data = proveedorConRelaciones });
             }
             catch (Exception ex)
             {
@@ -81,7 +104,7 @@ namespace PitStop_Parts_Inventario.Controllers
 
         [HttpPut]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Editar([FromBody] ProveedorModel model)
+        public async Task<IActionResult> Editar([FromBody] ProveedorEditRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -93,10 +116,32 @@ namespace PitStop_Parts_Inventario.Controllers
 
             try
             {
+                // Crear el modelo de proveedor base
+                var model = new ProveedorModel
+                {
+                    IdProveedor = request.IdProveedor,
+                    Nombre = request.Nombre,
+                    Contacto = request.Contacto,
+                    Direccion = request.Direccion,
+                    IdEstado = request.IdEstado
+                };
+
                 var proveedorActualizado = await _ProveedorService.UpdateAsync(model, userId);
                 if (proveedorActualizado != null)
                 {
-                    return Json(new { success = true, message = "Proveedor actualizado correctamente." });
+                    // Actualizar relaciones de productos si se proporcionaron
+                    if (request.IdsProductos?.Any() == true)
+                    {
+                        foreach (var productoId in request.IdsProductos)
+                        {
+                            await _ProveedorService.AsignarProductoAsync(request.IdProveedor, productoId);
+                        }
+                    }
+
+                    return Json(new { 
+                        success = true, 
+                        message = "Proveedor actualizado correctamente."
+                    });
                 }
                 else
                 {
@@ -105,7 +150,7 @@ namespace PitStop_Parts_Inventario.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al actualizar proveedor con ID: {Id}", model.IdProveedor);
+                _logger.LogError(ex, "Error al actualizar proveedor con ID: {Id}", request.IdProveedor);
                 return Json(new { success = false, message = "Error interno del servidor." });
             }
         }
@@ -113,21 +158,37 @@ namespace PitStop_Parts_Inventario.Controllers
         // DELETE: Solo administradores
         [HttpDelete]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Eliminar(int id)
         {
-            return await ExecuteIfAdmin(async () =>
+            try
             {
-                try
-                {
-                    await _ProveedorService.DeleteAsync(id);
-                    return Json(new { success = true, message = "Proveedor eliminado correctamente." });
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error al eliminar proveedor con ID: {Id}", id);
-                    return Json(new { success = false, message = "Error interno del servidor." });
-                }
-            });
+                await _ProveedorService.DeleteAsync(id);
+                return Json(new { success = true, message = "Proveedor eliminado correctamente." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar proveedor con ID: {Id}", id);
+                return Json(new { success = false, message = "Error interno del servidor." });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObtenerParaSelect()
+        {
+            try
+            {
+                var proveedores = await _ProveedorService.GetAllAsync();
+                var proveedoresSelect = proveedores.Select(p => new { 
+                    id = p.IdProveedor, 
+                    nombre = p.Nombre 
+                });
+                return Json(new { success = true, data = proveedoresSelect });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener proveedores para select");
+                return Json(new { success = false, message = "Error interno del servidor." });
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

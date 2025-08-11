@@ -20,5 +20,6 @@ namespace PitStop_Parts_Inventario.Services.Interfaces
         Task<IEnumerable<AjusteInventarioModel>> GetByFechaAsync(DateTime fechaInicio, DateTime fechaFin);
         Task<bool> AgregarProductoAsync(int ajusteId, int productoId, int cantidadAnterior, int cantidadNueva, string motivo);
         Task<bool> RemoverProductoAsync(int ajusteId, int productoId);
+        Task<int> ObtenerStockActualAsync(int idBodega, int idProducto);
     }
 }

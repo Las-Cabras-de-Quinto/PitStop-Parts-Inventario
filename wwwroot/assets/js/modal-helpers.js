@@ -201,19 +201,22 @@ function abrirModalEliminarAjuste(id) {
  */
 async function cargarCategoriasEnSelect(selectId) {
     try {
-        const response = await makeRequest(`${API_BASE_URL}/categorias`);
-        if (response.success) {
-            const select = document.getElementById(selectId);
-            if (select) {
-                // Limpiar opciones existentes excepto la primera
-                select.innerHTML = '<option value="">Seleccionar categoría</option>';
-                
-                response.data.forEach(categoria => {
-                    const option = document.createElement('option');
-                    option.value = categoria.id;
-                    option.textContent = categoria.nombre;
-                    select.appendChild(option);
-                });
+        const response = await fetch('/Categoria/ObtenerParaSelect');
+        if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    // Limpiar opciones existentes excepto la primera
+                    select.innerHTML = '<option value="">Seleccionar categoría</option>';
+                    
+                    result.data.forEach(categoria => {
+                        const option = document.createElement('option');
+                        option.value = categoria.id;
+                        option.textContent = categoria.nombre;
+                        select.appendChild(option);
+                    });
+                }
             }
         }
     } catch (error) {
@@ -238,18 +241,21 @@ async function cargarCategoriasEnSelect(selectId) {
  */
 async function cargarMarcasEnSelect(selectId) {
     try {
-        const response = await makeRequest(`${API_BASE_URL}/marcas`);
-        if (response.success) {
-            const select = document.getElementById(selectId);
-            if (select) {
-                select.innerHTML = '<option value="">Seleccionar marca</option>';
-                
-                response.data.forEach(marca => {
-                    const option = document.createElement('option');
-                    option.value = marca.id;
-                    option.textContent = marca.nombre;
-                    select.appendChild(option);
-                });
+        const response = await fetch('/Marca/ObtenerParaSelect');
+        if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    select.innerHTML = '<option value="">Seleccionar marca</option>';
+                    
+                    result.data.forEach(marca => {
+                        const option = document.createElement('option');
+                        option.value = marca.id;
+                        option.textContent = marca.nombre;
+                        select.appendChild(option);
+                    });
+                }
             }
         }
     } catch (error) {
@@ -274,18 +280,21 @@ async function cargarMarcasEnSelect(selectId) {
  */
 async function cargarBodegasEnSelect(selectId) {
     try {
-        const response = await makeRequest(`${API_BASE_URL}/bodegas`);
-        if (response.success) {
-            const select = document.getElementById(selectId);
-            if (select) {
-                select.innerHTML = '<option value="">Seleccionar bodega</option>';
-                
-                response.data.forEach(bodega => {
-                    const option = document.createElement('option');
-                    option.value = bodega.id;
-                    option.textContent = bodega.nombre;
-                    select.appendChild(option);
-                });
+        const response = await fetch('/Bodega/ObtenerParaSelect');
+        if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    select.innerHTML = '<option value="">Seleccionar bodega</option>';
+                    
+                    result.data.forEach(bodega => {
+                        const option = document.createElement('option');
+                        option.value = bodega.id;
+                        option.textContent = bodega.nombre;
+                        select.appendChild(option);
+                    });
+                }
             }
         }
     } catch (error) {
@@ -310,18 +319,21 @@ async function cargarBodegasEnSelect(selectId) {
  */
 async function cargarProductosEnSelect(selectId) {
     try {
-        const response = await makeRequest(`${API_BASE_URL}/productos`);
-        if (response.success) {
-            const select = document.getElementById(selectId);
-            if (select) {
-                select.innerHTML = '<option value="">Seleccionar producto</option>';
-                
-                response.data.forEach(producto => {
-                    const option = document.createElement('option');
-                    option.value = producto.id;
-                    option.textContent = producto.nombre;
-                    select.appendChild(option);
-                });
+        const response = await fetch('/Producto/ObtenerParaSelect');
+        if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    select.innerHTML = '<option value="">Seleccionar producto</option>';
+                    
+                    result.data.forEach(producto => {
+                        const option = document.createElement('option');
+                        option.value = producto.id;
+                        option.textContent = producto.nombre;
+                        select.appendChild(option);
+                    });
+                }
             }
         }
     } catch (error) {
@@ -346,18 +358,21 @@ async function cargarProductosEnSelect(selectId) {
  */
 async function cargarProveedoresEnSelect(selectId) {
     try {
-        const response = await makeRequest(`${API_BASE_URL}/proveedores`);
-        if (response.success) {
-            const select = document.getElementById(selectId);
-            if (select) {
-                select.innerHTML = '<option value="">Seleccionar proveedor</option>';
-                
-                response.data.forEach(proveedor => {
-                    const option = document.createElement('option');
-                    option.value = proveedor.id;
-                    option.textContent = proveedor.nombre;
-                    select.appendChild(option);
-                });
+        const response = await fetch('/Proveedor/ObtenerParaSelect');
+        if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    select.innerHTML = '<option value="">Seleccionar proveedor</option>';
+                    
+                    result.data.forEach(proveedor => {
+                        const option = document.createElement('option');
+                        option.value = proveedor.id;
+                        option.textContent = proveedor.nombre;
+                        select.appendChild(option);
+                    });
+                }
             }
         }
     } catch (error) {
@@ -382,18 +397,21 @@ async function cargarProveedoresEnSelect(selectId) {
  */
 async function cargarEstadosEnSelect(selectId) {
     try {
-        const response = await makeRequest(`${API_BASE_URL}/estados`);
-        if (response.success) {
-            const select = document.getElementById(selectId);
-            if (select) {
-                select.innerHTML = '<option value="">Seleccionar estado</option>';
-                
-                response.data.forEach(estado => {
-                    const option = document.createElement('option');
-                    option.value = estado.id;
-                    option.textContent = estado.nombre;
-                    select.appendChild(option);
-                });
+        const response = await fetch('/Estado/ObtenerParaSelect');
+        if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    select.innerHTML = '<option value="">Seleccionar estado</option>';
+                    
+                    result.data.forEach(estado => {
+                        const option = document.createElement('option');
+                        option.value = estado.id;
+                        option.textContent = estado.nombre;
+                        select.appendChild(option);
+                    });
+                }
             }
         }
     } catch (error) {
@@ -475,8 +493,8 @@ function agregarProductoAjuste(tipo = 'agregar') {
     const fila = document.createElement('tr');
     fila.dataset.productoId = selectProducto.value;
     fila.innerHTML = `
-        <td>${selectProducto.options[selectProducto.selectedIndex].text}</td>
-        <td>${inputCantidad.value}</td>
+        <td><p data-field="nombre">${selectProducto.options[selectProducto.selectedIndex].text}</p></td>
+        <td><p data-field="cantidad">${inputCantidad.value}</p></td>
         <td>
             <button type="button" class="btn btn-danger btn-sm" onclick="quitarProductoAjuste(this)">
                 <i class="fas fa-trash"></i>
@@ -657,331 +675,8 @@ function formatearNumero(numero) {
     return new Intl.NumberFormat('es-ES').format(numero);
 }
 
-// =======================================================
-// FUNCIONES PARA CARGAR DATOS DEMO EN TABLAS
-// =======================================================
-
-/**
- * Cargar datos demo para la tabla de categorías
- */
-function cargarDatosDemoCategorias() {
-    const tabla = document.getElementById('tablaCategorias');
-    if (tabla) {
-        const tbody = tabla.querySelector('tbody');
-        const datosDemo = cargarDatosDemo();
-        
-        tbody.innerHTML = '';
-        Object.values(datosDemo.categorias).forEach(categoria => {
-            const fila = document.createElement('tr');
-            fila.innerHTML = `
-                <td>${categoria.id}</td>
-                <td>${categoria.nombre}</td>
-                <td>${categoria.descripcion}</td>
-                <td><span class="badge bg-success">${categoria.estado}</span></td>
-                <td>${categoria.productos_count}</td>
-                <td>
-                    <button onclick="abrirModalVisualizarCategoria(${categoria.id})" class="btn btn-info btn-sm" title="Visualizar">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button onclick="abrirModalEditarCategoria(${categoria.id})" class="btn btn-warning btn-sm" title="Editar">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button onclick="abrirModalEliminarCategoria(${categoria.id})" class="btn btn-danger btn-sm" title="Eliminar">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            `;
-            tbody.appendChild(fila);
-        });
-    }
-}
-
-/**
- * Cargar datos demo para la tabla de proveedores
- */
-function cargarDatosDemoProveedores() {
-    const tabla = document.getElementById('tablaProveedores');
-    if (tabla) {
-        const tbody = tabla.querySelector('tbody');
-        const datosDemo = cargarDatosDemo();
-        
-        tbody.innerHTML = '';
-        Object.values(datosDemo.proveedores).forEach(proveedor => {
-            const fila = document.createElement('tr');
-            fila.innerHTML = `
-                <td>${proveedor.id}</td>
-                <td>${proveedor.nombre}</td>
-                <td>${proveedor.contacto}</td>
-                <td>${proveedor.direccion}</td>
-                <td>
-                    <button onclick="abrirModalVisualizarProveedor(${proveedor.id})" class="btn btn-info btn-sm" title="Visualizar">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button onclick="abrirModalEditarProveedor(${proveedor.id})" class="btn btn-warning btn-sm" title="Editar">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button onclick="abrirModalEliminarProveedor(${proveedor.id})" class="btn btn-danger btn-sm" title="Eliminar">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            `;
-            tbody.appendChild(fila);
-        });
-    }
-}
-
-/**
- * Cargar datos demo para la tabla de productos
- */
-function cargarDatosDemoProductos() {
-    const tabla = document.getElementById('tablaProductos');
-    if (tabla) {
-        const tbody = tabla.querySelector('tbody');
-        const datosDemo = cargarDatosDemo();
-        
-        tbody.innerHTML = '';
-        Object.values(datosDemo.productos).forEach(producto => {
-            const fila = document.createElement('tr');
-            fila.innerHTML = `
-                <td>${producto.id}</td>
-                <td>${producto.nombre}</td>
-                <td>${producto.sku}</td>
-                <td>${producto.marca}</td>
-                <td>${producto.categoria}</td>
-                <td>${formatearMoneda(producto.precio)}</td>
-                <td><span class="badge bg-success">${producto.estado}</span></td>
-                <td>${producto.stock}</td>
-                <td>
-                    <button onclick="abrirModalVisualizarProducto(${producto.id})" class="btn btn-info btn-sm" title="Visualizar">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button onclick="abrirModalEditarProducto(${producto.id})" class="btn btn-warning btn-sm" title="Editar">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button onclick="abrirModalEliminarProducto(${producto.id})" class="btn btn-danger btn-sm" title="Eliminar">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            `;
-            tbody.appendChild(fila);
-        });
-    }
-}
-
-/**
- * Cargar datos demo para la tabla de marcas
- */
-function cargarDatosDemoMarcas() {
-    const tabla = document.getElementById('tablaMarcas');
-    if (tabla) {
-        const tbody = tabla.querySelector('tbody');
-        const datosDemo = cargarDatosDemo();
-        
-        tbody.innerHTML = '';
-        Object.values(datosDemo.marcas).forEach(marca => {
-            const fila = document.createElement('tr');
-            fila.innerHTML = `
-                <td>${marca.id}</td>
-                <td>${marca.nombre}</td>
-                <td>${marca.descripcion}</td>
-                <td><span class="badge bg-success">${marca.estado}</span></td>
-                <td>${marca.productos_count}</td>
-                <td>
-                    <button onclick="abrirModalVisualizarMarca(${marca.id})" class="btn btn-info btn-sm" title="Visualizar">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button onclick="abrirModalEditarMarca(${marca.id})" class="btn btn-warning btn-sm" title="Editar">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button onclick="abrirModalEliminarMarca(${marca.id})" class="btn btn-danger btn-sm" title="Eliminar">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            `;
-            tbody.appendChild(fila);
-        });
-    }
-}
-
-/**
- * Cargar datos demo para la tabla de bodegas
- */
-function cargarDatosDemoBodegas() {
-    const tabla = document.getElementById('tablaBodegas');
-    if (tabla) {
-        const tbody = tabla.querySelector('tbody');
-        const datosDemo = cargarDatosDemo();
-        
-        tbody.innerHTML = '';
-        Object.values(datosDemo.bodegas).forEach(bodega => {
-            const fila = document.createElement('tr');
-            fila.innerHTML = `
-                <td>${bodega.id}</td>
-                <td>${bodega.nombre}</td>
-                <td>${bodega.descripcion}</td>
-                <td>${bodega.ubicacion}</td>
-                <td>${bodega.productos_count}</td>
-                <td>
-                    <button onclick="abrirModalVisualizarBodega(${bodega.id})" class="btn btn-info btn-sm" title="Visualizar">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button onclick="abrirModalEditarBodega(${bodega.id})" class="btn btn-warning btn-sm" title="Editar">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button onclick="abrirModalEliminarBodega(${bodega.id})" class="btn btn-danger btn-sm" title="Eliminar">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            `;
-            tbody.appendChild(fila);
-        });
-    }
-}
-
-/**
- * Cargar datos demo para la tabla de estados
- */
-function cargarDatosDemoEstados() {
-    const tabla = document.getElementById('tablaEstados');
-    if (tabla) {
-        const tbody = tabla.querySelector('tbody');
-        const datosDemo = cargarDatosDemo();
-        
-        tbody.innerHTML = '';
-        Object.values(datosDemo.estados).forEach(estado => {
-            const fila = document.createElement('tr');
-            fila.innerHTML = `
-                <td>${estado.id}</td>
-                <td>${estado.nombre}</td>
-                <td>${estado.funcion}</td>
-                <td>${estado.descripcion}</td>
-                <td>${estado.elementos_count}</td>
-                <td>
-                    <button onclick="abrirModalVisualizarEstado(${estado.id})" class="btn btn-info btn-sm" title="Visualizar">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button onclick="abrirModalEditarEstado(${estado.id})" class="btn btn-warning btn-sm" title="Editar">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button onclick="abrirModalEliminarEstado(${estado.id})" class="btn btn-danger btn-sm" title="Eliminar">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            `;
-            tbody.appendChild(fila);
-        });
-    }
-}
-
-/**
- * Cargar datos demo para la tabla de entradas
- */
-function cargarDatosDemoEntradas() {
-    const tabla = document.getElementById('tablaEntradas');
-    if (tabla) {
-        const tbody = tabla.querySelector('tbody');
-        const datosDemo = cargarDatosDemo();
-        
-        tbody.innerHTML = '';
-        Object.values(datosDemo.entradas).forEach(entrada => {
-            const fila = document.createElement('tr');
-            fila.innerHTML = `
-                <td>${entrada.id}</td>
-                <td>${entrada.producto}</td>
-                <td>${entrada.bodega}</td>
-                <td>${entrada.cantidad}</td>
-                <td>${entrada.fecha_ingreso}</td>
-                <td><span class="badge bg-success">${entrada.estado}</span></td>
-                <td>${entrada.usuario}</td>
-                <td>
-                    <button onclick="abrirModalVisualizarEntrada(${entrada.id})" class="btn btn-info btn-sm" title="Visualizar">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button onclick="abrirModalEditarEntrada(${entrada.id})" class="btn btn-warning btn-sm" title="Editar">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button onclick="abrirModalEliminarEntrada(${entrada.id})" class="btn btn-danger btn-sm" title="Eliminar">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            `;
-            tbody.appendChild(fila);
-        });
-    }
-}
-
-/**
- * Cargar datos demo para la tabla de ajustes
- */
-function cargarDatosDemoAjustes() {
-    const tabla = document.getElementById('tablaAjustes');
-    if (tabla) {
-        const tbody = tabla.querySelector('tbody');
-        const datosDemo = cargarDatosDemo();
-        
-        tbody.innerHTML = '';
-        Object.values(datosDemo.ajustes).forEach(ajuste => {
-            const fila = document.createElement('tr');
-            fila.innerHTML = `
-                <td>${ajuste.id}</td>
-                <td>${ajuste.fecha}</td>
-                <td>${ajuste.bodega}</td>
-                <td>${ajuste.total_productos}</td>
-                <td>${ajuste.usuario}</td>
-                <td>
-                    <button onclick="abrirModalVisualizarAjuste(${ajuste.id})" class="btn btn-info btn-sm" title="Visualizar">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button onclick="abrirModalEditarAjuste(${ajuste.id})" class="btn btn-warning btn-sm" title="Editar">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button onclick="abrirModalEliminarAjuste(${ajuste.id})" class="btn btn-danger btn-sm" title="Eliminar">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            `;
-            tbody.appendChild(fila);
-        });
-    }
-}
-
-/**
- * Inicializar datos demo según la página actual
- */
-function inicializarDatosDemo() {
-    // Detectar qué página está cargada y cargar los datos correspondientes
-    if (document.getElementById('tablaCategorias')) {
-        cargarDatosDemoCategorias();
-    }
-    if (document.getElementById('tablaProveedores')) {
-        cargarDatosDemoProveedores();
-    }
-    if (document.getElementById('tablaProductos')) {
-        cargarDatosDemoProductos();
-    }
-    if (document.getElementById('tablaMarcas')) {
-        cargarDatosDemoMarcas();
-    }
-    if (document.getElementById('tablaBodegas')) {
-        cargarDatosDemoBodegas();
-    }
-    if (document.getElementById('tablaEstados')) {
-        cargarDatosDemoEstados();
-    }
-    if (document.getElementById('tablaEntradas')) {
-        cargarDatosDemoEntradas();
-    }
-    if (document.getElementById('tablaAjustes')) {
-        cargarDatosDemoAjustes();
-    }
-    // Se pueden agregar más entidades aquí según sea necesario
-}
-
 // Inicializar datos demo al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
-    // Cargar datos demo si existen las tablas
-    inicializarDatosDemo();
-    
     // Inicializar estados en todos los selects de estados de la página
     inicializarEstadosEnPagina();
     

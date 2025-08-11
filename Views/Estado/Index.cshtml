@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="~/assets/css/estados.css" asp-append-version="true" />
 }
 
+<!-- Token antiforgery para las peticiones AJAX -->
+@Html.AntiForgeryToken()
+
 <div class="container-fluid">
         <!-- Header Section -->
         <section class="header">
@@ -200,12 +203,12 @@
                         <input type="text" class="form-control" id="nombreEstado" name="nombre" placeholder="Ingrese el estado..." required>
                     </div>
                     <div class="mb-3">
-                        <label for="funcion" class="form-label">Función</label>
-                        <input type="text" class="form-control" id="funcion" name="funcion" placeholder="Ingrese la función del estado..." required>
+                        <label for="funcionEstado" class="form-label">Función</label>
+                        <input type="text" class="form-control" id="funcionEstado" name="funcion" placeholder="Ingrese la función del estado..." required>
                     </div>
                     <div class="mb-3">
-                        <label for="descripcion" class="form-label">Descripción</label>
-                        <textarea class="form-control" id="descripcion" name="descripcion" rows="4" placeholder="Agregar descripción del estado..." required></textarea>
+                        <label for="descripcionEstado" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="descripcionEstado" name="descripcion" rows="4" placeholder="Agregar descripción del estado..." required></textarea>
                     </div>
                 </form>
             </div>
@@ -237,12 +240,12 @@
                         <input type="text" class="form-control" id="editNombreEstado" name="nombre" value="Activo" required>
                     </div>
                     <div class="mb-3">
-                        <label for="editFuncion" class="form-label">Función</label>
-                        <input type="text" class="form-control" id="editFuncion" name="funcion" value="Habilitar funcionalidades" required>
+                        <label for="editFuncionEstado" class="form-label">Función</label>
+                        <input type="text" class="form-control" id="editFuncionEstado" name="funcion" value="Habilitar funcionalidades" required>
                     </div>
                     <div class="mb-3">
-                        <label for="editDescripcion" class="form-label">Descripción</label>
-                        <textarea class="form-control" id="editDescripcion" name="descripcion" rows="4" required>Estado que indica que el elemento se encuentra operativo y disponible para su uso normal.</textarea>
+                        <label for="editDescripcionEstado" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="editDescripcionEstado" name="descripcion" rows="4" required>Estado que indica que el elemento se encuentra operativo y disponible para su uso normal.</textarea>
                     </div>
                 </form>
             </div>
@@ -310,9 +313,6 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="fas fa-times me-1"></i>Cerrar
-                </button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editarEstadoModal">
-                    <i class="fas fa-edit me-1"></i>Editar Estado
                 </button>
             </div>
         </div>

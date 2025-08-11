@@ -259,12 +259,12 @@
                         <input type="text" class="form-control" id="nombreProveedor" name="nombre" placeholder="Ingrese el nombre del proveedor..." required>
                     </div>
                     <div class="mb-3">
-                        <label for="contacto" class="form-label">Contacto</label>
-                        <input type="email" class="form-control" id="contacto" name="contacto" placeholder="correo@ejemplo.com" required>
+                        <label for="contactoProveedor" class="form-label">Contacto</label>
+                        <input type="email" class="form-control" id="contactoProveedor" name="contacto" placeholder="correo@ejemplo.com" required>
                     </div>
                     <div class="mb-3">
-                        <label for="direccion" class="form-label">Dirección</label>
-                        <textarea class="form-control" id="direccion" name="direccion" rows="3" placeholder="Dirección del proveedor..." required></textarea>
+                        <label for="direccionProveedor" class="form-label">Dirección</label>
+                        <textarea class="form-control" id="direccionProveedor" name="direccion" rows="3" placeholder="Dirección del proveedor..." required></textarea>
                     </div>
                 </form>
             </div>
@@ -296,12 +296,12 @@
                         <input type="text" class="form-control" id="editNombreProveedor" name="nombre" required>
                     </div>
                     <div class="mb-3">
-                        <label for="editContacto" class="form-label">Contacto</label>
-                        <input type="email" class="form-control" id="editContacto" name="contacto" required>
+                        <label for="editContactoProveedor" class="form-label">Contacto</label>
+                        <input type="email" class="form-control" id="editContactoProveedor" name="contacto" required>
                     </div>
                     <div class="mb-3">
-                        <label for="editDireccion" class="form-label">Dirección</label>
-                        <textarea class="form-control" id="editDireccion" name="direccion" rows="3" required></textarea>
+                        <label for="editDireccionProveedor" class="form-label">Dirección</label>
+                        <textarea class="form-control" id="editDireccionProveedor" name="direccion" rows="3" required></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="editEstadoProveedor" class="form-label">Estado</label>
@@ -353,6 +353,10 @@
                     <div class="product-info-label">Estado</div>
                     <p class="product-info-value" id="visualizarEstadoProveedor">Cargando...</p>
                 </div>
+                <div class="product-info">
+                    <div class="product-info-label">Productos Suministrados</div>
+                    <p class="product-info-value" id="visualizarProductosProveedor">Cargando...</p>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -398,3 +402,5 @@
     </div>
 </div>
 </section>
+
+@Html.AntiForgeryToken()

@@ -257,8 +257,14 @@
                         <input type="text" class="form-control" id="nombreCategoria" name="nombre" placeholder="Ingrese la categoría..." required>
                     </div>
                     <div class="mb-3">
-                        <label for="descripcion" class="form-label">Descripción</label>
-                        <textarea class="form-control" id="descripcion" name="descripcion" rows="4" placeholder="Agregar descripción de la categoría..." required></textarea>
+                        <label for="descripcionCategoria" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="descripcionCategoria" name="descripcion" rows="4" placeholder="Agregar descripción de la categoría..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="estadoCategoria" class="form-label">Estado</label>
+                        <select class="form-select" id="estadoCategoria" name="estado_id" required>
+                            <option value="">Seleccionar estado</option>
+                        </select>
                     </div>
                 </form>
             </div>
@@ -290,8 +296,8 @@
                         <input type="text" class="form-control" id="editNombreCategoria" name="nombre" required>
                     </div>
                     <div class="mb-3">
-                        <label for="editDescripcion" class="form-label">Descripción</label>
-                        <textarea class="form-control" id="editDescripcion" name="descripcion" rows="4" required></textarea>
+                        <label for="editDescripcionCategoria" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="editDescripcionCategoria" name="descripcion" rows="4" required></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="editEstadoCategoria" class="form-label">Estado</label>
@@ -402,3 +408,5 @@
     </div>
 </div>
 </section>
+
+@Html.AntiForgeryToken()

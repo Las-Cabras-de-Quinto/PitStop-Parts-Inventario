@@ -34,7 +34,7 @@ namespace PitStop_Parts_Inventario.Controllers
         // Acción POST para procesar el formulario de creación
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Crear([FromBody] CategoriaModel model)
+        public async Task<IActionResult> Crear([FromBody] CategoriaEditRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -46,6 +46,14 @@ namespace PitStop_Parts_Inventario.Controllers
 
             try
             {
+                // Crear el modelo base
+                var model = new CategoriaModel
+                {
+                    Nombre = request.Nombre,
+                    Descripcion = request.Descripcion,
+                    IdEstado = request.IdEstado
+                };
+
                 var categoriaCreada = await _categoriaService.CreateAsync(model, userId);
                 if (categoriaCreada != null)
                 {
@@ -73,7 +81,24 @@ namespace PitStop_Parts_Inventario.Controllers
                 {
                     return Json(new { success = false, message = "La categoría no existe." });
                 }
-                return Json(new { success = true, data = categoria });
+
+                // Incluir los productos relacionados
+                var productos = categoria.CategoriaProductos?.Select(cp => new {
+                    Id = cp.Producto.IdProducto,
+                    Nombre = cp.Producto.Nombre
+                }).ToList();
+
+                var categoriaConRelaciones = new
+                {
+                    categoria.IdCategoria,
+                    categoria.Nombre,
+                    categoria.Descripcion,
+                    categoria.IdEstado,
+                    categoria.Estado,
+                    Productos = productos
+                };
+
+                return Json(new { success = true, data = categoriaConRelaciones });
             }
             catch (Exception ex)
             {
@@ -84,7 +109,7 @@ namespace PitStop_Parts_Inventario.Controllers
 
         [HttpPut]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Editar([FromBody] CategoriaModel model)
+        public async Task<IActionResult> Editar([FromBody] CategoriaEditRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -96,10 +121,22 @@ namespace PitStop_Parts_Inventario.Controllers
 
             try
             {
+                // Crear el modelo de categoría base
+                var model = new CategoriaModel
+                {
+                    IdCategoria = request.IdCategoria,
+                    Nombre = request.Nombre,
+                    Descripcion = request.Descripcion,
+                    IdEstado = request.IdEstado
+                };
+
                 var categoriaActualizada = await _categoriaService.UpdateAsync(model, userId);
                 if (categoriaActualizada != null)
                 {
-                    return Json(new { success = true, message = "Categoría actualizada correctamente." });
+                    return Json(new { 
+                        success = true, 
+                        message = "Categoría actualizada correctamente."
+                    });
                 }
                 else
                 {
@@ -108,7 +145,7 @@ namespace PitStop_Parts_Inventario.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al actualizar categoría con ID: {Id}", model.IdCategoria);
+                _logger.LogError(ex, "Error al actualizar categoría con ID: {Id}", request.IdCategoria);
                 return Json(new { success = false, message = "Error interno del servidor." });
             }
         }
@@ -117,12 +154,6 @@ namespace PitStop_Parts_Inventario.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Eliminar(int id)
         {
-            // Verificar permisos de administrador primero
-            if (!IsCurrentUserAdmin)
-            {
-                return Json(new { success = false, message = "No tiene permisos para eliminar categorías." });
-            }
-
             try
             {
                 // Verificar si la categoría existe
@@ -147,6 +178,25 @@ namespace PitStop_Parts_Inventario.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al eliminar categoría con ID: {Id}", id);
+                return Json(new { success = false, message = "Error interno del servidor." });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObtenerParaSelect()
+        {
+            try
+            {
+                var categorias = await _categoriaService.GetAllAsync();
+                var categoriasSelect = categorias.Select(c => new { 
+                    id = c.IdCategoria, 
+                    nombre = c.Nombre 
+                });
+                return Json(new { success = true, data = categoriasSelect });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener categorías para select");
                 return Json(new { success = false, message = "Error interno del servidor." });
             }
         }

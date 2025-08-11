@@ -35,7 +35,7 @@ namespace PitStop_Parts_Inventario.Controllers
         // Acción POST para procesar el formulario de creación
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Crear([FromBody] MarcaModel model)
+        public async Task<IActionResult> Crear([FromBody] MarcaEditRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -47,6 +47,14 @@ namespace PitStop_Parts_Inventario.Controllers
 
             try
             {
+                // Crear el modelo base
+                var model = new MarcaModel
+                {
+                    Nombre = request.Nombre,
+                    Descripcion = request.Descripcion,
+                    IdEstado = request.IdEstado
+                };
+
                 var marcaCreada = await _marcaService.CreateAsync(model, userId);
                 if (marcaCreada != null)
                 {
@@ -85,7 +93,7 @@ namespace PitStop_Parts_Inventario.Controllers
 
         [HttpPut]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Editar([FromBody] MarcaModel model)
+        public async Task<IActionResult> Editar([FromBody] MarcaEditRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -97,7 +105,19 @@ namespace PitStop_Parts_Inventario.Controllers
 
             try
             {
-                var marcaActualizada = await _marcaService.UpdateAsync(model, userId);
+                // Obtener la marca existente
+                var marcaExistente = await _marcaService.GetByIdAsync(request.IdMarca);
+                if (marcaExistente == null)
+                {
+                    return Json(new { success = false, message = "Marca no encontrada." });
+                }
+
+                // Actualizar las propiedades
+                marcaExistente.Nombre = request.Nombre;
+                marcaExistente.Descripcion = request.Descripcion;
+                marcaExistente.IdEstado = request.IdEstado;
+
+                var marcaActualizada = await _marcaService.UpdateAsync(marcaExistente, userId);
                 if (marcaActualizada != null)
                 {
                     return Json(new { success = true, message = "Marca actualizada correctamente." });
@@ -109,7 +129,7 @@ namespace PitStop_Parts_Inventario.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al actualizar marca con ID: {Id}", model.IdMarca);
+                _logger.LogError(ex, "Error al actualizar marca con ID: {Id}", request.IdMarca);
                 return Json(new { success = false, message = "Error interno del servidor." });
             }
         }
@@ -118,12 +138,6 @@ namespace PitStop_Parts_Inventario.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Eliminar(int id)
         {
-            // Verificar permisos de administrador primero
-            if (!IsCurrentUserAdmin)
-            {
-                return Json(new { success = false, message = "No tiene permisos para eliminar marcas." });
-            }
-
             try
             {
                 // Verificar si la marca existe
@@ -148,6 +162,25 @@ namespace PitStop_Parts_Inventario.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al eliminar marca con ID: {Id}", id);
+                return Json(new { success = false, message = "Error interno del servidor." });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObtenerParaSelect()
+        {
+            try
+            {
+                var marcas = await _marcaService.GetAllAsync();
+                var marcasSelect = marcas.Select(m => new { 
+                    id = m.IdMarca, 
+                    nombre = m.Nombre 
+                });
+                return Json(new { success = true, data = marcasSelect });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener marcas para select");
                 return Json(new { success = false, message = "Error interno del servidor." });
             }
         }
