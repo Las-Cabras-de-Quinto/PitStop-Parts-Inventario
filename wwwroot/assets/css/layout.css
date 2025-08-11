@@ -25,7 +25,7 @@ body {
 /* Sidebar Styles */
 .sidebar {
     width: 280px;
-    background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+    background: linear-gradient(180deg, #000000 0%, #000000 100%);
     color: white;
     height: 100vh;
     overflow: hidden;
@@ -56,7 +56,7 @@ body {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: #e74c3c;
+    background-color: #e74d3c34;
     display: inline-block;
 }
 
@@ -294,7 +294,7 @@ body {
 }
 
 .mobile-title {
-    color: #2c3e50;
+    color: #000000;
     font-weight: 600;
     margin: 0;
     font-size: 1.1rem;
