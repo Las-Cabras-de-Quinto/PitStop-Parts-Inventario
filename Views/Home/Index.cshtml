@@ -1,4 +1,5 @@
-﻿@{
+﻿@model PitStop_Parts_Inventario.Models.ViewModels.DashboardViewModel
+@{
     ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
@@ -27,8 +28,8 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="stat-info">
                                     <h6 class="stat-label">Productos Activos</h6>
-                                    <h2 class="stat-number">88</h2>
-                                    <small class="stat-detail">-11 inactivos</small>
+                                    <h2 class="stat-number">@Model.ProductosActivos</h2>
+                                    <small class="stat-detail">-@Model.ProductosInactivos inactivos</small>
                                 </div>
                                 <div class="stat-icon-container">
                                     <i class="fas fa-box stat-icon"></i>
@@ -43,8 +44,8 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="stat-info">
                                     <h6 class="stat-label">Bodegas</h6>
-                                    <h2 class="stat-number">7</h2>
-                                    <small class="stat-detail">-2 sin espacio mínimo</small>
+                                    <h2 class="stat-number">@Model.TotalBodegas</h2>
+                                    <small class="stat-detail">-@Model.BodegasSinEspacioMinimo sin espacio mínimo</small>
                                 </div>
                                 <div class="stat-icon-container">
                                     <i class="fas fa-warehouse stat-icon"></i>
@@ -59,8 +60,8 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="stat-info">
                                     <h6 class="stat-label">Proveedores Activos</h6>
-                                    <h2 class="stat-number">32</h2>
-                                    <small class="stat-detail">-3 inactivos</small>
+                                    <h2 class="stat-number">@Model.ProveedoresActivos</h2>
+                                    <small class="stat-detail">-@Model.ProveedoresInactivos inactivos</small>
                                 </div>
                                 <div class="stat-icon-container">
                                     <i class="fas fa-truck stat-icon"></i>
@@ -75,8 +76,8 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="stat-info">
                                     <h6 class="stat-label">Usuarios del Sistema</h6>
-                                    <h2 class="stat-number">13</h2>
-                                    <small class="stat-detail">-2 fuera de la empresa</small>
+                                    <h2 class="stat-number">@Model.UsuariosDelSistema</h2>
+                                    <small class="stat-detail">-@Model.UsuariosFueraEmpresa fuera de la empresa</small>
                                 </div>
                                 <div class="stat-icon-container">
                                     <i class="fas fa-users stat-icon"></i>
@@ -152,6 +153,58 @@
                                             <th>Usuario</th>
                                         </tr>
                                     </thead>
+                                    <tbody>
+                                        @if (Model.UltimasEntradas.Any())
+                                        {
+                                            @foreach (var entrada in Model.UltimasEntradas)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="product-info">
+                                                                <div class="product-name">@entrada.Producto?.Nombre</div>
+                                                                <small class="text-muted">SKU: @entrada.Producto?.SKU</small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="date-info">
+                                                            <div>@entrada.Fecha.ToString("dd/MM/yyyy")</div>
+                                                            <small class="text-muted">@entrada.Fecha.ToString("HH:mm")</small>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-info">@entrada.Bodega?.Nombre</span>
+                                                    </td>
+                                                    <td>
+                                                        @if (entrada.Producto?.ProveedorProductos?.Any() == true)
+                                                        {
+                                                            <span class="badge bg-secondary">@entrada.Producto.ProveedorProductos.First().Proveedor?.Nombre</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="text-muted">-</span>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-success">@entrada.CantidadProducto</span>
+                                                    </td>
+                                                    <td>
+                                                        <small>@entrada.Usuario?.UserName</small>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="6" class="text-center text-muted py-4">
+                                                    <i class="fas fa-inbox fa-2x mb-2"></i>
+                                                    <div>No hay entradas registradas</div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -167,7 +220,24 @@
                             </h5>
                         </div>
                         <div class="card-body alerts-body">
-                            
+                            @if (Model.AlertasSistema.Any())
+                            {
+                                @foreach (var alerta in Model.AlertasSistema)
+                                {
+                                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                        @alerta
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="text-center text-muted py-4">
+                                    <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                                    <div>No hay alertas del sistema</div>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -181,15 +251,15 @@
                     <h5 class="summary-title">Resumen del Día</h5>
                     <div class="row text-center summary-stats">
                         <div class="col-md-4">
-                            <h3 class="summary-number text-primary">12</h3>
+                            <h3 class="summary-number text-primary">@Model.EntradasHoy</h3>
                             <p class="summary-label">Entradas hoy</p>
                         </div>
                         <div class="col-md-4">
-                            <h3 class="summary-number text-success">6</h3>
+                            <h3 class="summary-number text-success">@Model.ProductosDistintosHoy</h3>
                             <p class="summary-label">Productos distintos</p>
                         </div>
                         <div class="col-md-4">
-                            <h3 class="summary-number text-info">3</h3>
+                            <h3 class="summary-number text-info">@Model.ProveedoresInvolucradosHoy</h3>
                             <p class="summary-label">Proveedores involucrados</p>
                         </div>
                     </div>

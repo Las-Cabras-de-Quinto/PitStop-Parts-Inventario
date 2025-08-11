@@ -34,7 +34,8 @@ namespace PitStop_Parts_Inventario.Services
         public async Task<PagedResult<EntradaProductoModel>> GetPagedAsync(int pageNumber, int pageSize, EntradaProductoFilterOptions? filters = null)
         {
             var query = _context.EntradaProductos
-                .Include(ep => ep.Producto).ThenInclude(p => p.Marca)
+                .Include(ep => ep.Producto)
+                    .ThenInclude(p => p!.Marca)
                 .Include(ep => ep.Usuario)
                 .Include(ep => ep.Bodega)
                 .AsQueryable();

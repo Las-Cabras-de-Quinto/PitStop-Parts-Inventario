@@ -2163,13 +2163,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Validación en tiempo real
 document.addEventListener('DOMContentLoaded', function() {
-	const forms = document.querySelectorAll('form');
-	forms.forEach(form => {
-		// Prevenir envío automático de formularios
+	// Solo aplicar preventDefault a formularios dentro de modales, excluyendo formularios de usuario
+	const modalForms = document.querySelectorAll('.modal form:not(.user-form)');
+	modalForms.forEach(form => {
+		// Prevenir envío automático de formularios de modales
 		form.addEventListener('submit', function(e) {
 			e.preventDefault();
 		});
 		
+		form.addEventListener('input', function(e) {
+			if (e.target.checkValidity()) {
+				e.target.classList.remove('is-invalid');
+				e.target.classList.add('is-valid');
+			} else {
+				e.target.classList.remove('is-valid');
+				e.target.classList.add('is-invalid');
+			}
+		});
+	});
+	
+	// Para formularios normales (no en modales o formularios de usuario), solo agregar validación visual
+	const normalForms = document.querySelectorAll('form:not(.modal form):not(.user-form)');
+	normalForms.forEach(form => {
 		form.addEventListener('input', function(e) {
 			if (e.target.checkValidity()) {
 				e.target.classList.remove('is-invalid');

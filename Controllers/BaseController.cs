@@ -85,7 +85,7 @@ namespace PitStop_Parts_Inventario.Controllers
                 return action();
             }
 
-            return unauthorizedAction?.Invoke() ?? RedirectToAction("AccessDenied", "Account", new { area = "Identity" });
+            return unauthorizedAction?.Invoke() ?? RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
         }
 
         protected async Task<IActionResult> ExecuteIfHasRole(string roleName, Func<Task<IActionResult>> action, Func<IActionResult>? unauthorizedAction = null)
@@ -95,7 +95,7 @@ namespace PitStop_Parts_Inventario.Controllers
                 return await action();
             }
 
-            return unauthorizedAction?.Invoke() ?? RedirectToAction("AccessDenied", "Account", new { area = "Identity" });
+            return unauthorizedAction?.Invoke() ?? RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace PitStop_Parts_Inventario.Controllers
                 return action();
             }
 
-            return unauthorizedAction?.Invoke() ?? RedirectToAction("AccessDenied", "Account", new { area = "Identity" });
+            return unauthorizedAction?.Invoke() ?? RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
         }
 
         protected async Task<IActionResult> ExecuteIfAdmin(Func<Task<IActionResult>> action, Func<IActionResult>? unauthorizedAction = null)
@@ -120,7 +120,7 @@ namespace PitStop_Parts_Inventario.Controllers
                 return await action();
             }
 
-            return unauthorizedAction?.Invoke() ?? RedirectToAction("AccessDenied", "Account", new { area = "Identity" });
+            return unauthorizedAction?.Invoke() ?? RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
         }
 
         /// <summary>

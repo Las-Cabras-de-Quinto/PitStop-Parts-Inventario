@@ -1,0 +1,164 @@
+@model UsuarioViewModel
+@{
+    ViewData["Title"] = "Editar Usuario";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="h4 mb-1">Editar Usuario</h2>
+                    <p class="text-muted">Modifica la información del usuario: <strong>@Model.UserName</strong></p>
+                </div>
+                <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Volver a la Lista
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alerts -->
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>@TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Form -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-user-edit me-2"></i>Información del Usuario
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form id="editUserForm" class="user-form" asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <input asp-for="Id" type="hidden" />
+                        
+                        <div class="row">
+                            <!-- Información Básica -->
+                            <div class="col-md-6">
+                                <h6 class="text-muted mb-3">Información Básica</h6>
+                                
+                                <div class="mb-3">
+                                    <label asp-for="UserName" class="form-label">Nombre de Usuario</label>
+                                    <input asp-for="UserName" class="form-control" placeholder="Ingrese el nombre de usuario">
+                                    <span asp-validation-for="UserName" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Email" class="form-label">Email</label>
+                                    <input asp-for="Email" class="form-control" type="email" placeholder="usuario@ejemplo.com">
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">ID de Usuario</label>
+                                    <input type="text" class="form-control" value="@Model.Id" readonly>
+                                    <div class="form-text">El ID del usuario no se puede modificar.</div>
+                                </div>
+                            </div>
+
+                            <!-- Configuración -->
+                            <div class="col-md-6">
+                                <h6 class="text-muted mb-3">Configuración</h6>
+                                
+                                <div class="mb-3">
+                                    <label asp-for="IdRol" class="form-label">Rol</label>
+                                    <select asp-for="IdRol" class="form-select">
+                                        <option value="">Seleccione un rol...</option>
+                                        @foreach (var rol in Model.Roles)
+                                        {
+                                            <option value="@rol.IdRol" selected="@(rol.IdRol == Model.IdRol)">@rol.Nombre</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="IdRol" class="text-danger"></span>
+                                    <div class="form-text">El rol determina los permisos del usuario en el sistema.</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="IdEstado" class="form-label">Estado</label>
+                                    <select asp-for="IdEstado" class="form-select">
+                                        @foreach (var estado in Model.Estados)
+                                        {
+                                            <option value="@estado.IdEstado" selected="@(estado.IdEstado == Model.IdEstado)">@estado.Nombre</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="IdEstado" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Fecha de Ingreso</label>
+                                    <input type="text" class="form-control" value="@Model.FechaDeIngreso.ToString("dd/MM/yyyy HH:mm")" readonly>
+                                    <div class="form-text">La fecha de ingreso original no se puede modificar.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Información adicional -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Nota:</strong> Para cambiar la contraseña del usuario, utilice el botón "Cambiar Contraseña" en la lista de usuarios.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                                <i class="fas fa-times me-2"></i>Cancelar
+                            </a>
+                            <button id="submitEditBtn" type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Guardar Cambios
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function() {
+            const form = document.getElementById('editUserForm');
+            const submitBtn = document.getElementById('submitEditBtn');
+            
+            // Limpiar cualquier event listener previo
+            $(form).off('submit');
+            
+            // Agregar nuestro propio event listener
+            form.addEventListener('submit', function(e) {
+                console.log('Formulario de edición enviándose...');
+                
+                // Validar el formulario
+                if (!this.checkValidity()) {
+                    e.preventDefault();
+                    this.reportValidity();
+                    return false;
+                }
+                
+                // Deshabilitar el botón para evitar doble envío
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Guardando...';
+                
+                // Permitir el envío
+                return true;
+            });
+        });
+    </script>
+}

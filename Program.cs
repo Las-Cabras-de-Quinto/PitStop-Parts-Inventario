@@ -56,7 +56,7 @@ builder.Services.AddScoped<IProveedorService, ProveedorService>();
 builder.Services.AddScoped<IEntradaProductoService, EntradaProductoService>();
 builder.Services.AddScoped<IAjusteInventarioService, AjusteInventarioService>();
 builder.Services.AddScoped<IEstadoService, EstadoService>();
-builder.Services.AddScoped<IRolService, RolService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();

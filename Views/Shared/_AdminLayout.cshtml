@@ -1,3 +1,12 @@
+@using Microsoft.AspNetCore.Identity
+@using PitStop_Parts_Inventario.Models
+@inject UserManager<UsuarioModel> UserManager
+@inject SignInManager<UsuarioModel> SignInManager
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+    var isAdmin = currentUser?.Rol?.Nombre == "Administrador" || currentUser?.Rol?.Admin == true;
+}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -131,32 +140,62 @@
                     </ul>
                 </div>
                 
-                <!-- Seguridad y Usuarios Section -->
-                <div class="nav-section">
-                    <h6 class="nav-section-title">Seguridad y Usuarios</h6>
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Rol" ? "active" : "")" 
-                               asp-controller="Rol" asp-action="Index">
-                                <i class="fas fa-plus nav-icon"></i>
-                                <i class="fas fa-user nav-icon-secondary"></i>
-                                <span class="nav-text">Usuario</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+                <!-- Seguridad y Usuarios Section - Solo para Administradores -->
+                @if (isAdmin)
+                {
+                    <div class="nav-section">
+                        <h6 class="nav-section-title">Seguridad y Usuarios</h6>
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Usuario" ? "active" : "")" 
+                                   asp-controller="Usuario" asp-action="Index">
+                                    <i class="fas fa-users nav-icon"></i>
+                                    <span class="nav-text">Usuarios</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                }
             </div>
             
             <!-- User Info Section -->
             <div class="user-info-section">
                 <div class="user-info">
                     <div class="user-avatar">
-                        <span class="avatar-text">US</span>
+                        @{
+                            var userName = ViewBag.CurrentUserName?.ToString() ?? "Usuario";
+                            var initials = "US";
+                            if (!string.IsNullOrEmpty(userName))
+                            {
+                                var words = userName.Split(' ');
+                                if (words.Length >= 2)
+                                {
+                                    initials = (words[0].Substring(0, 1) + words[1].Substring(0, 1)).ToUpper();
+                                }
+                                else if (words.Length == 1 && words[0].Length >= 2)
+                                {
+                                    initials = words[0].Substring(0, 2).ToUpper();
+                                }
+                                else if (words.Length == 1 && words[0].Length == 1)
+                                {
+                                    initials = words[0].ToUpper() + "S";
+                                }
+                            }
+                        }
+                        <span class="avatar-text">@initials</span>
                     </div>
                     <div class="user-details">
-                        <span class="user-name">Usuario</span>
-                        <span class="user-email">user@example.com</span>
+                        <span class="user-name">@userName</span>
+                        <span class="user-email">@(ViewBag.CurrentUserRole?.ToString() ?? "Usuario")</span>
                     </div>
+                </div>
+                <div class="user-actions mt-2">
+                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-outline-light btn-sm w-100">
+                            <i class="fas fa-sign-out-alt me-1"></i>
+                            Cerrar Sesión
+                        </button>
+                    </form>
                 </div>
             </div>
         </nav>
