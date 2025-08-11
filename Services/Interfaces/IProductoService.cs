@@ -37,6 +37,8 @@ namespace PitStop_Parts_Inventario.Services.Interfaces
         
         // Métodos para recalcular stock
         Task<int> RecalcularStockAsync(int productoId);
+        Task<int> RecalcularStockSinGuardarAsync(int productoId);
         Task RecalcularTodosLosStocksAsync();
+        Task ActualizarStockBodegaAsync(int bodegaId, int productoId, int cantidad, string descripcion = "");
     }
 }

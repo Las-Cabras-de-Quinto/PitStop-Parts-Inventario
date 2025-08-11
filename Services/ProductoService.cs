@@ -229,14 +229,34 @@ namespace PitStop_Parts_Inventario.Services
 
         /// <summary>
         /// Recalcula el stock actual de un producto sumando el stock de todas las bodegas
+        /// Este método solo debe usarse cuando sea necesario sincronizar el stock actual
         /// </summary>
         /// <param name="productoId">ID del producto</param>
         /// <returns>Stock recalculado</returns>
         public async Task<int> RecalcularStockAsync(int productoId)
         {
-            // Sumar el stock total de todas las bodegas para este producto
+            return await RecalcularStockInternoAsync(productoId, true);
+        }
+
+        /// <summary>
+        /// Recalcula el stock actual de un producto sin guardar automáticamente
+        /// Útil cuando se hace dentro de una transacción existente
+        /// </summary>
+        /// <param name="productoId">ID del producto</param>
+        /// <returns>Stock recalculado</returns>
+        public async Task<int> RecalcularStockSinGuardarAsync(int productoId)
+        {
+            return await RecalcularStockInternoAsync(productoId, false);
+        }
+
+        /// <summary>
+        /// Método interno para recalcular stock con opción de guardar
+        /// </summary>
+        private async Task<int> RecalcularStockInternoAsync(int productoId, bool guardar)
+        {
+            // Sumar el stock total de todas las bodegas activas para este producto
             var stockTotal = await _context.BodegaProductos
-                .Where(bp => bp.IdProducto == productoId)
+                .Where(bp => bp.IdProducto == productoId && bp.IdEstado == 1)
                 .SumAsync(bp => bp.StockTotal);
 
             // Actualizar el producto
@@ -245,7 +265,12 @@ namespace PitStop_Parts_Inventario.Services
             {
                 producto.StockActual = stockTotal < 0 ? 0 : stockTotal;
                 _context.Productos.Update(producto);
-                await _context.SaveChangesAsync();
+                
+                if (guardar)
+                {
+                    await _context.SaveChangesAsync();
+                }
+                
                 return producto.StockActual;
             }
 
@@ -261,8 +286,54 @@ namespace PitStop_Parts_Inventario.Services
             
             foreach (var producto in productos)
             {
-                await RecalcularStockAsync(producto.IdProducto);
+                await RecalcularStockSinGuardarAsync(producto.IdProducto);
             }
+            
+            await _context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Actualiza el stock en BodegaProducto y recalcula el stock total del producto
+        /// Este es el método principal para actualizaciones de stock
+        /// </summary>
+        /// <param name="bodegaId">ID de la bodega</param>
+        /// <param name="productoId">ID del producto</param>
+        /// <param name="cantidad">Cantidad a agregar o quitar (puede ser negativa)</param>
+        /// <param name="descripcion">Descripción del movimiento</param>
+        public async Task ActualizarStockBodegaAsync(int bodegaId, int productoId, int cantidad, string descripcion = "")
+        {
+            var bodegaProducto = await _context.BodegaProductos
+                .FirstOrDefaultAsync(bp => bp.IdBodega == bodegaId && bp.IdProducto == productoId);
+
+            if (bodegaProducto != null)
+            {
+                bodegaProducto.StockTotal += cantidad;
+                
+                // Asegurar que el stock no sea negativo
+                if (bodegaProducto.StockTotal < 0)
+                    bodegaProducto.StockTotal = 0;
+                    
+                if (!string.IsNullOrEmpty(descripcion))
+                    bodegaProducto.Descripcion = descripcion;
+                    
+                _context.BodegaProductos.Update(bodegaProducto);
+            }
+            else if (cantidad > 0)
+            {
+                // Solo crear nuevo registro si la cantidad es positiva
+                bodegaProducto = new BodegaProductoModel
+                {
+                    IdBodega = bodegaId,
+                    IdProducto = productoId,
+                    StockTotal = cantidad,
+                    IdEstado = 1, // Estado activo por defecto
+                    Descripcion = string.IsNullOrEmpty(descripcion) ? "Stock inicial" : descripcion
+                };
+                _context.BodegaProductos.Add(bodegaProducto);
+            }
+
+            // Recalcular el stock total del producto
+            await RecalcularStockSinGuardarAsync(productoId);
         }
 
         /// <summary>
