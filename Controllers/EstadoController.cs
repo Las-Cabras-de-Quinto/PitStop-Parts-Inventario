@@ -41,8 +41,11 @@ namespace PitStop_Parts_Inventario.Controllers
                 return Json(new { success = false, message = "Datos inválidos", errors = ModelState });
             }
 
-            // Obtener el ID del usuario actual
-            var userId = CurrentUserId ?? User?.Identity?.Name ?? string.Empty;
+            var userId = await GetCurrentUserIdAsync();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Json(new { success = false, message = "No se pudo obtener el usuario actual" });
+            }
 
             try
             {
@@ -91,8 +94,11 @@ namespace PitStop_Parts_Inventario.Controllers
                 return Json(new { success = false, message = "Datos inválidos", errors = ModelState });
             }
 
-            // Obtener el ID del usuario actual
-            var userId = CurrentUserId ?? User?.Identity?.Name ?? string.Empty;
+            var userId = await GetCurrentUserIdAsync();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Json(new { success = false, message = "No se pudo obtener el usuario actual" });
+            }
 
             try
             {

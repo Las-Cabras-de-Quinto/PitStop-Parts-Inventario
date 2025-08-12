@@ -120,9 +120,11 @@ namespace PitStop_Parts_Inventario.Controllers
 
                 dashboard.AlertasSistema = alertas;
 
+                var user = await GetCurrentUserAsync();
+
                 // La información del usuario ya está disponible a través del BaseController
-                ViewBag.WelcomeMessage = $"Bienvenido, {CurrentUserName ?? "Usuario"}";
-                ViewBag.UserRole = CurrentUserRole;
+                ViewBag.WelcomeMessage = $"Bienvenido, {user?.UserName ?? "Usuario"}";
+                ViewBag.UserRole = user?.Rol?.Nombre ?? "Invitado";
 
                 return View(dashboard);
             }
@@ -147,8 +149,10 @@ namespace PitStop_Parts_Inventario.Controllers
                     AlertasSistema = new List<string> { "Error al cargar datos del sistema" }
                 };
 
-                ViewBag.WelcomeMessage = $"Bienvenido, {CurrentUserName ?? "Usuario"}";
-                ViewBag.UserRole = CurrentUserRole;
+                var user = await GetCurrentUserAsync();
+
+                ViewBag.WelcomeMessage = $"Bienvenido, {user?.UserName ?? "Usuario"}";
+                ViewBag.UserRole = user?.Rol?.Nombre ?? "Sin rol asignado";
 
                 return View(dashboardError);
             }

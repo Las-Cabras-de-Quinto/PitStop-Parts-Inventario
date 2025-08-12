@@ -53,7 +53,13 @@ namespace PitStop_Parts_Inventario.Controllers
                     IdEstado = request.IdEstado
                 };
 
-                await _bodegaService.CreateAsync(bodega, CurrentUserId ?? "");
+                var userId = await GetCurrentUserIdAsync();
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Json(new { success = false, message = "No se pudo obtener el usuario actual" });
+                }
+
+                await _bodegaService.CreateAsync(bodega, userId ?? "");
                 return Json(new { success = true, message = "Bodega creada correctamente" });
             }
             catch (Exception ex)
@@ -113,7 +119,11 @@ namespace PitStop_Parts_Inventario.Controllers
             }
 
             // Obtener el ID del usuario actual
-            var userId = CurrentUserId ?? User?.Identity?.Name ?? string.Empty;
+            var userId = await GetCurrentUserIdAsync();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Json(new { success = false, message = "No se pudo obtener el usuario actual" });
+            }
 
             try
             {

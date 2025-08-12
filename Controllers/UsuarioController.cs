@@ -18,7 +18,7 @@ namespace PitStop_Parts_Inventario.Controllers
 
         public async Task<IActionResult> Index(UsuarioFilterOptions? filters = null)
         {
-            return await ExecuteIfAdmin(async () =>
+            return await ExecuteIfAdminAsync(async () =>
             {
                 try
                 {
@@ -42,7 +42,7 @@ namespace PitStop_Parts_Inventario.Controllers
 
         public async Task<IActionResult> Create()
         {
-            return await ExecuteIfAdmin(async () =>
+            return await ExecuteIfAdminAsync(async () =>
             {
                 var viewModel = new UsuarioViewModel
                 {
@@ -60,7 +60,7 @@ namespace PitStop_Parts_Inventario.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(UsuarioViewModel viewModel)
         {
-            return await ExecuteIfAdmin(async () =>
+            return await ExecuteIfAdminAsync(async () =>
             {
                 if (ModelState.IsValid)
                 {
@@ -101,7 +101,7 @@ namespace PitStop_Parts_Inventario.Controllers
 
         public async Task<IActionResult> Edit(string id)
         {
-            return await ExecuteIfAdmin(async () =>
+            return await ExecuteIfAdminAsync(async () =>
             {
                 if (string.IsNullOrEmpty(id))
                     return NotFound();
@@ -130,7 +130,7 @@ namespace PitStop_Parts_Inventario.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UsuarioViewModel viewModel)
         {
-            return await ExecuteIfAdmin(async () =>
+            return await ExecuteIfAdminAsync(async () =>
             {
                 // Remover validación de contraseña para edición
                 ModelState.Remove("Password");
@@ -175,7 +175,7 @@ namespace PitStop_Parts_Inventario.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
         {
-            return await ExecuteIfAdmin(async () =>
+            return await ExecuteIfAdminAsync(async () =>
             {
                 try
                 {
@@ -202,7 +202,7 @@ namespace PitStop_Parts_Inventario.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateStatus(string userId, int statusId)
         {
-            return await ExecuteIfAdmin(async () =>
+            return await ExecuteIfAdminAsync(async () =>
             {
                 try
                 {
@@ -225,7 +225,7 @@ namespace PitStop_Parts_Inventario.Controllers
 
         public async Task<IActionResult> ChangePassword(string id)
         {
-            return await ExecuteIfAdmin(async () =>
+            return await ExecuteIfAdminAsync(async () =>
             {
                 if (string.IsNullOrEmpty(id))
                     return NotFound();
@@ -248,7 +248,7 @@ namespace PitStop_Parts_Inventario.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel viewModel)
         {
-            return await ExecuteIfAdmin(async () =>
+            return await ExecuteIfAdminAsync(async () =>
             {
                 if (ModelState.IsValid)
                 {
