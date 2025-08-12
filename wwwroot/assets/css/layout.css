@@ -55,8 +55,11 @@ body {
 .logo-img {
     width: 50px;
     height: 50px;
+<<<<<<< Updated upstream
     border-radius: 50%;
     
+=======
+>>>>>>> Stashed changes
     display: inline-block;
 }
 

@@ -50,6 +50,18 @@
             color: #666;
         }
 
+    .login-btn-container {
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 15px;
+    }
+
+
+    .login-btn-container {
+        margin-bottom: 20px; /* Espacio entre el botón y los botones extra */
+    }
+
+
     .input-group {
         margin-bottom: 1rem;
     }
@@ -141,14 +153,51 @@
         border-radius: 6px;
         cursor: pointer;
     }
+
+    .extra-buttons-container {
+        display: flex;
+        justify-content: flex-end; /* Totalmente a la derecha */
+        margin-bottom: 15px;
+        width: 100%;
+    }
+
+    .extra-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .btn-link-custom {
+        background-color: #0f1f29; /* Color oscuro como "Iniciar sesión" */
+        color: white;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+        .btn-link-custom:hover {
+            background-color: #000; /* Más oscuro al pasar mouse */
+            box-shadow: 0px 3px 6px rgba(0,0,0,0.25);
+            transform: translateY(-1px);
+        }
+
 </style>
 
-<div class="login-card">
-    <div class="login-header">
-        <div class="icon">🔐</div>
-        <h2>Iniciar Sesión</h2>
-        <p>Ingresa tus credenciales para acceder</p>
-    </div>
+
+        <div class="login-card">
+            <div class="login-header">
+                <div class="icon">🔐</div>
+                <h2>Iniciar Sesión</h2>
+                <p>Ingresa tus credenciales para acceder</p>
+            </div>
+  
+    <form method="post">
+        <!-- campos del login -->
+    </form>
+
+
 
     <form id="account" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
@@ -171,13 +220,24 @@
                 @Html.DisplayNameFor(m => m.Input.RememberMe)
             </label>
         </div>
-        
-        <button id="login-submit" type="submit">Iniciar Sesión</button>
+
+        <!--       BOTON DE LOGIN        -->
+        <div class="login-btn-container">
+            <button id="login-submit" type="submit">Iniciar Sesión</button>
+        </div>
+
+       
+        <div class="extra-buttons">
+            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="btn-link-custom">
+                Registrarse
+            </a>
+            <a id="resend-confirmation" asp-page="./ResendEmailConfirmation" class="btn-link-custom">
+                Reenviar confirmación
+            </a>
+        </div>
         
         <div class="footer-links">
             <a id="forgot-password" asp-page="./ForgotPassword">¿Olvidaste tu contraseña?</a>
-            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Registrarse como nuevo usuario</a>
-            <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Reenviar confirmación de correo</a>
         </div>
 
         @if ((Model.ExternalLogins?.Count ?? 0) > 0)
@@ -206,7 +266,7 @@
     </form>
 
     <div class="footer-links small">
-        <a href="/">Sistema de entradas PitStopParts</a>
+        <a>Sistema de entradas PitStopParts</a>
     </div>
 </div>
 
